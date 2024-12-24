@@ -1,0 +1,54 @@
+import Splash from '../assets/svg/splash.svg';
+import Splash1 from '../assets/svg/splash1.svg';
+import Intro2 from '../assets/svg/Intro2.svg';
+import ArrowBack from '../assets/svg/arrowBack.svg';
+import ArrowBack1 from '../assets/svg/ArrowBack1.svg';
+import ArrowRight from '../assets/svg/arrowRight.svg';
+import LoginSvg from '../assets/svg/LoginSvg.svg';
+import Eyeopen from '../assets/svg/eyeopen.svg';
+import Facebook from '../assets/svg/Facebook.svg';
+import Apple from '../assets/svg/Apple.svg';
+import Google from '../assets/svg/Google.svg';
+import Checkmark from '../assets/svg/Checkmark.svg';
+import User from '../assets/svg/User.svg';
+import Pencille from '../assets/svg/Pencille.svg';
+import ArrowDown from '../assets/svg/ArrowDown.svg';
+import LocationLogo from '../assets/svg/LocationLogo.svg';
+import LocationMap from '../assets/svg/LocationMap.svg';
+import Save from '../assets/svg/Save.svg';
+import HomeTab from '../assets/svg/HomeTab.svg';
+import BookingTab from '../assets/svg/BookingTab.svg';
+import ProfileTab from '../assets/svg/ProfileTab.svg';
+import WalletTab from '../assets/svg/WalletTab.svg';
+import ChatTab from '../assets/svg/ChatTab.svg';
+import Location2 from '../assets/svg/Location2.svg';
+import Office from '../assets/svg/Office.svg';
+import LiveLocation from '../assets/svg/LiveLocation.svg';
+export {
+  Splash,
+  Splash1,
+  Intro2,
+  ArrowBack,
+  ArrowRight,
+  LoginSvg,
+  Eyeopen,
+  Facebook,
+  Apple,
+  Google,
+  Checkmark,
+  User,
+  Pencille,
+  ArrowDown,
+  LocationLogo,
+  ArrowBack1,
+  Save,
+  LocationMap,
+  HomeTab,
+  BookingTab,
+  WalletTab,
+  ProfileTab,
+  ChatTab,
+  Location2,
+  Office,
+  LiveLocation,
+};

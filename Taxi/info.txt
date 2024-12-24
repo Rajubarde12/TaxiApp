@@ -1,0 +1,5 @@
+npm i react-native-maps
+react-native-google-places-autocomplete
+'@react-native-community/geolocation
+react-native-maps-directions
+@react-native-community/geolocation
