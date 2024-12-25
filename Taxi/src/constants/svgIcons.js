@@ -24,6 +24,12 @@ import ChatTab from '../assets/svg/ChatTab.svg';
 import Location2 from '../assets/svg/Location2.svg';
 import Office from '../assets/svg/Office.svg';
 import LiveLocation from '../assets/svg/LiveLocation.svg';
+import RadioBalck from '../assets/svg/RadioBalck.svg';
+import LocationInput from '../assets/svg/LocationInput.svg';
+import Saved1 from '../assets/svg/Saved1.svg';
+import Plush from '../assets/svg/Plush.svg';
+import ArrowLeft from '../assets/svg/ArrowLeft.svg';
+import Restart from '../assets/svg/Restart.svg';
 export {
   Splash,
   Splash1,
@@ -51,4 +57,10 @@ export {
   Location2,
   Office,
   LiveLocation,
+  RadioBalck,
+  LocationInput,
+  Saved1,
+  Plush,
+  ArrowLeft,
+  Restart,
 };

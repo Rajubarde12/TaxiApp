@@ -14,7 +14,7 @@ const TouchableInput = ({onPress, placeholder = 'Enter Location'}) => {
       style={{
         position: 'absolute',
         height: moderateScale(70),
-        top: '15%',
+        top: '13%',
         width: '90%',
         alignSelf: 'center',
         zIndex: 1,

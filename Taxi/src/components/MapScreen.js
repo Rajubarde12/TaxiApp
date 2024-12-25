@@ -14,10 +14,13 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import GooglePlacesInput from './GooglePlaceInput';
 import TouchableInput from './TouchableCompoent';
 import {useNavigation} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+import {setuserAddress} from '../redux/commonSlice';
 
-export default ({children, isEnalble, onRegoin}) => {
+export default ({children, isEnalble, onRegoin, notSHow, isIcon}) => {
   const navigation = useNavigation();
   const [region, setRegion] = useState(null);
+  const dispatch = useDispatch();
 
   const requestLocationPermission = async () => {
     if (Platform.OS === 'android') {
@@ -36,7 +39,7 @@ export default ({children, isEnalble, onRegoin}) => {
     }
     return true;
   };
-  const [userAddress, setUserAddress] = useState();
+  const [userAddress, setUserAddress1] = useState();
   const handlePlaceSelect = (data, details) => {
     const {lat, lng} = details.geometry.location;
 
@@ -46,6 +49,14 @@ export default ({children, isEnalble, onRegoin}) => {
       latitudeDelta: 0.01, // Adjust zoom level as needed
       longitudeDelta: 0.01,
     });
+    dispatch(
+      setUserCurrentRegoin({
+        latitude: lat,
+        longitude: lng,
+        latitudeDelta: 0.01, // Adjust zoom level as needed
+        longitudeDelta: 0.01,
+      }),
+    );
     if (onRegoin) {
       onRegoin({
         latitude: lat,
@@ -53,6 +64,7 @@ export default ({children, isEnalble, onRegoin}) => {
         latitudeDelta: 0.01, // Adjust zoom level as needed
         longitudeDelta: 0.01,
       });
+      set;
     }
   };
   const getGeo = () => {
@@ -60,8 +72,6 @@ export default ({children, isEnalble, onRegoin}) => {
       re => {
         const {latitude, longitude} = re?.coords;
         getCoordsFromAddressName(latitude, longitude);
-        console.log('called');
-
         setRegion({
           latitude,
           longitude,
@@ -75,6 +85,14 @@ export default ({children, isEnalble, onRegoin}) => {
             latitudeDelta: 0.01, // Adjust zoom level as needed
             longitudeDelta: 0.01,
           });
+          dispatch(
+            setUserCurrentRegoin({
+              latitude: latitude,
+              longitude: longitude,
+              latitudeDelta: 0.01, // Adjust zoom level as needed
+              longitudeDelta: 0.01,
+            }),
+          );
         }
       },
       err => {
@@ -124,21 +142,24 @@ export default ({children, isEnalble, onRegoin}) => {
     )
       .then(response => response.json())
       .then(responseJson => {
-        setUserAddress(responseJson.results[0].formatted_address);
+        setUserAddress1(responseJson.results[0].formatted_address);
+        dispatch(setuserAddress(responseJson.results[0].formatted_address));
       });
   };
   console.log(userAddress);
 
   return (
     <View style={styles.container}>
-      <Pressable
-        onPress={() => {
-          getGeo();
-        }}
-        style={{zIndex: 5, position: 'absolute', bottom: '13%', right: 0}}>
-        <LiveLocation />
-      </Pressable>
-      {!isEnalble ? (
+      {isIcon && (
+        <Pressable
+          onPress={() => {
+            getGeo();
+          }}
+          style={{zIndex: 5, position: 'absolute', bottom: '13%', right: 0}}>
+          <LiveLocation />
+        </Pressable>
+      )}
+      {notSHow ? null : !isEnalble ? (
         <TouchableInput
           onPress={() => {
             navigation.navigate('PickupScreen');

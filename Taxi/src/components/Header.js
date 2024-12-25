@@ -18,25 +18,28 @@ const Header = ({onPress, title}) => {
         alignItems: 'center',
         zIndex: 5,
         marginTop: StatusBar.currentHeight,
+        justifyContent: 'space-between',
       }}>
-      <Pressable
-        onPress={() => navigation.goBack()}
-        style={{
-          height: 40,
-          width: 40,
-          borderRadius: 30,
-          backgroundColor: colors.white,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <ArrowBack1 height={25} width={25} />
-      </Pressable>
-      <CustomText
-        fontFamily={fonts.bold}
-        size={fontSize.Eighteen}
-        style={{marginLeft: '30%'}}>
-        {title}
-      </CustomText>
+      <View style={{width: '30%'}}>
+        <Pressable
+          onPress={() => navigation.goBack()}
+          style={{
+            height: 40,
+            width: 40,
+            borderRadius: 30,
+            backgroundColor: colors.white,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <ArrowBack1 height={25} width={25} />
+        </Pressable>
+      </View>
+      <View style={{width: '30%'}}>
+        <CustomText fontFamily={fonts.bold} size={fontSize.Eighteen}>
+          {title}
+        </CustomText>
+      </View>
+      <View style={{width: '25%'}}></View>
     </View>
   );
 };

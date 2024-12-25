@@ -1,6 +1,8 @@
 import {NavigationContainer} from '@react-navigation/native';
 import MyStack from './src/navigation';
 import {StatusBar} from 'react-native';
+import {Provider} from 'react-redux';
+import store from './src/redux';
 
 const App = () => {
   return (
@@ -10,9 +12,11 @@ const App = () => {
         backgroundColor="transparent"
         barStyle="light-content"
       />
-      <NavigationContainer>
-        <MyStack />
-      </NavigationContainer>
+      <Provider store={store}>
+        <NavigationContainer>
+          <MyStack />
+        </NavigationContainer>
+      </Provider>
     </>
   );
 };

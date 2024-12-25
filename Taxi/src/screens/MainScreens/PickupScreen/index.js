@@ -10,7 +10,8 @@ import {LiveLocation, Location2, Office} from '../../../constants/svgIcons';
 import {width} from '../../../constants/Dimentions';
 import Header from '../../../components/Header';
 import Button from '../../../components/Button';
-const PickupScreen = ({route}) => {
+import {useState} from 'react';
+const PickupScreen = ({route, navigation}) => {
   const {region, address} = route?.params || {};
   return (
     <View
@@ -19,11 +20,12 @@ const PickupScreen = ({route}) => {
         backgroundColor: colors.white,
       }}>
       <MapScreen
+        isIcon
+        isEnalble={true}
         onRegoin={region => {
           console.log(region);
         }}
-        placeholder={address}
-        isEnalble>
+        placeholder={address}>
         <Header title={'Pick-Up'} />
 
         <View
@@ -47,7 +49,12 @@ const PickupScreen = ({route}) => {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <Button title={'Confirm Location'} />
+          <Button
+            onPress={() => {
+              navigation.navigate('DestinationScreen');
+            }}
+            title={'Confirm Location'}
+          />
         </View>
       </MapScreen>
     </View>

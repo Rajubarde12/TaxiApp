@@ -16,7 +16,7 @@ const HomeScreen = () => {
         backgroundColor: colors.white,
         paddingBottom: moderateScale(130),
       }}>
-      <MapScreen>
+      <MapScreen isEnalble={false}>
         <View style={{height: '70%'}} />
         <View
           style={{

@@ -4,6 +4,8 @@ import SplashScreen from '../screens/SplashScreen';
 import BottumTab from './BottumTab';
 import AuthStack from './AuthStack';
 import PickupScreen from '../screens/MainScreens/PickupScreen';
+import DestinationScreen from '../screens/MainScreens/DestinationScreen';
+import BookRideScreen from '../screens/MainScreens/BookRideScreen';
 const Stack = createStackNavigator();
 const MyStack = () => {
   const config = {
@@ -70,7 +72,7 @@ const MyStack = () => {
         //   };
         // },
       }}
-      initialRouteName="SplashScreen">
+      initialRouteName="BottumTab">
       <Stack.Screen
         name="SplashScreen"
         component={SplashScreen}
@@ -79,6 +81,8 @@ const MyStack = () => {
       <Stack.Screen name="AuthStack" component={AuthStack} />
       <Stack.Screen name="BottumTab" component={BottumTab} />
       <Stack.Screen name="PickupScreen" component={PickupScreen} />
+      <Stack.Screen name="DestinationScreen" component={DestinationScreen} />
+      <Stack.Screen name="BookRideScreen" component={BookRideScreen} />
     </Stack.Navigator>
   );
 };
