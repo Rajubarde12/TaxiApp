@@ -14,13 +14,24 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import GooglePlacesInput from './GooglePlaceInput';
 import TouchableInput from './TouchableCompoent';
 import {useNavigation} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
-import {setuserAddress} from '../redux/commonSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {setuserAddress, setUserCurrentRegoin} from '../redux/commonSlice';
+import MapViewDirections from 'react-native-maps-directions';
+import {GOOGLE_MAPS_APIKEY} from '../constants/ApiKeys';
 
-export default ({children, isEnalble, onRegoin, notSHow, isIcon}) => {
+export default ({
+  children,
+  isEnalble,
+  onRegoin,
+  notSHow,
+  isIcon,
+  directions,
+  iscall,
+}) => {
   const navigation = useNavigation();
   const [region, setRegion] = useState(null);
   const dispatch = useDispatch();
+  const {destinationRegoin, currentRegoin} = useSelector(state => state.common);
 
   const requestLocationPermission = async () => {
     if (Platform.OS === 'android') {
@@ -42,7 +53,7 @@ export default ({children, isEnalble, onRegoin, notSHow, isIcon}) => {
   const [userAddress, setUserAddress1] = useState();
   const handlePlaceSelect = (data, details) => {
     const {lat, lng} = details.geometry.location;
-
+    getCoordsFromAddressName(lat, lng);
     setRegion({
       latitude: lat,
       longitude: lng,
@@ -64,7 +75,6 @@ export default ({children, isEnalble, onRegoin, notSHow, isIcon}) => {
         latitudeDelta: 0.01, // Adjust zoom level as needed
         longitudeDelta: 0.01,
       });
-      set;
     }
   };
   const getGeo = () => {
@@ -103,30 +113,32 @@ export default ({children, isEnalble, onRegoin, notSHow, isIcon}) => {
   };
 
   useEffect(() => {
-    const whati = Geolocation.getCurrentPosition(
-      re => {
-        const {latitude, longitude} = re?.coords;
-        getCoordsFromAddressName(latitude, longitude);
-        setRegion({
-          latitude,
-          longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        });
-        if (onRegoin) {
-          onRegoin({
-            latitude: latitude,
-            longitude: longitude,
-            latitudeDelta: 0.01, // Adjust zoom level as needed
-            longitudeDelta: 0.01,
-          });
-        }
-      },
-      err => {
-        console.log(err);
-      },
-      {enableHighAccuracy: true, timeout: 500, interval: 500},
-    );
+    const whati = iscall
+      ? Geolocation.getCurrentPosition(
+          re => {
+            const {latitude, longitude} = re?.coords;
+            getCoordsFromAddressName(latitude, longitude);
+            setRegion({
+              latitude,
+              longitude,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            });
+            if (onRegoin) {
+              onRegoin({
+                latitude: latitude,
+                longitude: longitude,
+                latitudeDelta: 0.01, // Adjust zoom level as needed
+                longitudeDelta: 0.01,
+              });
+            }
+          },
+          err => {
+            console.log(err);
+          },
+          {enableHighAccuracy: true, timeout: 500, interval: 500},
+        )
+      : null;
     return () => {
       Geolocation.clearWatch(whati);
     };
@@ -146,7 +158,9 @@ export default ({children, isEnalble, onRegoin, notSHow, isIcon}) => {
         dispatch(setuserAddress(responseJson.results[0].formatted_address));
       });
   };
-  console.log(userAddress);
+  // console.log(currentRegoin);
+  const origin = {latitude: 37.3318456, longitude: -122.0296002};
+  const destination = {latitude: 37.771707, longitude: -122.4053769};
 
   return (
     <View style={styles.container}>
@@ -177,18 +191,39 @@ export default ({children, isEnalble, onRegoin, notSHow, isIcon}) => {
         />
       )}
       <MapView
-        region={region}
-        provider={PROVIDER_GOOGLE}
+        region={currentRegoin}
+        // provider={PROVIDER_GOOGLE}
         style={styles.map}
         showsUserLocation={false}>
         {region && (
           <Marker
-            coordinate={region}
+            coordinate={currentRegoin}
             title="Your Location"
             description="This is where you are currently located.">
             <LocationMap />
           </Marker>
         )}
+        {directions ? (
+          <MapViewDirections
+            origin={currentRegoin}
+            waypoints={[currentRegoin, destinationRegoin]}
+            destination={destinationRegoin}
+            apikey={GOOGLE_MAPS_APIKEY}
+            strokeWidth={3}
+            strokeColor="blue"
+            optimizeWaypoints={true}
+            onStart={params => {
+              console.log(
+                `Started routing between "${params.origin}" and "${params.destination}"`,
+              );
+            }}
+            onReady={result => {
+              console.log(`Distance: ${result.distance} km`);
+              console.log(`Duration: ${result.duration} min.`);
+            }}
+            onError={errorMessage => console.error('Error:', errorMessage)}
+          />
+        ) : null}
       </MapView>
 
       {children}

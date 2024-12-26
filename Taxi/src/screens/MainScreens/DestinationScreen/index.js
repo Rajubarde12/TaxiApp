@@ -6,6 +6,7 @@ import {
   View,
   FlatList,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {colors} from '../../../constants/colors';
 import Header from '../../../components/Header';
@@ -26,11 +27,11 @@ import fonts from '../../../constants/fonts';
 import Button from '../../../components/Button';
 import {width} from '../../../constants/Dimentions';
 import {setDestinationAdress} from '../../../redux/commonSlice';
+import Toast from 'react-native-simple-toast';
 
 const DestinationScreen = ({navigation}) => {
   const [query, setQuery] = useState('');
   const [places, setPlaces] = useState([]);
-  const [selectedPlace, setSelectedPlace] = useState(null);
   const [distainationlatlong, setDestinationLatelong] = useState({
     latitude: 0.0,
     longitude: 0.0,
@@ -71,6 +72,8 @@ const DestinationScreen = ({navigation}) => {
         setDestinationLatelong({
           latitude,
           longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
         });
         dispatch(
           setDestinationAdress({
@@ -98,7 +101,7 @@ const DestinationScreen = ({navigation}) => {
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       <Header title={'Destination'} />
-      <View style={styles.container}>
+      <View style={[styles.container, {paddingVertical: 10}]}>
         <View style={styles.rowContainer}>
           <RadioBalck height={18} width={18} />
           <CustomText
@@ -201,7 +204,14 @@ const DestinationScreen = ({navigation}) => {
         }}>
         <Button
           onPress={() => {
-            navigation.navigate('BookRideScreen');
+            if (distainationlatlong?.latitude == 0.0) {
+              Toast.show('Please Select Destination');
+              return;
+            }
+
+            if (distainationlatlong?.latitude != 0.0) {
+              navigation.navigate('BookRideScreen');
+            }
           }}
           title={'Confirm Location'}
         />

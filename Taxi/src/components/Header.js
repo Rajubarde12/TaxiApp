@@ -30,6 +30,9 @@ const Header = ({onPress, title}) => {
             backgroundColor: colors.white,
             alignItems: 'center',
             justifyContent: 'center',
+            borderWidth: 1,
+            borderColor: colors.inputBorder,
+            elevation: 1,
           }}>
           <ArrowBack1 height={25} width={25} />
         </Pressable>

@@ -1,4 +1,12 @@
-import {FlatList, Pressable, StyleSheet, TextInput, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import MapScreen from '../../../components/MapScreen';
 import {colors} from '../../../constants/colors';
 import {BottomSheetWrapperComponent} from '../../../components/BottumSheet';
@@ -7,20 +15,36 @@ import CustomText from '../../../components/CustomText';
 import fonts from '../../../constants/fonts';
 import {fontSize} from '../../../constants/fontSize';
 import {
+  ArrowLeft,
+  ArrowRight,
+  Bus,
+  Car,
+  Cash,
+  Checkmark,
   LiveLocation,
   Location2,
   LocationInput,
   Office,
   Plush,
+  Promo,
   RadioBalck,
+  Save,
   Saved1,
+  UserBook,
+  Watch,
 } from '../../../constants/svgIcons';
 import {width} from '../../../constants/Dimentions';
 import Header from '../../../components/Header';
 import Button from '../../../components/Button';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
+import {useSelector} from 'react-redux';
 const BookRideScreen = ({route, navigation}) => {
   const {region, address} = route?.params || {};
+  const {userAddress, destinationAddress} = useSelector(state => state.common);
+  const [selected, setSelected] = useState({});
+  useEffect(() => {
+    setSelected(data[0]);
+  }, []);
   return (
     <View
       style={{
@@ -54,19 +78,28 @@ const BookRideScreen = ({route, navigation}) => {
                 size={fontSize.Sixteen}
                 style={{marginLeft: 10}}
                 lines={1}>
-                {'userAddress'}
+                {userAddress}
               </CustomText>
             </View>
             <View style={styles.separator} />
-            <View style={styles.autoPlaceContainer}>
+            <Pressable
+              onPress={() => navigation.goBack()}
+              style={styles.autoPlaceContainer}>
               <LocationInput height={20} width={20} />
-              <TextInput
+
+              <CustomText
+                lines={1}
+                style={{width: '76%', marginLeft: '2%', marginRight: '0%'}}>
+                {destinationAddress}
+              </CustomText>
+
+              {/* <TextInput
                 value={''}
                 editable={false}
-                placeholder="Enter Destination"
+                placeholder={destinationAddress.substring(0, 30)}
                 placeholderTextColor="#888"
                 style={styles.input}
-              />
+              /> */}
               <Saved1 />
               <View style={{paddingHorizontal: 5}}>
                 <CustomText
@@ -77,16 +110,184 @@ const BookRideScreen = ({route, navigation}) => {
                 </CustomText>
               </View>
               <Plush />
+            </Pressable>
+          </View>
+          <View
+            style={[
+              styles.container,
+              {
+                marginTop: 20,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingTop: moderateScale(18),
+                paddingHorizontal: moderateScale(18),
+                paddingVertical: moderateScale(15),
+              },
+            ]}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Watch />
+              <CustomText style={{marginLeft: 10}}>Now</CustomText>
             </View>
+            <ArrowLeft height={14} width={14} />
+          </View>
+          <View
+            style={{
+              width: '100%',
+              paddingVertical: 10,
+              marginLeft: moderateScale(25),
+            }}>
+            <FlatList
+              data={data}
+              horizontal
+              contentContainerStyle={{paddingVertical: 10}}
+              renderItem={({item, index}) => {
+                let Icon = item.icon;
+                const isSelected = selected?.name == item?.name;
+                return (
+                  <Pressable
+                    onPress={() => {
+                      setSelected(item);
+                    }}
+                    style={{
+                      width: width * 0.45,
+                      borderWidth: 1.5,
+                      marginLeft: index == 0 ? 0 : moderateScale(25),
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      paddingVertical: 20,
+                      paddingBottom: 10,
+                      borderColor: isSelected
+                        ? colors.yellow
+                        : colors.inputBorder,
+                      borderRadius: moderateScale(15),
+                    }}>
+                    <Icon />
+                    {isSelected ? (
+                      <View
+                        style={{
+                          backgroundColor: colors.yellow,
+                          position: 'absolute',
+                          right: '-5%',
+                          top: '-5%',
+                          zIndex: 5,
+                          height: moderateScale(30),
+                          width: moderateScale(30),
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: 20,
+                          elevation: 5,
+                        }}>
+                        <Checkmark
+                          style={{tintColor: 'red'}}
+                          height={14}
+                          width={14}
+                          // tintColor={'red'}
+                        />
+                      </View>
+                    ) : null}
+                    <CustomText color={colors.grey} size={fontSize.Thirteen}>
+                      {item?.time}
+                    </CustomText>
+
+                    <View style={[styles.separator, {width: '90%'}]} />
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        paddingHorizontal: '5%',
+                        width: '100%',
+                      }}>
+                      <CustomText fontFamily={fonts.semi_bold}>
+                        {item?.name}
+                      </CustomText>
+                      <CustomText fontFamily={fonts.semi_bold}>
+                        {item?.price}
+                        <Text
+                          style={{
+                            color: colors.grey,
+                            fontFamily: fonts.medium,
+                          }}>
+                          {' /mile'}
+                        </Text>
+                      </CustomText>
+                    </View>
+                    <View style={{alignSelf: 'flex-start', marginLeft: '5%'}}>
+                      <CustomText style={{alignSelf: 'left'}}>
+                        {item?.capacity}
+                      </CustomText>
+                    </View>
+                  </Pressable>
+                );
+              }}
+            />
+          </View>
+          <View
+            style={[
+              styles.container,
+              {
+                marginTop: 20,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingTop: moderateScale(18),
+                paddaingHorizontal: moderateScale(18),
+                paddingVertical: moderateScale(15),
+              },
+            ]}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Cash />
+              <CustomText style={{marginLeft: 10}}>Cash</CustomText>
+            </View>
+            <ArrowLeft height={14} width={14} />
+          </View>
+          <View
+            style={[
+              styles.container,
+              {
+                marginTop: 20,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingTop: moderateScale(18),
+                paddingHorizontal: moderateScale(18),
+                paddingVertical: moderateScale(15),
+              },
+            ]}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <UserBook />
+              <CustomText style={{marginLeft: 10}}>Book For Self</CustomText>
+            </View>
+            <ArrowLeft height={14} width={14} />
+          </View>
+          <View
+            style={[
+              styles.container,
+              {
+                marginTop: 20,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingTop: moderateScale(18),
+                paddingHorizontal: moderateScale(18),
+                paddingVertical: moderateScale(15),
+              },
+            ]}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Promo />
+              <CustomText style={{marginLeft: 10}}>Appy Promo</CustomText>
+            </View>
+            <ArrowLeft height={14} width={14} />
           </View>
         </View>
 
         <View style={styles.modalContainer}>
           <Button
             onPress={() => {
-              navigation.navigate('DestinationScreen');
+              navigation.navigate('Example');
             }}
-            title={'Book Mini'}
+            title={`Book ${selected?.name}`}
           />
         </View>
       </MapScreen>
@@ -94,13 +295,27 @@ const BookRideScreen = ({route, navigation}) => {
   );
 };
 export default BookRideScreen;
+const data = [
+  {
+    icon: Car,
+    time: '5 Min ',
+    name: 'Mini',
+    price: '$1.0',
+    capacity: '3 Seats Capacity',
+  },
+  {
+    icon: Bus,
+    time: '9 Min ',
+    name: 'Bus',
+    price: '$5.0',
+    capacity: '21 Seats Capacity',
+  },
+];
 const styles = StyleSheet.create({
   modalContainer: {
     height: moderateScale(150),
     bottom: 0,
     backgroundColor: colors.white,
-    // position: 'absolute',
-    paddingHorizontal: moderateScale(25),
     backgroundColor: 'white',
     shadowColor: '#000',
     shadowOffset: {width: 0, height: -2},
@@ -117,12 +332,13 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: colors.white,
-    // marginHorizontal: moderateScale(25),
-    elevation: 3,
+    marginTop: '8%',
+    // borderWidth: 1,
+    paddingHorizontal: '5%',
+    width: '95%',
+    elevation: 5,
+    paddingVertical: 20,
     borderRadius: moderateScale(10),
-    // marginTop: '10%',
-    overflow: 'hidden',
-    paddingTop: 10,
   },
   rowContainer: {
     flexDirection: 'row',
@@ -135,26 +351,27 @@ const styles = StyleSheet.create({
     height: 1.5,
     backgroundColor: colors.inputBorder,
     marginBottom: 10,
-    width: '76%',
-    marginLeft: '14%',
+    width: '100%',
+    // marginLeft: '14%',
     marginTop: 10,
   },
   autoPlaceContainer: {
     height: moderateScale(70),
-    width: '94%',
+    width: '100%',
     alignSelf: 'center',
     marginTop: -10,
     backgroundColor: 'white',
     borderRadius: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     // borderWidth: 2,
     borderColor: colors.inputBorder,
   },
   input: {
     height: 50,
     borderColor: '#ddd',
+    width: '100%',
     // borderWidth: 1,
     paddingLeft: 10,
     paddingRight: 10,

@@ -25,12 +25,29 @@ import Location2 from '../assets/svg/Location2.svg';
 import Office from '../assets/svg/Office.svg';
 import LiveLocation from '../assets/svg/LiveLocation.svg';
 import RadioBalck from '../assets/svg/RadioBalck.svg';
+import RadioYellow from '../assets/svg/RadioYellow.svg';
 import LocationInput from '../assets/svg/LocationInput.svg';
 import Saved1 from '../assets/svg/Saved1.svg';
 import Plush from '../assets/svg/Plush.svg';
 import ArrowLeft from '../assets/svg/ArrowLeft.svg';
 import Restart from '../assets/svg/Restart.svg';
+import Watch from '../assets/svg/Watch.svg';
+import Car from '../assets/svg/Car.svg';
+import Bus from '../assets/svg/Bus.svg';
+import Cash from '../assets/svg/Cash.svg';
+import UserBook from '../assets/svg/UserBook.svg';
+import Promo from '../assets/svg/Promo.svg';
+import RadioUnifll from '../assets/svg/RadioUnifll.svg';
+import SearchingRideIcon from '../assets/svg/SearchingRideIcon.svg';
+import Points from '../assets/svg/Points.svg';
+import Cart from '../assets/svg/Cart.svg';
+import Wallet from '../assets/svg/Wallet.svg';
 export {
+  Wallet,
+  Cart,
+  RadioYellow,
+  Points,
+  RadioUnifll,
   Splash,
   Splash1,
   Intro2,
@@ -63,4 +80,11 @@ export {
   Plush,
   ArrowLeft,
   Restart,
+  Watch,
+  Car,
+  Bus,
+  Cash,
+  UserBook,
+  Promo,
+  SearchingRideIcon,
 };

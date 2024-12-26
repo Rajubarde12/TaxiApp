@@ -6,6 +6,9 @@ import AuthStack from './AuthStack';
 import PickupScreen from '../screens/MainScreens/PickupScreen';
 import DestinationScreen from '../screens/MainScreens/DestinationScreen';
 import BookRideScreen from '../screens/MainScreens/BookRideScreen';
+import SearchingRide from '../screens/MainScreens/SearchingRideScreen';
+import PaymentMethod from '../screens/MainScreens/PaymentMethods';
+import Example from '../screens/MainScreens/Exampple';
 const Stack = createStackNavigator();
 const MyStack = () => {
   const config = {
@@ -73,16 +76,15 @@ const MyStack = () => {
         // },
       }}
       initialRouteName="BottumTab">
-      <Stack.Screen
-        name="SplashScreen"
-        component={SplashScreen}
-        options={{headerShown: false}}
-      />
+      <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="AuthStack" component={AuthStack} />
       <Stack.Screen name="BottumTab" component={BottumTab} />
       <Stack.Screen name="PickupScreen" component={PickupScreen} />
       <Stack.Screen name="DestinationScreen" component={DestinationScreen} />
       <Stack.Screen name="BookRideScreen" component={BookRideScreen} />
+      <Stack.Screen name="SearchingRide" component={SearchingRide} />
+      <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
+      <Stack.Screen name="Example" component={Example} />
     </Stack.Navigator>
   );
 };
