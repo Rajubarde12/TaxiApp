@@ -5,4 +5,5 @@ export const colors = {
   yellow: '#FECB00',
   grey: '#686868',
   inputBorder: '#E9E9EA',
+  error: 'red',
 };

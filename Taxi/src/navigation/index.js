@@ -75,7 +75,7 @@ const MyStack = () => {
         //   };
         // },
       }}
-      initialRouteName="BottumTab">
+      initialRouteName="SplashScreen">
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="AuthStack" component={AuthStack} />
       <Stack.Screen name="BottumTab" component={BottumTab} />

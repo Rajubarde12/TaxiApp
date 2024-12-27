@@ -1,4 +1,4 @@
-import {Pressable, TextInput, TouchableOpacity, View} from 'react-native';
+import {Pressable, TextInput, View} from 'react-native';
 import {moderateScale} from '../utils/Scalling';
 import {colors} from '../constants/colors';
 import fonts from '../constants/fonts';
@@ -14,6 +14,9 @@ const Input = ({
   eye,
   isMobile,
   isDropDown,
+  error,
+  onFocus,
+  keyboardType,
   ...props
 }) => {
   return (
@@ -25,15 +28,17 @@ const Input = ({
         {lable}
       </CustomText>
       <View
-        style={{
-          borderWidth: 1,
-          width: '100%',
-          borderColor: colors.inputBorder,
-          borderRadius: 5,
-          flexDirection: 'row',
-          alignItems: 'center',
-          height: moderateScale(67),
-        }}>
+        style={[
+          {
+            borderWidth: 1,
+            width: '100%',
+            borderColor: error ? colors.error : colors.inputBorder,
+            borderRadius: 5,
+            flexDirection: 'row',
+            alignItems: 'center',
+            height: moderateScale(67),
+          },
+        ]}>
         {isMobile ? (
           <View
             style={{
@@ -49,8 +54,11 @@ const Input = ({
         {isMobile ? <CustomText color={colors.grey}>|</CustomText> : null}
 
         <TextInput
+          secureTextEntry={eye}
           placeholder={placeholder}
           placeholderTextColor={colors.grey}
+          onChangeText={onChangeText}
+          onFocus={onFocus}
           style={{
             height: moderateScale(67),
             width: eye || isMobile || isDropDown ? '87%' : '100%',
@@ -58,9 +66,10 @@ const Input = ({
             paddingLeft: moderateScale(isMobile ? 5 : 20),
             fontFamily: fonts.medium,
             fontSize: fontSize.Fifteen,
-            // borderWidth: 1,
           }}
-          keyboardType=""
+          keyboardType={keyboardType}
+          value={value}
+          {...props}
         />
         {eye || isDropDown ? (
           <Pressable
@@ -74,6 +83,15 @@ const Input = ({
           </Pressable>
         ) : null}
       </View>
+      {error ? (
+        <CustomText
+          fontFamily={fonts.regular}
+          size={fontSize.Twelve}
+          color={colors.error}
+          style={{marginTop: 4, marginLeft: 4}}>
+          {error}
+        </CustomText>
+      ) : null}
     </>
   );
 };

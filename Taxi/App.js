@@ -3,8 +3,13 @@ import MyStack from './src/navigation';
 import {StatusBar} from 'react-native';
 import {Provider} from 'react-redux';
 import store from './src/redux';
+import {useEffect} from 'react';
+import {getUserFromLocal} from './src/redux/userSlice';
 
 const App = () => {
+  useEffect(() => {
+    store.dispatch(getUserFromLocal());
+  }, []);
   return (
     <>
       <StatusBar
