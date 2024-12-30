@@ -12,10 +12,54 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Button from '../../../components/Button';
 import AuthSocial from '../../../components/AuthSocial';
 import OTPInput from '../../../components/otpInputComponent';
+import {useSelector} from 'react-redux';
+import axios from 'axios';
+import Toast from 'react-native-simple-toast';
+import {useState} from 'react';
+import Loader from '../../../components/Loader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {DATABASE} from '../../../utils/DATABASE';
 
 const OtpScreen = ({navigation}) => {
+  const {otp, user} = useSelector(state => state.login);
+  const [loading, setLoading] = useState(false);
+
+  const verifyOtp = async otp => {
+    console.log(otp);
+
+    setLoading(true);
+    try {
+      const data = {
+        email: user?.email,
+        otp: otp,
+      };
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `http://taxi-4.onrender.com/api/app/auth//verify-otp`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: JSON.stringify(data),
+      };
+      const response = await axios.request(config);
+      if (response.data.status === 200) {
+        navigation.navigate('CompleteProfileScreen');
+        await AsyncStorage.setItem(DATABASE.user, JSON.stringify(user));
+        Toast.show('Verification Success');
+      }
+      setLoading(false);
+      Toast.show(response.data.message);
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+      Toast.show('Something went wrong');
+    }
+  };
+  const [opt, setOtp] = useState('');
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
+      <Loader loading={loading} />
       <StatusBar
         translucent
         backgroundColor="transparent"
@@ -59,7 +103,10 @@ const OtpScreen = ({navigation}) => {
           </View>
           <OTPInput
             onOtpComplete={otp => {
-              console.log(otp);
+              if (otp.length == 4) {
+                verifyOtp(otp);
+              }
+              setOtp(otp);
             }}
           />
           <View
@@ -82,7 +129,8 @@ const OtpScreen = ({navigation}) => {
           <View style={{marginTop: moderateScale(30), width: '100%'}}>
             <Button
               onPress={() => {
-                navigation.navigate('CompleteProfileScreen');
+                verifyOtp(opt);
+                // navigation.navigate('CompleteProfileScreen');
               }}
               title={'Verify'}
               width1={'100%'}

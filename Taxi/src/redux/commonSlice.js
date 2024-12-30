@@ -26,11 +26,17 @@ const common = createSlice({
       state.currentRegoin = action.payload;
     },
     setDestinationAdress(state, action) {
-      state.currentRegoin = action.payload?.regoin;
       state.destinationAddress = action.payload?.dest;
+    },
+    setDsetinationUserRegion(state, action) {
+      state.destinationRegoin = action.payload;
     },
   },
 });
-export const {setuserAddress, setUserCurrentRegoin, setDestinationAdress} =
-  common.actions;
+export const {
+  setuserAddress,
+  setUserCurrentRegoin,
+  setDestinationAdress,
+  setDsetinationUserRegion,
+} = common.actions;
 export default common.reducer;

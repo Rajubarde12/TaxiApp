@@ -32,7 +32,7 @@ const Input = ({
           {
             borderWidth: 1,
             width: '100%',
-            borderColor: error ? colors.error : colors.inputBorder,
+            borderColor: error && false ? colors.error : colors.inputBorder,
             borderRadius: 5,
             flexDirection: 'row',
             alignItems: 'center',

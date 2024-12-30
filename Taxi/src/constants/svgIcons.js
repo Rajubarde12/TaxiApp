@@ -42,8 +42,10 @@ import SearchingRideIcon from '../assets/svg/SearchingRideIcon.svg';
 import Points from '../assets/svg/Points.svg';
 import Cart from '../assets/svg/Cart.svg';
 import Wallet from '../assets/svg/Wallet.svg';
+import DestinationIcon from '../assets/svg/DestinationIcon.svg';
 export {
   Wallet,
+  DestinationIcon,
   Cart,
   RadioYellow,
   Points,

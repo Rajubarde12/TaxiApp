@@ -11,8 +11,47 @@ import {width} from '../../../constants/Dimentions';
 import Header from '../../../components/Header';
 import Button from '../../../components/Button';
 import {useState} from 'react';
+import {setuserAddress, setUserCurrentRegoin} from '../../../redux/commonSlice';
+import {
+  getCoordsFromAddressName,
+  getGeo,
+} from '../../../utils/modals/getUserLocation';
+import {useDispatch, useSelector} from 'react-redux';
 const PickupScreen = ({route, navigation}) => {
-  const {region, address} = route?.params || {};
+  const {currentRegoin} = useSelector(state => state.common);
+  const dispatch = useDispatch();
+  const handlePlaceSelect = async (data, details) => {
+    const {lat, lng} = details.geometry.location;
+
+    const address = await getCoordsFromAddressName(lat, lng);
+
+    dispatch(
+      setUserCurrentRegoin({
+        latitude: lat,
+        longitude: lng,
+        latitudeDelta: 0.01, // Adjust zoom level as needed
+        longitudeDelta: 0.01,
+      }),
+    );
+    dispatch(setuserAddress(address));
+  };
+  const {region: regoiParams, address} = route?.params || {};
+
+  const getUserLocation = async () => {
+    const {latitude, longitude} = await getGeo();
+
+    dispatch(
+      setUserCurrentRegoin({
+        latitude,
+        longitude,
+        longitudeDelta: 0.1,
+        latitudeDelta: 0.1,
+      }),
+    );
+    const address = await getCoordsFromAddressName(latitude, longitude);
+    dispatch(setuserAddress(address));
+  };
+
   return (
     <View
       style={{
@@ -20,6 +59,10 @@ const PickupScreen = ({route, navigation}) => {
         backgroundColor: colors.white,
       }}>
       <MapScreen
+        getGeo={getUserLocation}
+        region={currentRegoin}
+        handlePlaceSelect={handlePlaceSelect}
+        regionz
         isIcon
         isEnalble={true}
         onRegoin={region => {

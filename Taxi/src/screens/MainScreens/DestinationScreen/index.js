@@ -26,12 +26,16 @@ import {fontSize} from '../../../constants/fontSize';
 import fonts from '../../../constants/fonts';
 import Button from '../../../components/Button';
 import {width} from '../../../constants/Dimentions';
-import {setDestinationAdress} from '../../../redux/commonSlice';
+import {
+  setDestinationAdress,
+  setDsetinationUserRegion,
+} from '../../../redux/commonSlice';
 import Toast from 'react-native-simple-toast';
 
 const DestinationScreen = ({navigation}) => {
   const [query, setQuery] = useState('');
   const [places, setPlaces] = useState([]);
+
   const [distainationlatlong, setDestinationLatelong] = useState({
     latitude: 0.0,
     longitude: 0.0,
@@ -69,6 +73,8 @@ const DestinationScreen = ({navigation}) => {
         const {formatted_address, geometry} = json.result;
         const {location} = geometry;
         const {lat: latitude, lng: longitude} = location;
+        console.log(latitude, latitude);
+
         setDestinationLatelong({
           latitude,
           longitude,
@@ -77,18 +83,19 @@ const DestinationScreen = ({navigation}) => {
         });
         dispatch(
           setDestinationAdress({
-            regoin: {
-              latitude,
-              longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            },
             dest: formatted_address,
           }),
         );
+        dispatch(
+          setDsetinationUserRegion({
+            latitude,
+            longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          }),
+        ),
+          setQuery(formatted_address);
 
-        setQuery(formatted_address);
-        // setSelectedPlace(formatted_address);
         setPlaces([]); // Hide list after selection
       }
     } catch (error) {

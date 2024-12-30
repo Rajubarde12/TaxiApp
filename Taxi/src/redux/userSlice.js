@@ -18,7 +18,6 @@ export default userSlice.reducer;
 export const getUserFromLocal = (user = null, token = null) => {
   return async dispatch => {
     try {
-      // Retrieve from AsyncStorage only if user/token aren't provided
       const [storedUser, storedToken] = await Promise.all([
         AsyncStorage.getItem(DATABASE.user),
         AsyncStorage.getItem(DATABASE.token),
@@ -28,7 +27,7 @@ export const getUserFromLocal = (user = null, token = null) => {
       const finalToken = token ?? storedToken ?? null;
 
       dispatch({
-        type: 'SET_USER',
+        type: 'user/SET_USER',
         payload: {
           user: finalUser,
           token: finalToken,

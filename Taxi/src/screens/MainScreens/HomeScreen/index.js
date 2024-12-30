@@ -8,7 +8,39 @@ import fonts from '../../../constants/fonts';
 import {fontSize} from '../../../constants/fontSize';
 import {Location2, Office} from '../../../constants/svgIcons';
 import {width} from '../../../constants/Dimentions';
-const HomeScreen = () => {
+import {useEffect, useState} from 'react';
+import {
+  getCoordsFromAddressName,
+  getGeo,
+} from '../../../utils/modals/getUserLocation';
+import {useDispatch, useSelector} from 'react-redux';
+import {setuserAddress, setUserCurrentRegoin} from '../../../redux/commonSlice';
+const HomeScreen = ({navigation}) => {
+  const dispatch = useDispatch();
+  const [region, setRegion] = useState({
+    latitude: 0.0,
+    longitude: 0.0,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  });
+  useEffect(() => {
+    getUserLocation();
+  }, []);
+  const getUserLocation = async () => {
+    const {latitude, longitude} = await getGeo();
+    setRegion(prev => ({...prev, latitude, longitude}));
+    dispatch(
+      setUserCurrentRegoin({
+        latitude,
+        longitude,
+        longitudeDelta: 0.1,
+        latitudeDelta: 0.1,
+      }),
+    );
+    const address = await getCoordsFromAddressName(latitude, longitude);
+    dispatch(setuserAddress(address));
+  };
+
   return (
     <View
       style={{
@@ -16,7 +48,7 @@ const HomeScreen = () => {
         backgroundColor: colors.white,
         paddingBottom: moderateScale(130),
       }}>
-      <MapScreen iscall={true} isEnalble={false}>
+      <MapScreen region={region} iscall={true} isEnalble={false}>
         <View style={{height: '70%'}} />
         <View
           style={{
@@ -65,6 +97,11 @@ const HomeScreen = () => {
               let Icon = item?.icon;
               return (
                 <Pressable
+                  onPress={() => {
+                    if (index === 0) {
+                      navigation.navigate('DestinationScreen');
+                    }
+                  }}
                   style={{
                     height: '45%',
                     width: width / 2 - moderateScale(25) * 2,

@@ -27,140 +27,17 @@ export default ({
   isIcon,
   directions,
   iscall,
+  setRegion,
+  region,
+  handlePlaceSelect,
+  getGeo,
 }) => {
   const navigation = useNavigation();
-  const [region, setRegion] = useState(null);
+
   const dispatch = useDispatch();
-  const {destinationRegoin, currentRegoin} = useSelector(state => state.common);
-
-  const requestLocationPermission = async () => {
-    if (Platform.OS === 'android') {
-      const granted = await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-      ]);
-
-      // Check if both permissions are granted
-      return (
-        granted['android.permission.ACCESS_FINE_LOCATION'] ===
-          PermissionsAndroid.RESULTS.GRANTED &&
-        granted['android.permission.ACCESS_COARSE_LOCATION'] ===
-          PermissionsAndroid.RESULTS.GRANTED
-      );
-    }
-    return true;
-  };
-  const [userAddress, setUserAddress1] = useState();
-  const handlePlaceSelect = (data, details) => {
-    const {lat, lng} = details.geometry.location;
-    getCoordsFromAddressName(lat, lng);
-    setRegion({
-      latitude: lat,
-      longitude: lng,
-      latitudeDelta: 0.01, // Adjust zoom level as needed
-      longitudeDelta: 0.01,
-    });
-    dispatch(
-      setUserCurrentRegoin({
-        latitude: lat,
-        longitude: lng,
-        latitudeDelta: 0.01, // Adjust zoom level as needed
-        longitudeDelta: 0.01,
-      }),
-    );
-    if (onRegoin) {
-      onRegoin({
-        latitude: lat,
-        longitude: lng,
-        latitudeDelta: 0.01, // Adjust zoom level as needed
-        longitudeDelta: 0.01,
-      });
-    }
-  };
-  const getGeo = () => {
-    const whati = Geolocation.getCurrentPosition(
-      re => {
-        const {latitude, longitude} = re?.coords;
-        getCoordsFromAddressName(latitude, longitude);
-        setRegion({
-          latitude,
-          longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        });
-        if (onRegoin) {
-          onRegoin({
-            latitude: latitude,
-            longitude: longitude,
-            latitudeDelta: 0.01, // Adjust zoom level as needed
-            longitudeDelta: 0.01,
-          });
-          dispatch(
-            setUserCurrentRegoin({
-              latitude: latitude,
-              longitude: longitude,
-              latitudeDelta: 0.01, // Adjust zoom level as needed
-              longitudeDelta: 0.01,
-            }),
-          );
-        }
-      },
-      err => {
-        console.log(err);
-      },
-      {enableHighAccuracy: true, timeout: 500, interval: 500},
-    );
-  };
-
-  useEffect(() => {
-    const whati = iscall
-      ? Geolocation.getCurrentPosition(
-          re => {
-            const {latitude, longitude} = re?.coords;
-            getCoordsFromAddressName(latitude, longitude);
-            setRegion({
-              latitude,
-              longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            });
-            if (onRegoin) {
-              onRegoin({
-                latitude: latitude,
-                longitude: longitude,
-                latitudeDelta: 0.01, // Adjust zoom level as needed
-                longitudeDelta: 0.01,
-              });
-            }
-          },
-          err => {
-            console.log(err);
-          },
-          {enableHighAccuracy: true, timeout: 500, interval: 500},
-        )
-      : null;
-    return () => {
-      Geolocation.clearWatch(whati);
-    };
-  }, []);
-  const getCoordsFromAddressName = (latitude, longitude) => {
-    fetch(
-      'https://maps.googleapis.com/maps/api/geocode/json?address=' +
-        latitude +
-        ',' +
-        longitude +
-        '&key=' +
-        'AIzaSyDbxbcNuOlVTolfigYexsDVfyHNrpeQ_eI',
-    )
-      .then(response => response.json())
-      .then(responseJson => {
-        setUserAddress1(responseJson.results[0].formatted_address);
-        dispatch(setuserAddress(responseJson.results[0].formatted_address));
-      });
-  };
-  // console.log(currentRegoin);
-  const origin = {latitude: 37.3318456, longitude: -122.0296002};
-  const destination = {latitude: 37.771707, longitude: -122.4053769};
+  const {destinationRegoin, userAddress, currentRegoin} = useSelector(
+    state => state.common,
+  );
 
   return (
     <View style={styles.container}>
@@ -203,7 +80,7 @@ export default ({
             <LocationMap />
           </Marker>
         )}
-        {directions ? (
+        {/* {directions ? (
           <MapViewDirections
             origin={currentRegoin}
             waypoints={[currentRegoin, destinationRegoin]}
@@ -223,7 +100,7 @@ export default ({
             }}
             onError={errorMessage => console.error('Error:', errorMessage)}
           />
-        ) : null}
+        ) : null} */}
       </MapView>
 
       {children}

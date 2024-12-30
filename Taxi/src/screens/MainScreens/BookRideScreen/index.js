@@ -1,4 +1,5 @@
 import {
+  Alert,
   FlatList,
   Image,
   Pressable,
@@ -37,11 +38,86 @@ import {width} from '../../../constants/Dimentions';
 import Header from '../../../components/Header';
 import Button from '../../../components/Button';
 import {useEffect, useState} from 'react';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {distance} from '../../../utils/modals/calculateFunction';
+import {startSearchRiding} from '../../../redux/riderSlice';
+import axios from 'axios';
 const BookRideScreen = ({route, navigation}) => {
   const {region, address} = route?.params || {};
-  const {userAddress, destinationAddress} = useSelector(state => state.common);
+
+  const {userAddress, destinationAddress, destinationRegoin, currentRegoin} =
+    useSelector(state => state.common);
+  const {user, token} = useSelector(state => state.user);
+
+  const dispatch = useDispatch();
   const [selected, setSelected] = useState({});
+  const searchRide = async () => {
+    try {
+      // Extract latitude and longitude from regions
+      const pickupLatitude = currentRegoin?.latitude;
+      const pickupLongitude = currentRegoin?.longitude;
+      const destinationLatitude = destinationRegoin?.latitude;
+      const destinationLongitude = destinationRegoin?.longitude;
+
+      if (
+        !pickupLatitude ||
+        !pickupLongitude ||
+        !destinationLatitude ||
+        !destinationLongitude
+      ) {
+        console.error(
+          'Missing location coordinates for pickup or destination.',
+        );
+        return;
+      }
+
+      // Calculate distance and total amount (if applicable)
+      const totalDistance = distance(
+        pickupLatitude,
+        pickupLongitude,
+        destinationLatitude,
+        destinationLongitude,
+        'K',
+      );
+      const totalAmount = totalDistance * 5; // Assuming 5 is the rate per kilometer
+
+      // Construct the payload for the API
+      const requestData = {
+        pickup_lat: pickupLatitude,
+        pickup_long: pickupLongitude,
+        destination_lat: destinationLatitude,
+        destination_long: destinationLongitude,
+      };
+
+      console.log('Request Payload:', requestData);
+
+      // Configure the Axios request
+      const config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'https://taxi-4.onrender.com/api/app/user/book-ride',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // Ensure the token is valid
+        },
+        data: JSON.stringify(requestData),
+      };
+
+      // Make the API request
+      const response = await axios.request(config);
+      console.log('API Response:', response.data);
+
+      // Optional: Dispatch an action if using Redux
+      // dispatch(startSearchRiding(requestData, token));
+    } catch (error) {
+      // Handle errors
+      console.error(
+        'Error during ride booking:',
+        error.response?.data || error.message,
+      );
+    }
+  };
+
   useEffect(() => {
     setSelected(data[0]);
   }, []);
@@ -276,7 +352,7 @@ const BookRideScreen = ({route, navigation}) => {
             ]}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Promo />
-              <CustomText style={{marginLeft: 10}}>Appy Promo</CustomText>
+              <CustomText style={{marginLeft: 10}}>Apply Promo</CustomText>
             </View>
             <ArrowLeft height={14} width={14} />
           </View>
@@ -285,7 +361,9 @@ const BookRideScreen = ({route, navigation}) => {
         <View style={styles.modalContainer}>
           <Button
             onPress={() => {
-              navigation.navigate('Example');
+              // navigation.navigate('SearchingRide');
+              // navigation.navigate('Example');
+              searchRide();
             }}
             title={`Book ${selected?.name}`}
           />

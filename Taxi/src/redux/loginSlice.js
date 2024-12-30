@@ -9,13 +9,15 @@ const initialState = {
   user: null,
   isLoading: false,
   token: '',
+  // registrationData: null,
+  otp: '',
 };
 
 const loginSlice = createSlice({
   initialState,
   name: 'Auth',
   reducers: {
-    USER_LOGIN_LOADING: (state, action) => {
+    USER_LOADING: (state, action) => {
       state.isLoading = true;
       state.user = null;
     },
@@ -28,14 +30,27 @@ const loginSlice = createSlice({
       state.isLoading = false;
       state.user = null;
     },
+    USER_REGISTER_SUCCESS: (state, action) => {
+      state.isLoading = false;
+      state.otp = action.payload.otp;
+      state.user = action.payload.user;
+    },
+    USER_REGISTER_ERROR: (state, action) => {
+      state.isLoading = false;
+    },
   },
 });
-export const {USER_LOGIN_LOADING, USER_LOGIN_SUCCESS, USER_LOGIN_ERROR} =
-  loginSlice.actions;
+export const {
+  USER_LOADING,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_ERROR,
+  USER_REGISTER_SUCCESS,
+  USER_REGISTER_ERROR,
+} = loginSlice.actions;
 export default loginSlice.reducer;
 export const userLogin = (data, navigation) => {
   return async dispatch => {
-    dispatch(USER_LOGIN_LOADING());
+    dispatch(USER_LOADING());
     try {
       let config = {
         method: 'post',
@@ -75,6 +90,47 @@ export const userLogin = (data, navigation) => {
       console.log(error);
       Toast.show('Something went wrong');
       dispatch(USER_LOGIN_ERROR());
+    }
+  };
+};
+export const userRegistation = (data, navigation) => {
+  return async dispatch => {
+    dispatch(USER_LOADING());
+    try {
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `http://taxi-4.onrender.com/api/app/auth/sign-up-new`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: JSON.stringify(data),
+      };
+      const response = await axios.request(config);
+      console.log(response.data);
+
+      if (response?.data?.status == 201) {
+        dispatch(
+          USER_REGISTER_SUCCESS({
+            user: response?.data?.data?.user,
+            // token: response?.data?.data?.token,
+          }),
+        );
+
+        dispatch(getUserFromLocal());
+        navigation.replace('OtpScreen');
+        Toast.show('Otp Sent');
+      } else {
+        Toast.show(response.message);
+        dispatch(USER_REGISTER_ERROR());
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.status.code == 409) {
+        Toast.show('User Alreday Exist');
+      }
+      Toast.show('Something went wrong');
+      dispatch(USER_REGISTER_ERROR());
     }
   };
 };
