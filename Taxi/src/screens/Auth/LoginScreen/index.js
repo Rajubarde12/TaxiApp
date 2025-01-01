@@ -148,6 +148,7 @@ const LoginScreen = ({navigation}) => {
           </CustomText>
           <View style={{marginTop: moderateScale(30), width: '100%'}}>
             <Input
+              isMobile={true}
               keyboardType={keyboartype.number_pad}
               onFocus={() => {
                 setError(prev => ({...prev, email: ''}));
@@ -157,7 +158,7 @@ const LoginScreen = ({navigation}) => {
                 setInputs(prev => ({...prev, email: input}));
               }}
               error={error.email}
-              placeholder="+91679666969"
+              placeholder="679666969"
               lable="Phone"
             />
           </View>

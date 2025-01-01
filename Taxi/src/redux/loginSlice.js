@@ -55,7 +55,7 @@ export const userLogin = (data, navigation) => {
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: `https://taxi-4.onrender.com/api/app/auth/login-new`,
+        url: `${MAIN_URL}/auth/login-new`,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -100,7 +100,7 @@ export const userRegistation = (data, navigation) => {
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: `http://taxi-4.onrender.com/api/app/auth/sign-up-new`,
+        url: `${MAIN_URL}/auth/sign-up-new`,
         headers: {
           'Content-Type': 'application/json',
         },

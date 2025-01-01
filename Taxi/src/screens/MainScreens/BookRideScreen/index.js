@@ -95,7 +95,7 @@ const BookRideScreen = ({route, navigation}) => {
       const config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: 'https://taxi-4.onrender.com/api/app/user/book-ride',
+        url: 'https://taxi-5.onrender.com/api/app/user/book-ride',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`, // Ensure the token is valid

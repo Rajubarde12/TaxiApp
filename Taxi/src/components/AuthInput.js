@@ -54,6 +54,7 @@ const Input = ({
         {isMobile ? <CustomText color={colors.grey}>|</CustomText> : null}
 
         <TextInput
+          maxLength={isMobile ? 10 : undefined}
           secureTextEntry={eye}
           placeholder={placeholder}
           placeholderTextColor={colors.grey}

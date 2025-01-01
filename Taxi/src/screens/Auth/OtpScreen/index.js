@@ -19,6 +19,7 @@ import {useState} from 'react';
 import Loader from '../../../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {DATABASE} from '../../../utils/DATABASE';
+import {MAIN_URL} from '../../../constants';
 
 const OtpScreen = ({navigation}) => {
   const {otp, user} = useSelector(state => state.login);
@@ -36,7 +37,7 @@ const OtpScreen = ({navigation}) => {
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: `http://taxi-4.onrender.com/api/app/auth//verify-otp`,
+        url: `${MAIN_URL}/auth//verify-otp`,
         headers: {
           'Content-Type': 'application/json',
         },
