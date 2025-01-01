@@ -31,7 +31,7 @@ const {
   INIT_SEARCHRIDER,
 } = riderSlice.actions;
 export default riderSlice.reducer;
-export const startSearchRiding = (data, token) => {
+export const startSearchRiding = (data, token, navigation) => {
   return async dispatch => {
     dispatch(SEARCH_RIDE_LOADING());
     try {
@@ -50,6 +50,7 @@ export const startSearchRiding = (data, token) => {
 
       if (response.data.status == 200) {
         dispatch(SEARCH_RIDE_SUCCESS(response.data.data));
+        navigation.navigate('SearchingRide');
       } else {
         dispatch(SEARCH_RIDE_ERROR());
         Toast.show('Something went wrong');

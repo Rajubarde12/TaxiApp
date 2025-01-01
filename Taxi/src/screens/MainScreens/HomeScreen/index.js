@@ -17,6 +17,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setuserAddress, setUserCurrentRegoin} from '../../../redux/commonSlice';
 const HomeScreen = ({navigation}) => {
   const dispatch = useDispatch();
+  const {token} = useSelector(state => state.user);
+  console.log(token);
+
   const [region, setRegion] = useState({
     latitude: 0.0,
     longitude: 0.0,

@@ -5,6 +5,7 @@ import fonts from '../constants/fonts';
 import {fontSize} from '../constants/fontSize';
 import CustomText from './CustomText';
 import {ArrowDown, Eyeopen} from '../constants/svgIcons';
+import {useState} from 'react';
 
 const Input = ({
   placeholder,
@@ -19,6 +20,7 @@ const Input = ({
   keyboardType,
   ...props
 }) => {
+  const [isSecured, setIsSecured] = useState(true);
   return (
     <>
       <CustomText
@@ -55,7 +57,7 @@ const Input = ({
 
         <TextInput
           maxLength={isMobile ? 10 : undefined}
-          secureTextEntry={eye}
+          secureTextEntry={eye ? isSecured : null}
           placeholder={placeholder}
           placeholderTextColor={colors.grey}
           onChangeText={onChangeText}
@@ -74,6 +76,11 @@ const Input = ({
         />
         {eye || isDropDown ? (
           <Pressable
+            onPress={() => {
+              if (eye) {
+                setIsSecured(prev => !prev);
+              }
+            }}
             style={{
               height: '100%',
               width: '13%',

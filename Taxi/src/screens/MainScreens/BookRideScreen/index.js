@@ -42,15 +42,19 @@ import {useDispatch, useSelector} from 'react-redux';
 import {distance} from '../../../utils/modals/calculateFunction';
 import {startSearchRiding} from '../../../redux/riderSlice';
 import axios from 'axios';
+import Loader from '../../../components/Loader';
 const BookRideScreen = ({route, navigation}) => {
   const {region, address} = route?.params || {};
 
   const {userAddress, destinationAddress, destinationRegoin, currentRegoin} =
     useSelector(state => state.common);
   const {user, token} = useSelector(state => state.user);
+  const {isLoading} = useSelector(state => state.rider);
 
   const dispatch = useDispatch();
   const [selected, setSelected] = useState({});
+  console.log('this is token', token);
+
   const searchRide = async () => {
     try {
       // Extract latitude and longitude from regions
@@ -87,28 +91,39 @@ const BookRideScreen = ({route, navigation}) => {
         pickup_long: pickupLongitude,
         destination_lat: destinationLatitude,
         destination_long: destinationLongitude,
+        // pickup_lat: 23.4567,
+        // pickup_long: 45.6789,
+        // destination_lat: 23.789,
+        // destination_long: 45.1234,
+        vehicle_type: 'Sedan',
+        driver_gender: 'Male',
+        total_amount: 100,
+        pickup_address: '123 Street Name',
+        destination_address: '456 Destination Street',
+        rideType: 'Now',
+        booking_date: '2024-12-27',
       };
 
-      console.log('Request Payload:', requestData);
+      // console.log('Request Payload:', requestData);
 
-      // Configure the Axios request
-      const config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: 'https://taxi-5.onrender.com/api/app/user/book-ride',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`, // Ensure the token is valid
-        },
-        data: JSON.stringify(requestData),
-      };
+      // // Configure the Axios request
+      // const config = {
+      //   method: 'post',
+      //   maxBodyLength: Infinity,
+      //   url: 'https://taxi-5.onrender.com/api/app/user/book-ride',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Authorization: `Bearer ${token}`, // Ensure the token is valid
+      //   },
+      //   data: JSON.stringify(requestData),
+      // };
 
-      // Make the API request
-      const response = await axios.request(config);
-      console.log('API Response:', response.data);
+      // // Make the API request
+      // const response = await axios.request(config);
+      // console.log('API Response:', response.data);
 
       // Optional: Dispatch an action if using Redux
-      // dispatch(startSearchRiding(requestData, token));
+      dispatch(startSearchRiding(requestData, token, navigation));
     } catch (error) {
       // Handle errors
       console.error(
@@ -127,6 +142,7 @@ const BookRideScreen = ({route, navigation}) => {
         flex: 1,
         backgroundColor: colors.white,
       }}>
+      <Loader loading={isLoading} />
       <MapScreen
         notSHow
         isEnalble={true}

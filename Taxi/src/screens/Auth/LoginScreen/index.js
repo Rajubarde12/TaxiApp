@@ -111,20 +111,20 @@ const LoginScreen = ({navigation}) => {
       >
         <ImageBackground
           source={LoginBg}
-          style={{height: height * 0.43, width: '100%'}}>
+          style={{height: moderateScale(400), width: '100%'}}>
           <View
             style={{
               position: 'absolute',
               bottom: 10,
               right: moderateScale(25),
             }}>
-            <LoginSvg />
+            <LoginSvg height={moderateScale(300)} />
           </View>
         </ImageBackground>
 
         <View
           style={{
-            height: height * 0.66,
+            height: moderateScale(790),
             marginTop: -20,
             backgroundColor: colors.white,
             borderTopRightRadius: 20,

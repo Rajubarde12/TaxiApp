@@ -24,6 +24,7 @@ import {MAIN_URL} from '../../../constants';
 const OtpScreen = ({navigation}) => {
   const {otp, user} = useSelector(state => state.login);
   const [loading, setLoading] = useState(false);
+  console.log('tjissii', user?.phone);
 
   const verifyOtp = async otp => {
     console.log(otp);
@@ -31,13 +32,16 @@ const OtpScreen = ({navigation}) => {
     setLoading(true);
     try {
       const data = {
-        email: user?.email,
+        // email: user?.email,
+        // otp: otp,
+        mobileNumber: user?.mobileNumber,
+        countryCode: '91',
         otp: otp,
       };
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: `${MAIN_URL}/auth//verify-otp`,
+        url: `${MAIN_URL}/auth/verify-otp-authenticate-new`,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -45,7 +49,7 @@ const OtpScreen = ({navigation}) => {
       };
       const response = await axios.request(config);
       if (response.data.status === 200) {
-        navigation.navigate('CompleteProfileScreen');
+        navigation.navigate('LocationEnableScreen');
         await AsyncStorage.setItem(DATABASE.user, JSON.stringify(user));
         Toast.show('Verification Success');
       }

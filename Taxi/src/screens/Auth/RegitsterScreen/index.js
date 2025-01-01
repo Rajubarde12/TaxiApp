@@ -123,28 +123,27 @@ const RegisterScreen = ({navigation}) => {
 
       dispatch(userRegistation(data, navigation));
     } else {
-      // Alert.alert(
-      //   'Validation Error',
-      //   'Please fix the errors before submitting.',
-      // );
     }
   };
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       <Loader loading={isLoading} />
+
       <StatusBar
         translucent
         backgroundColor="transparent"
         barStyle="light-content"
       />
-      <View style={{marginTop: StatusBar.currentHeight * 3}} />
+      <View style={{height: StatusBar.currentHeight * 1.5}} />
       <KeyboardAwareScrollView
-        contentContainerStyle={{flexGrow: 1}}
+        contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}
         enableOnAndroid={true}
         extraHeight={50} // Adjust height to lift the view
         extraScrollHeight={30} // Scroll a bit more
       >
+        <View style={{marginTop: StatusBar.currentHeight * 2}} />
+
         <View
           style={{
             paddingHorizontal: moderateScale(30),
@@ -212,6 +211,9 @@ const RegisterScreen = ({navigation}) => {
               placeholder="***********"
               lable="Password"
             />
+          </View>
+          <View style={{marginTop: moderateScale(30), width: '100%'}}>
+            <Input placeholder="Select" lable="Gender" isDropDown />
           </View>
           <View
             style={{

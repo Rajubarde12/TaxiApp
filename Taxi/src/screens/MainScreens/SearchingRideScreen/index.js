@@ -42,6 +42,9 @@ import {useSelector} from 'react-redux';
 const SearchingRide = ({route, navigation}) => {
   const {region, address} = route?.params || {};
   const {userAddress, destinationAddress} = useSelector(state => state.common);
+  const {searchInfo} = useSelector(state => state.rider);
+
+  console.log(searchInfo);
 
   return (
     <View

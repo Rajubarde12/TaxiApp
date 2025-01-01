@@ -126,10 +126,11 @@ export const userRegistation = (data, navigation) => {
       }
     } catch (error) {
       console.log(error);
-      if (error.status.code == 409) {
+      if (error.status == 409) {
         Toast.show('User Alreday Exist');
+      } else {
+        Toast.show('Something went wrong');
       }
-      Toast.show('Something went wrong');
       dispatch(USER_REGISTER_ERROR());
     }
   };
