@@ -5,17 +5,42 @@ import {DestinationIcon, LocationMap} from '../../constants/svgIcons';
 import MapViewDirections from 'react-native-maps-directions';
 import {GOOGLE_MAPS_APIKEY} from '../../constants/ApiKeys';
 import {useRef} from 'react';
+import {useAppContext} from '../../services/Provider';
+import {useEffect} from 'react';
+import socket from '../../services/Socket';
+import {useIsFocused} from '@react-navigation/native';
 
 const MapViewWithDirections = () => {
   const {userAddress, destinationAddress, currentRegoin, destinationRegoin} =
     useSelector(state => state.common);
+  const {user, token} = useSelector(state => state.user);
+  console.log(user);
+
   const _map = useRef(null);
+  const isFocused = useIsFocused();
+  const {socket_connect, socketRef} = useAppContext();
+  useEffect(() => {
+    socket_connect();
+  }, []);
+  useEffect(() => {
+    socketRef.current.on('receiveStatusUpdate', async data => {
+      console.log('acceptRide event received:', data);
+      try {
+      } catch (error) {
+        console.error('Error processing status update:', error);
+      }
+    });
+
+    return () => {
+      socketRef.current.off('receiveStatusUpdate');
+    };
+  }, [isFocused]);
+
   return (
     <View style={{flex: 1}}>
       <MapView
         ref={_map}
         apikey={GOOGLE_MAPS_APIKEY}
-        // showsUserLocation={true}
         style={{
           flex: 1,
           position: 'absolute',

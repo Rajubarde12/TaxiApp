@@ -24,6 +24,7 @@ import {
   LiveLocation,
   Location2,
   LocationInput,
+  LocationLogo,
   Office,
   Plush,
   Promo,
@@ -37,14 +38,13 @@ import {
 import {width} from '../../../constants/Dimentions';
 import Header from '../../../components/Header';
 import Button from '../../../components/Button';
-import {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
+import {Marker} from 'react-native-maps';
 const SearchingRide = ({route, navigation}) => {
   const {region, address} = route?.params || {};
   const {userAddress, destinationAddress} = useSelector(state => state.common);
   const {searchInfo} = useSelector(state => state.rider);
-
-  console.log(searchInfo);
+  console.log(JSON.stringify(searchInfo));
 
   return (
     <View
@@ -54,6 +54,7 @@ const SearchingRide = ({route, navigation}) => {
       }}>
       <MapScreen
         notSHow
+        isData={searchInfo?.data}
         directions={true}
         isEnalble={true}
         onRegoin={region => {
@@ -61,6 +62,7 @@ const SearchingRide = ({route, navigation}) => {
         }}
         placeholder={address}>
         <Header title={'Book Ride'} />
+
         <View
           style={{
             backgroundColor: 'rgba(255,255,255,0.8)',

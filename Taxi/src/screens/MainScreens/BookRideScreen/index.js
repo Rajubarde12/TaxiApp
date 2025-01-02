@@ -86,22 +86,23 @@ const BookRideScreen = ({route, navigation}) => {
       const totalAmount = totalDistance * 5; // Assuming 5 is the rate per kilometer
 
       // Construct the payload for the API
+      const now = new Date(Date.now());
+      const formattedDate = `${now.getFullYear()}-${(now.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
       const requestData = {
         pickup_lat: pickupLatitude,
         pickup_long: pickupLongitude,
         destination_lat: destinationLatitude,
         destination_long: destinationLongitude,
-        // pickup_lat: 23.4567,
-        // pickup_long: 45.6789,
-        // destination_lat: 23.789,
-        // destination_long: 45.1234,
+
         vehicle_type: 'Sedan',
         driver_gender: 'Male',
-        total_amount: 100,
-        pickup_address: '123 Street Name',
-        destination_address: '456 Destination Street',
+        total_amount: totalAmount,
+        pickup_address: userAddress,
+        destination_address: destinationAddress,
         rideType: 'Now',
-        booking_date: '2024-12-27',
+        booking_date: formattedDate,
       };
 
       // console.log('Request Payload:', requestData);
@@ -124,6 +125,7 @@ const BookRideScreen = ({route, navigation}) => {
 
       // Optional: Dispatch an action if using Redux
       dispatch(startSearchRiding(requestData, token, navigation));
+      navigation.navigate('SearchingRide');
     } catch (error) {
       // Handle errors
       console.error(

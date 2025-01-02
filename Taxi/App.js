@@ -6,6 +6,7 @@ import store from './src/redux';
 import {useEffect} from 'react';
 import {getUserFromLocal} from './src/redux/userSlice';
 import OutoffTexi from './OutofTexi';
+import AppContextProvider from './src/services/Provider';
 
 const App = () => {
   useEffect(() => {
@@ -13,18 +14,19 @@ const App = () => {
   }, []);
   // return <OutoffTexi />;
   return (
-    <>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle="light-content"
-      />
-      <Provider store={store}>
+    <Provider store={store}>
+      <AppContextProvider>
+        <StatusBar
+          translucent
+          backgroundColor="transparent"
+          barStyle="light-content"
+        />
+
         <NavigationContainer>
           <MyStack />
         </NavigationContainer>
-      </Provider>
-    </>
+      </AppContextProvider>
+    </Provider>
   );
 };
 export default App;

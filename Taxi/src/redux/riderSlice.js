@@ -50,7 +50,9 @@ export const startSearchRiding = (data, token, navigation) => {
 
       if (response.data.status == 200) {
         dispatch(SEARCH_RIDE_SUCCESS(response.data.data));
-        navigation.navigate('SearchingRide');
+        setTimeout(() => {
+          navigation.navigate('Example');
+        }, 5000);
       } else {
         dispatch(SEARCH_RIDE_ERROR());
         Toast.show('Something went wrong');
@@ -60,6 +62,7 @@ export const startSearchRiding = (data, token, navigation) => {
       console.log(err);
       Toast.show('Something went wrong');
       console.log(err);
+      dispatch(SEARCH_RIDE_ERROR());
     }
   };
 };
