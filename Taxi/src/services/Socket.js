@@ -19,8 +19,8 @@ const socket = (name, token) =>
       token: token,
     },
     query: {
-      username: name,
-      token: TOKEN,
+      // username: name,
+      token: token,
     },
   });
 console.log(socket(), '=---=-=societ');

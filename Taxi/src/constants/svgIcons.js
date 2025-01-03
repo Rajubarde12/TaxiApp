@@ -43,8 +43,14 @@ import Points from '../assets/svg/Points.svg';
 import Cart from '../assets/svg/Cart.svg';
 import Wallet from '../assets/svg/Wallet.svg';
 import DestinationIcon from '../assets/svg/DestinationIcon.svg';
+import Driversvg from '../assets/svg/Driversvg.svg';
+import ChatDriver from '../assets/svg/ChatDriver.svg';
+import PhoneDriver from '../assets/svg/phoneDriver.svg';
 export {
   Wallet,
+  Driversvg,
+  PhoneDriver,
+  ChatDriver,
   DestinationIcon,
   Cart,
   RadioYellow,

@@ -1,4 +1,5 @@
 import {
+  Alert,
   FlatList,
   Image,
   Pressable,
@@ -40,12 +41,59 @@ import Header from '../../../components/Header';
 import Button from '../../../components/Button';
 import {useSelector} from 'react-redux';
 import {Marker} from 'react-native-maps';
+import {useAppContext} from '../../../services/Provider';
+import {useIsFocused} from '@react-navigation/native';
+import {useEffect, useRef} from 'react';
+import {Animated, Easing} from 'react-native';
 const SearchingRide = ({route, navigation}) => {
   const {region, address} = route?.params || {};
+  useEffect(() => {
+    const pulse = Animated.loop(
+      Animated.sequence([
+        Animated.timing(scaleAnim, {
+          toValue: 1.2,
+          duration: 500,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnim, {
+          toValue: 1,
+          duration: 500,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    pulse.start();
+    return () => pulse.stop();
+  }, [scaleAnim]);
+
   const {userAddress, destinationAddress} = useSelector(state => state.common);
   const {searchInfo} = useSelector(state => state.rider);
-  console.log(JSON.stringify(searchInfo));
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const _map = useRef(null);
+  const isFocused = useIsFocused();
+  const {socket_connect, socketRef} = useAppContext();
+  useEffect(() => {
+    socket_connect();
+  }, []);
 
+  useEffect(() => {
+    const handleDriverAccepted = data => {
+      console.log('Driver accepted the booking:', data);
+      Alert.alert(`Driver accepted your request. Driver ID: ${data.driverId}`);
+    };
+
+    if (socketRef.current) {
+      socketRef.current.on('receiveNotification', handleDriverAccepted);
+    }
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.off('receiveNotification', handleDriverAccepted);
+      }
+    };
+  }, [isFocused]);
   return (
     <View
       style={{
@@ -63,7 +111,7 @@ const SearchingRide = ({route, navigation}) => {
         placeholder={address}>
         <Header title={'Book Ride'} />
 
-        <View
+        {/* <View
           style={{
             backgroundColor: 'rgba(255,255,255,0.8)',
             width: '70%',
@@ -75,11 +123,38 @@ const SearchingRide = ({route, navigation}) => {
             borderRadius: 10,
           }}>
           <SearchingRideIcon />
-        </View>
+        </View> */}
+        <Animated.View
+          style={{
+            transform: [{scale: scaleAnim}],
+            backgroundColor: 'rgba(255,255,255,0.8)',
+            width: '70%',
+            alignSelf: 'center',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: 20,
+            paddingBottom: 40,
+            borderRadius: 10,
+          }}>
+          <SearchingRideIcon />
+        </Animated.View>
         <View style={styles.modalContainer}>
           <Button
             onPress={() => {
-              navigation.navigate('DestinationScreen');
+              console.log(searchInfo);
+
+              const data = {};
+              const config = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: 'https://taxi-5.onrender.com/api/app/user/cancel-ride',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+                data: JSON.stringify(data),
+              };
+              // navigation.navigate('DestinationScreen');
             }}
             title={`Cancel`}
           />

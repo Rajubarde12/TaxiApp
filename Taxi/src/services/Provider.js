@@ -42,7 +42,6 @@ const AppContextProvider = ({children}) => {
     // let token = await AsyncStorage.getItem('token');
 
     socketRef.current = socket('raju', token);
-    // console.log(socketRef.current,"=--=-=-r=-ref-=-=-=-=-=");
     const intervalId = setInterval(() => {
       if (!socketRef.current) {
         return;

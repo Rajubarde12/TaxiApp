@@ -9,12 +9,16 @@ import {useAppContext} from '../../services/Provider';
 import {useEffect} from 'react';
 import socket from '../../services/Socket';
 import {useIsFocused} from '@react-navigation/native';
+import Button from '../../components/Button';
+import {moderateScale} from '../../utils/Scalling';
+import {colors} from '../../constants/colors';
+import {width} from '../../constants/Dimentions';
+import CustomText from '../../components/CustomText';
 
 const MapViewWithDirections = () => {
   const {userAddress, destinationAddress, currentRegoin, destinationRegoin} =
     useSelector(state => state.common);
   const {user, token} = useSelector(state => state.user);
-  console.log(user);
 
   const _map = useRef(null);
   const isFocused = useIsFocused();
@@ -22,20 +26,14 @@ const MapViewWithDirections = () => {
   useEffect(() => {
     socket_connect();
   }, []);
+
   useEffect(() => {
-    socketRef.current.on('receiveStatusUpdate', async data => {
-      console.log('acceptRide event received:', data);
-      try {
-      } catch (error) {
-        console.error('Error processing status update:', error);
-      }
+    socketRef.current.on('driverAccepted', data => {
+      console.log('Driver accepted the booking:', data);
+      // Handle the notification or UI update
+      // alert(`Driver accepted your request. Driver ID: ${data.driverId}`);
     });
-
-    return () => {
-      socketRef.current.off('receiveStatusUpdate');
-    };
-  }, [isFocused]);
-
+  }, []);
   return (
     <View style={{flex: 1}}>
       <MapView
@@ -88,6 +86,51 @@ const MapViewWithDirections = () => {
           strokeWidth={3}
         />
       </MapView>
+      <View
+        style={{
+          height: moderateScale(300),
+          bottom: 0,
+          backgroundColor: colors.white,
+          // position: 'absolute',
+          paddingHorizontal: moderateScale(25),
+          backgroundColor: 'white',
+          shadowColor: '#000',
+          shadowOffset: {width: 0, height: -2},
+          shadowOpacity: 0.1,
+          shadowRadius: 5,
+          elevation: 10,
+          overflow: 'hidden',
+          borderTopRightRadius: 15,
+          borderTopLeftRadius: 15,
+          position: 'absolute',
+          width: width,
+          alignItems: 'center',
+          // justifyContent: 'center',
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            width: '100%',
+            marginTop: '5%',
+            paddingHorizontal: 10,
+          }}>
+          <CustomText>Driver is Arriving...</CustomText>
+          <CustomText color={colors.grey}>5 min Away</CustomText>
+        </View>
+        <Button
+          onPress={() => {
+            // if (distainationlatlong?.latitude == 0.0) {
+            //   Toast.show('Please Select Destination');
+            //   return;
+            // }
+            // if (distainationlatlong?.latitude != 0.0) {
+            //   navigation.navigate('BookRideScreen');
+            // }
+          }}
+          title={'Confirm Location'}
+        />
+      </View>
     </View>
   );
 };
