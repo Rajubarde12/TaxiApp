@@ -2,6 +2,7 @@ import {
   Alert,
   FlatList,
   Image,
+  Linking,
   Pressable,
   StyleSheet,
   Text,
@@ -19,7 +20,9 @@ import {
   ArrowLeft,
   ArrowRight,
   Bus,
+  BusInactive,
   Car,
+  CarInActive,
   Cash,
   Checkmark,
   LiveLocation,
@@ -53,9 +56,14 @@ const BookRideScreen = ({route, navigation}) => {
 
   const dispatch = useDispatch();
   const [selected, setSelected] = useState({});
-  console.log('this is token', token);
 
   const searchRide = async () => {
+    if (selected?.name == 'Bus') {
+      Linking.openURL('https://24x7taxi.is/bus');
+      return;
+    }
+    // navigation.navigate('ArrivedAtDestination');
+    // return;
     try {
       // Extract latitude and longitude from regions
       const pickupLatitude = currentRegoin?.latitude;
@@ -145,6 +153,7 @@ const BookRideScreen = ({route, navigation}) => {
         backgroundColor: colors.white,
       }}>
       <Loader loading={isLoading} />
+
       <MapScreen
         notSHow
         isEnalble={true}
@@ -236,8 +245,8 @@ const BookRideScreen = ({route, navigation}) => {
               horizontal
               contentContainerStyle={{paddingVertical: 10}}
               renderItem={({item, index}) => {
-                let Icon = item.icon;
                 const isSelected = selected?.name == item?.name;
+                let Icon = isSelected ? item.icon : item.invactive;
                 return (
                   <Pressable
                     onPress={() => {
@@ -394,6 +403,7 @@ export default BookRideScreen;
 const data = [
   {
     icon: Car,
+    invactive: CarInActive,
     time: '5 Min ',
     name: 'Mini',
     price: '$1.0',
@@ -401,6 +411,7 @@ const data = [
   },
   {
     icon: Bus,
+    invactive: BusInactive,
     time: '9 Min ',
     name: 'Bus',
     price: '$5.0',

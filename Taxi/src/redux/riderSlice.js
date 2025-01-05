@@ -1,9 +1,12 @@
 import {createSlice} from '@reduxjs/toolkit';
 import axios from 'axios';
 import Toast from 'react-native-simple-toast';
+import {MAIN_URL} from '../constants';
 const initialState = {
   searchInfo: null,
   isLoading: false,
+  driveAccpetedData: null,
+  bookingDetails: null,
 };
 const riderSlice = createSlice({
   name: 'rider',
@@ -22,13 +25,21 @@ const riderSlice = createSlice({
     INIT_SEARCHRIDER: state => {
       return initialState;
     },
+    SET_DRIVER_ACCPETED_DATA: (state, action) => {
+      state.driveAccpetedData = action.payload;
+    },
+    getBookingDetailsSuccess: (state, action) => {
+      state.bookingDetails = action.payload;
+    },
   },
 });
-const {
+export const {
   SEARCH_RIDE_ERROR,
   SEARCH_RIDE_LOADING,
   SEARCH_RIDE_SUCCESS,
   INIT_SEARCHRIDER,
+  SET_DRIVER_ACCPETED_DATA,
+  getBookingDetailsSuccess,
 } = riderSlice.actions;
 export default riderSlice.reducer;
 export const startSearchRiding = (data, token, navigation) => {
@@ -63,6 +74,32 @@ export const startSearchRiding = (data, token, navigation) => {
       Toast.show('Something went wrong');
       console.log(err);
       dispatch(SEARCH_RIDE_ERROR());
+    }
+  };
+};
+export const getBookingDetails = (data, token, navigation) => {
+  return async dispatch => {
+    try {
+      let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `${MAIN_URL}/booking/get-booking/${data?.bookingId}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const response = await axios.request(config);
+      if (response.data?.data) {
+        dispatch(getBookingDetailsSuccess(response.data.data));
+        navigation.navigate('Example');
+      } else {
+        Toast.show('Something went wrong!');
+        console.log(response?.data);
+      }
+    } catch (error) {
+      console.log(error);
+
+      Toast.show('Something went wrong!');
     }
   };
 };

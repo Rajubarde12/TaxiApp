@@ -9,6 +9,9 @@ import BookRideScreen from '../screens/MainScreens/BookRideScreen';
 import SearchingRide from '../screens/MainScreens/SearchingRideScreen';
 import PaymentMethod from '../screens/MainScreens/PaymentMethods';
 import Example from '../screens/MainScreens/Exampple';
+import DriverArrivedScreen from '../screens/MainScreens/driverArrivedScren';
+import ActiveRiderScreen from '../screens/MainScreens/ActiveRiderScreen';
+import ArrivedAtDestination from '../screens/MainScreens/ArrivedAtDestination';
 const Stack = createStackNavigator();
 const MyStack = () => {
   const config = {
@@ -85,6 +88,15 @@ const MyStack = () => {
       <Stack.Screen name="SearchingRide" component={SearchingRide} />
       <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
       <Stack.Screen name="Example" component={Example} />
+      <Stack.Screen name="ActiveRiderScreen" component={ActiveRiderScreen} />
+      <Stack.Screen
+        name="DriverArrivedScreen"
+        component={DriverArrivedScreen}
+      />
+      <Stack.Screen
+        name="ArrivedAtDestination"
+        component={ArrivedAtDestination}
+      />
     </Stack.Navigator>
   );
 };

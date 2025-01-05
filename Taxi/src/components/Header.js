@@ -7,7 +7,7 @@ import fonts from '../constants/fonts';
 import {fontSize} from '../constants/fontSize';
 import {useNavigation} from '@react-navigation/native';
 
-const Header = ({onPress, title}) => {
+const Header = ({onPress, title, map}) => {
   const navigation = useNavigation();
   return (
     <View
@@ -37,7 +37,7 @@ const Header = ({onPress, title}) => {
           <ArrowBack1 height={25} width={25} />
         </Pressable>
       </View>
-      <View style={{width: '30%'}}>
+      <View style={{width: map ? null : '30%'}}>
         <CustomText fontFamily={fonts.bold} size={fontSize.Eighteen}>
           {title}
         </CustomText>

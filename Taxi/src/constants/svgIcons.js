@@ -41,13 +41,19 @@ import RadioUnifll from '../assets/svg/RadioUnifll.svg';
 import SearchingRideIcon from '../assets/svg/SearchingRideIcon.svg';
 import Points from '../assets/svg/Points.svg';
 import Cart from '../assets/svg/Cart.svg';
+import CarInActive from '../assets/svg/CarInActive.svg';
 import Wallet from '../assets/svg/Wallet.svg';
 import DestinationIcon from '../assets/svg/DestinationIcon.svg';
 import Driversvg from '../assets/svg/Driversvg.svg';
 import ChatDriver from '../assets/svg/ChatDriver.svg';
 import PhoneDriver from '../assets/svg/phoneDriver.svg';
+import ArrivedDestinationLogo from '../assets/svg/ArrivedDestinationLogo.svg';
+import BusInactive from '../assets/svg/BusInactive.svg';
 export {
   Wallet,
+  BusInactive,
+  ArrivedDestinationLogo,
+  CarInActive,
   Driversvg,
   PhoneDriver,
   ChatDriver,

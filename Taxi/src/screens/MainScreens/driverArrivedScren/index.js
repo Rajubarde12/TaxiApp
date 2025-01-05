@@ -1,28 +1,33 @@
-import {Alert, Image, Pressable, View} from 'react-native';
+import {Image, Pressable, RootTagContext, StyleSheet, View} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import {useSelector} from 'react-redux';
 import {
   ChatDriver,
   DestinationIcon,
+  LocationInput,
   LocationMap,
   PhoneDriver,
-} from '../../constants/svgIcons';
+  phoneDriver,
+  Plush,
+  RadioBalck,
+  Saved1,
+} from '../../../constants/svgIcons';
 import MapViewDirections from 'react-native-maps-directions';
-import {GOOGLE_MAPS_APIKEY} from '../../constants/ApiKeys';
+import {GOOGLE_MAPS_APIKEY} from '../../../constants/ApiKeys';
 import {useRef} from 'react';
-import {useAppContext} from '../../services/Provider';
+import {useAppContext} from '../../../services/Provider';
 import {useEffect} from 'react';
-import socket from '../../services/Socket';
+import socket from '../../../services/Socket';
 import {useIsFocused} from '@react-navigation/native';
-import Button from '../../components/Button';
-import {moderateScale} from '../../utils/Scalling';
-import {colors} from '../../constants/colors';
-import {width} from '../../constants/Dimentions';
-import CustomText from '../../components/CustomText';
-import {fontSize} from '../../constants/fontSize';
-import {distance} from '../../utils/modals/calculateFunction';
+import Button from '../../../components/Button';
+import {moderateScale} from '../../../utils/Scalling';
+import {colors} from '../../../constants/colors';
+import {width} from '../../../constants/Dimentions';
+import CustomText from '../../../components/CustomText';
+import {fontSize} from '../../../constants/fontSize';
+import fonts from '../../../constants/fonts';
 
-const MapViewWithDirections = () => {
+const DriverArrivedScreen = () => {
   const {userAddress, destinationAddress, currentRegoin, destinationRegoin} =
     useSelector(state => state.common);
   const {user, token} = useSelector(state => state.user);
@@ -35,63 +40,6 @@ const MapViewWithDirections = () => {
   const {socket_connect, socketRef} = useAppContext();
   useEffect(() => {
     socket_connect();
-  }, []);
-  const handleDriverAccepted = data => {
-    console.log(data);
-
-    Alert.alert(JSON.stringify(data));
-  };
-
-  // useEffect(() => {
-  //   if (socketRef.current) {
-  //     socketRef.current.on('receiveupdatedLocation', handleDriverAccepted);
-  //   }
-
-  //   return () => {
-  //     if (socketRef.current) {
-  //       socketRef.current.off('receiveupdatedLocation', handleDriverAccepted);
-  //     }
-  //   };
-  // }, [isFocused]);
-  useEffect(() => {
-    if (socketRef.current) {
-      console.log('Setting up socket listeners');
-
-      socketRef.current.on('connect', () => {
-        console.log('Connected to server');
-      });
-
-      socketRef.current.on('disconnect', () => {
-        console.log('Disconnected from server');
-      });
-
-      socketRef.current.on('receiveupdatedLocation', handleDriverAccepted);
-      socketRef.current.onAny((eventName, ...args) => {
-        console.log(`Event received: ${eventName}`, args);
-      });
-    }
-
-    return () => {
-      if (socketRef.current) {
-        console.log('Cleaning up socket listeners');
-        socketRef.current.off('connect');
-        socketRef.current.off('disconnect');
-        socketRef.current.off('receiveupdatedLocation', handleDriverAccepted);
-      }
-    };
-  }, [isFocused]);
-  useEffect(() => {
-    const pickupLatitude = currentRegoin?.latitude;
-    const pickupLongitude = currentRegoin?.longitude;
-    const destinationLatitude = destinationRegoin?.latitude;
-    const destinationLongitude = destinationRegoin?.longitude;
-    const totalDistance = distance(
-      pickupLatitude,
-      pickupLongitude,
-      destinationLatitude,
-      destinationLongitude,
-      'K',
-    );
   }, []);
 
   return (
@@ -148,7 +96,7 @@ const MapViewWithDirections = () => {
       </MapView>
       <View
         style={{
-          height: moderateScale(380),
+          height: moderateScale(600),
           bottom: 0,
           backgroundColor: colors.white,
           // position: 'absolute',
@@ -185,24 +133,17 @@ const MapViewWithDirections = () => {
             marginTop: '5%',
             paddingHorizontal: 10,
           }}>
-          <CustomText>Driver is Arriving...</CustomText>
+          <CustomText>Driver is Arrived...</CustomText>
           <CustomText size={fontSize.Fourteen} color={colors.grey}>
             5 min Away
           </CustomText>
         </View>
         <View
           style={{
-            borderWidth: 0.5,
-            borderColor: colors.inputBorder,
-            width: '100%',
-            marginTop: '2%',
-          }}></View>
-        <View
-          style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             width: '100%',
-            marginTop: '2%',
+            marginTop: '5%',
             // paddingHorizontal: 10,
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -217,7 +158,7 @@ const MapViewWithDirections = () => {
                 backgroundColor: colors.yellow,
               }}></View>
             <View style={{marginLeft: '5%'}}>
-              <CustomText>{driver?.name}</CustomText>
+              <CustomText>{driver?.name ?? 'Rohan Sahu'}</CustomText>
               <CustomText color={colors.grey} size={fontSize.Fourteen}>
                 {bookingDetails?.carType ?? 'Sedan'}
               </CustomText>
@@ -243,6 +184,75 @@ const MapViewWithDirections = () => {
             </Pressable>
           </View>
         </View>
+        <View style={styles.container}>
+          <View style={styles.rowContainer}>
+            <RadioBalck height={18} width={18} />
+            <CustomText
+              size={fontSize.Sixteen}
+              style={{marginLeft: 10}}
+              lines={1}>
+              {userAddress}
+            </CustomText>
+          </View>
+          <View
+            style={{
+              // height: moderateScale(60),
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 5,
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                position: 'absolute',
+                // top: '10%',
+                zIndex: 1,
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                backgroundColor: 'white',
+                borderRadius: 10,
+                elevation: 1,
+                alignSelf: 'flex-end',
+              }}>
+              <View />
+              <CustomText size={fontSize.Fourteen} color={colors.grey}>
+                OTP - {'4566'}
+              </CustomText>
+            </View>
+            <View style={styles.separator}></View>
+          </View>
+          <Pressable
+            onPress={() => navigation.goBack()}
+            style={styles.autoPlaceContainer}>
+            <LocationInput height={20} width={20} />
+
+            <CustomText
+              lines={1}
+              style={{width: '76%', marginLeft: '2%', marginRight: '0%'}}>
+              {destinationAddress}
+            </CustomText>
+
+            {/* <TextInput
+                value={''}
+                editable={false}
+                placeholder={destinationAddress.substring(0, 30)}
+                placeholderTextColor="#888"
+                style={styles.input}
+              /> */}
+            {/* <Saved1 />
+            <View style={{paddingHorizontal: 5}}>
+              <CustomText
+                color={'lightgrey'}
+                size={fontSize.Sixteen}
+                fontFamily={fonts.medium}>
+                |
+              </CustomText>
+            </View>
+            <Plush /> */}
+          </Pressable>
+        </View>
         <View
           style={{
             flexDirection: 'row',
@@ -261,8 +271,8 @@ const MapViewWithDirections = () => {
             <CustomText size={fontSize.Twelve} color={colors.grey}>
               Rate per
             </CustomText>
-            <CustomText>{`$${
-              bookingDetails?.perMileAmount ?? '1.5'
+            <CustomText>{`'$'${
+              bookingDetails?.perMileAmount ?? '0.5'
             }`}</CustomText>
           </View>
           <View
@@ -273,7 +283,7 @@ const MapViewWithDirections = () => {
             <CustomText size={fontSize.Twelve} color={colors.grey}>
               Car Number
             </CustomText>
-            <CustomText>{bookingDetails?.crnNumber}</CustomText>
+            <CustomText>{bookingDetails?.crnNumber ?? 'TSUVMTN'}</CustomText>
           </View>
           <View
             style={{
@@ -283,7 +293,7 @@ const MapViewWithDirections = () => {
             <CustomText size={fontSize.Twelve} color={colors.grey}>
               No. of Seats
             </CustomText>
-            <CustomText>4 Seats</CustomText>
+            <CustomText>4 Seates</CustomText>
           </View>
         </View>
         <View style={{marginTop: '5%'}}>
@@ -293,4 +303,46 @@ const MapViewWithDirections = () => {
     </View>
   );
 };
-export default MapViewWithDirections;
+export default DriverArrivedScreen;
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.white,
+    marginTop: '8%',
+    // borderWidth: 1,
+    paddingHorizontal: '2%',
+    width: '95%',
+    // elevation: 5,
+    // paddingVertical: 20,
+    // borderRadius: moderateScale(10),
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 2,
+    width: '100%',
+    alignSelf: 'center',
+  },
+  separator: {
+    borderBottomWidth: 1.5,
+    borderColor: colors.inputBorder,
+    marginBottom: 10,
+    width: '100%',
+    // marginLeft: '14%',
+    marginTop: 10,
+    height: '5%',
+    // paddingBottom: '5%',
+  },
+  autoPlaceContainer: {
+    height: moderateScale(70),
+    width: '100%',
+    alignSelf: 'center',
+    // marginTop: -10,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    // paddingHorizontal: 10,
+    // borderWidth: 2,
+    borderColor: colors.inputBorder,
+  },
+});

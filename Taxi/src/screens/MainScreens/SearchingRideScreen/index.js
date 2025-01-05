@@ -39,13 +39,20 @@ import {
 import {width} from '../../../constants/Dimentions';
 import Header from '../../../components/Header';
 import Button from '../../../components/Button';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Marker} from 'react-native-maps';
 import {useAppContext} from '../../../services/Provider';
 import {useIsFocused} from '@react-navigation/native';
 import {useEffect, useRef} from 'react';
 import {Animated, Easing} from 'react-native';
+import {
+  getBookingDetails,
+  SET_DRIVER_ACCPETED_DATA,
+} from '../../../redux/riderSlice';
 const SearchingRide = ({route, navigation}) => {
+  const {driveAccpetedData} = useSelector(state => state.rider);
+  const {token} = useSelector(state => state.user);
+
   const {region, address} = route?.params || {};
   useEffect(() => {
     const pulse = Animated.loop(
@@ -74,16 +81,16 @@ const SearchingRide = ({route, navigation}) => {
   const _map = useRef(null);
   const isFocused = useIsFocused();
   const {socket_connect, socketRef} = useAppContext();
+  const dispatch = useDispatch();
   useEffect(() => {
     socket_connect();
   }, []);
+  const handleDriverAccepted = data => {
+    dispatch(SET_DRIVER_ACCPETED_DATA(data?.data, token, navigation));
+    dispatch(getBookingDetails(data?.data, token, navigation));
+  };
 
   useEffect(() => {
-    const handleDriverAccepted = data => {
-      console.log('Driver accepted the booking:', data);
-      Alert.alert(`Driver accepted your request. Driver ID: ${data.driverId}`);
-    };
-
     if (socketRef.current) {
       socketRef.current.on('receiveNotification', handleDriverAccepted);
     }
@@ -141,19 +148,19 @@ const SearchingRide = ({route, navigation}) => {
         <View style={styles.modalContainer}>
           <Button
             onPress={() => {
-              console.log(searchInfo);
-
-              const data = {};
-              const config = {
-                method: 'post',
-                maxBodyLength: Infinity,
-                url: 'https://taxi-5.onrender.com/api/app/user/cancel-ride',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`,
-                },
-                data: JSON.stringify(data),
-              };
+              dispatch(getBookingDetails(driveAccpetedData, token, navigation));
+              // console.log(searchInfo);
+              // const data = {};
+              // const config = {
+              //   method: 'post',
+              //   maxBodyLength: Infinity,
+              //   url: 'https://taxi-5.onrender.com/api/app/user/cancel-ride',
+              //   headers: {
+              //     'Content-Type': 'application/json',
+              //     Authorization: `Bearer ${token}`,
+              //   },
+              //   data: JSON.stringify(data),
+              // };
               // navigation.navigate('DestinationScreen');
             }}
             title={`Cancel`}
