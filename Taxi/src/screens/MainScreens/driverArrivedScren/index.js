@@ -52,7 +52,6 @@ const DriverArrivedScreen = ({route, navigation}) => {
     socket_connect();
   }, []);
   const handleArrivdeStatus = data => {
-    console.log('okay bro chal jayega', data?.data?.status);
     if (data?.data?.status == 'InProgress') {
       navigation.navigate('ActiveRiderScreen');
     }

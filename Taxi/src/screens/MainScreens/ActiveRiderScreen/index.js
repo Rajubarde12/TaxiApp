@@ -5,6 +5,7 @@ import {
   StyleSheet,
   View,
   Text,
+  Alert,
 } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import {useSelector} from 'react-redux';
@@ -35,7 +36,7 @@ import {fontSize} from '../../../constants/fontSize';
 import fonts from '../../../constants/fonts';
 import Geolocation from '@react-native-community/geolocation';
 
-const ActiveRiderScreen = () => {
+const ActiveRiderScreen = ({navigation}) => {
   const {userAddress, destinationAddress, currentRegoin, destinationRegoin} =
     useSelector(state => state.common);
   const {user, token} = useSelector(state => state.user);
@@ -46,6 +47,22 @@ const ActiveRiderScreen = () => {
   const {socket_connect, socketRef} = useAppContext();
   useEffect(() => {
     socket_connect();
+  }, []);
+  const handleArrivdeStatus = data => {
+    if (data?.data?.status == 'Drop') {
+      navigation.navigate('ArrivedAtDestination');
+    }
+  };
+
+  useEffect(() => {
+    if (socketRef.current) {
+      socketRef.current.on('receiveStatusUpdate', handleArrivdeStatus);
+    }
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.off('receiveStatusUpdate', handleArrivdeStatus);
+      }
+    };
   }, []);
   useEffect(() => {
     const watchId = Geolocation.watchPosition(
@@ -66,7 +83,7 @@ const ActiveRiderScreen = () => {
       },
     );
 
-    return () => Geolocation.clearWatch(watchId); // Cleanup on unmount
+    return () => Geolocation.clearWatch(watchId);
   }, []);
   return (
     <View style={{flex: 1}}>

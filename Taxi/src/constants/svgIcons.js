@@ -50,9 +50,11 @@ import PhoneDriver from '../assets/svg/phoneDriver.svg';
 import ArrivedDestinationLogo from '../assets/svg/ArrivedDestinationLogo.svg';
 import BusInactive from '../assets/svg/BusInactive.svg';
 import CarLocation from '../assets/svg/CarLocation.svg';
+import Congratulations from '../assets/svg/Congratulations.svg';
 export {
   Wallet,
   BusInactive,
+  Congratulations,
   CarLocation,
   ArrivedDestinationLogo,
   CarInActive,

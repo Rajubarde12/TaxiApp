@@ -12,6 +12,7 @@ import Example from '../screens/MainScreens/Exampple';
 import DriverArrivedScreen from '../screens/MainScreens/driverArrivedScren';
 import ActiveRiderScreen from '../screens/MainScreens/ActiveRiderScreen';
 import ArrivedAtDestination from '../screens/MainScreens/ArrivedAtDestination';
+import CongrationsScreen from '../screens/MainScreens/CongrationLastionsScreen';
 const Stack = createStackNavigator();
 const MyStack = () => {
   const config = {
@@ -97,6 +98,7 @@ const MyStack = () => {
         name="ArrivedAtDestination"
         component={ArrivedAtDestination}
       />
+      <Stack.Screen name="CongrationsScreen" component={CongrationsScreen} />
     </Stack.Navigator>
   );
 };
