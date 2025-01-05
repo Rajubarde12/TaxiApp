@@ -1,6 +1,6 @@
 import {NavigationContainer} from '@react-navigation/native';
 import MyStack from './src/navigation';
-import {StatusBar} from 'react-native';
+import {LogBox, StatusBar} from 'react-native';
 import {Provider} from 'react-redux';
 import store from './src/redux';
 import {useEffect} from 'react';
@@ -9,6 +9,7 @@ import OutoffTexi from './OutofTexi';
 import AppContextProvider from './src/services/Provider';
 
 const App = () => {
+  LogBox.ignoreAllLogs();
   useEffect(() => {
     store.dispatch(getUserFromLocal());
   }, []);

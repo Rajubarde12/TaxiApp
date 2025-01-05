@@ -77,7 +77,14 @@ export const startSearchRiding = (data, token, navigation) => {
     }
   };
 };
-export const getBookingDetails = (data, token, navigation) => {
+export const getBookingDetails = (
+  data,
+  token,
+  navigation,
+  screenName,
+  arrived,
+  driverLocation,
+) => {
   return async dispatch => {
     try {
       let config = {
@@ -91,7 +98,10 @@ export const getBookingDetails = (data, token, navigation) => {
       const response = await axios.request(config);
       if (response.data?.data) {
         dispatch(getBookingDetailsSuccess(response.data.data));
-        navigation.navigate('Example');
+        navigation.navigate(screenName ?? 'Example', {
+          arived: arrived ?? null,
+          driverLocation: driverLocation ?? null,
+        });
       } else {
         Toast.show('Something went wrong!');
         console.log(response?.data);

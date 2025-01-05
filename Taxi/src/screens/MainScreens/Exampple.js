@@ -1,6 +1,6 @@
 import {Alert, Image, Pressable, View} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   CarLocation,
   ChatDriver,
@@ -22,6 +22,10 @@ import {width} from '../../constants/Dimentions';
 import CustomText from '../../components/CustomText';
 import {fontSize} from '../../constants/fontSize';
 import {distance} from '../../utils/modals/calculateFunction';
+import {getBookingDetails} from '../../redux/riderSlice';
+import Geolocation from '@react-native-community/geolocation';
+import axios from 'axios';
+import Header from '../../components/Header';
 
 const MapViewWithDirections = ({navigation}) => {
   const {userAddress, destinationAddress, currentRegoin, destinationRegoin} =
@@ -30,47 +34,37 @@ const MapViewWithDirections = ({navigation}) => {
   const {bookingDetails, driveAccpetedData} = useSelector(state => state.rider);
   const driver = bookingDetails?.driver;
   const _map = useRef(null);
+  const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const {socket_connect, socketRef} = useAppContext();
   const [driverLocation, setDriverLocation] = useState({
     latitude: 1.0004,
     longitude: -2.0,
   });
+  const driverLocationRef = useRef(driverLocation);
+
+  useEffect(() => {
+    driverLocationRef.current = driverLocation;
+  }, [driverLocation]);
+  const [arrivalTime, setArrivalTime] = useState('');
   useEffect(() => {
     socket_connect();
   }, []);
   const handleDriverAccepted = data => {
     setDriverLocation(data?.data);
-
-    // setDriverLocation({
-
-    // })
   };
 
   useEffect(() => {
     if (socketRef.current) {
-      console.log('Setting up socket listeners');
-
-      socketRef.current.on('connect', () => {
-        console.log('Connected to server');
-      });
-
-      socketRef.current.on('disconnect', () => {
-        console.log('Disconnected from server');
-      });
-
       socketRef.current.on('receiveupdatedLocation', handleDriverAccepted);
-      socketRef.current.onAny((eventName, ...args) => {
-        console.log(`Event received: ${eventName}`, args);
-      });
+      socketRef.current.on('receiveStatusUpdate', handleArrivdeStatus);
     }
 
     return () => {
       if (socketRef.current) {
         console.log('Cleaning up socket listeners');
-        socketRef.current.off('connect');
-        socketRef.current.off('disconnect');
         socketRef.current.off('receiveupdatedLocation', handleDriverAccepted);
+        socketRef.current.off('receiveStatusUpdate', handleArrivdeStatus);
       }
     };
   }, [isFocused]);
@@ -79,6 +73,12 @@ const MapViewWithDirections = ({navigation}) => {
     const pickupLongitude = driverLocation?.longitude;
     const destinationLatitude = currentRegoin?.latitude;
     const destinationLongitude = currentRegoin?.longitude;
+    getArrivalTime(
+      pickupLatitude,
+      pickupLongitude,
+      destinationLatitude,
+      destinationLongitude,
+    );
     if (
       distance(
         pickupLatitude,
@@ -88,12 +88,60 @@ const MapViewWithDirections = ({navigation}) => {
         'K',
       ) < 0.118
     ) {
-      navigation.navigate('DriverArrivedScreen');
+      // navigation.navigate('DriverArrivedScreen');
     }
   }, [driverLocation]);
+  const handleArrivdeStatus = data => {
+    console.log('this is data', data);
+    if (data?.data?.status == 'Arrived') {
+      dispatch(
+        getBookingDetails(
+          driveAccpetedData,
+          token,
+          navigation,
+          'DriverArrivedScreen',
+          data,
+          driverLocationRef.current,
+        ),
+      );
+    }
+  };
+
+  const getArrivalTime = async (
+    originLat,
+    originLng,
+    destinationLat,
+    destinationLng,
+  ) => {
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/distancematrix/json`,
+        {
+          params: {
+            origins: `${originLat},${originLng}`,
+            destinations: `${destinationLat},${destinationLng}`,
+            key: GOOGLE_MAPS_APIKEY,
+            mode: 'driving', // Options: driving, walking, bicycling, transit
+          },
+        },
+      );
+
+      if (response.data.rows[0].elements[0].status === 'OK') {
+        const duration = response.data.rows[0].elements[0].duration.text;
+        console.log('this is duration', duration);
+
+        setArrivalTime(duration);
+      } else {
+        console.error('Error in Distance Matrix API response: ', response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching arrival time: ', error);
+    }
+  };
 
   return (
     <View style={{flex: 1}}>
+      <Header title={'Driver Arriving'} map={true} />
       <MapView
         ref={_map}
         apikey={GOOGLE_MAPS_APIKEY}
@@ -130,6 +178,9 @@ const MapViewWithDirections = ({navigation}) => {
           <CarLocation />
         </Marker>
         <MapViewDirections
+          onReady={evene => {
+            console.log('this is evetn', evene.duration);
+          }}
           apikey={GOOGLE_MAPS_APIKEY}
           origin={{
             latitude: currentRegoin?.latitude,
@@ -184,7 +235,7 @@ const MapViewWithDirections = ({navigation}) => {
           }}>
           <CustomText>Driver is Arriving...</CustomText>
           <CustomText size={fontSize.Fourteen} color={colors.grey}>
-            5 min Away
+            {typeof arrivalTime == 'string' ? arrivalTime : ''} Away
           </CustomText>
         </View>
         <View
@@ -280,7 +331,7 @@ const MapViewWithDirections = ({navigation}) => {
             <CustomText size={fontSize.Twelve} color={colors.grey}>
               No. of Seats
             </CustomText>
-            <CustomText>4 Seats</CustomText>
+            <CustomText>{bookingDetails?.seatCapacity ?? 4} Seats</CustomText>
           </View>
         </View>
         <View style={{marginTop: '5%'}}>

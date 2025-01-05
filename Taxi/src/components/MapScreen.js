@@ -9,7 +9,12 @@ import {
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {useEffect, useState} from 'react';
-import {LiveLocation, LocationLogo, LocationMap} from '../constants/svgIcons';
+import {
+  CarLocation,
+  LiveLocation,
+  LocationLogo,
+  LocationMap,
+} from '../constants/svgIcons';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import GooglePlacesInput from './GooglePlaceInput';
 import TouchableInput from './TouchableCompoent';
@@ -91,7 +96,7 @@ export default ({
                 latitude: item?.latitude,
                 longitude: item?.longitude,
               }}>
-              <LocationLogo />
+              <CarLocation />
             </Marker>
           );
         })}

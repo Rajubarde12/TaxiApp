@@ -76,8 +76,8 @@ export const userLogin = (data, navigation) => {
         await AsyncStorage.setItem(DATABASE.token, response?.data?.data?.token);
         dispatch(
           getUserFromLocal(
-            response?.data?.data?.token,
             response?.data?.data?.user,
+            response?.data?.data?.token,
           ),
         );
         navigation.reset({index: 0, routes: [{name: 'BottumTab'}]});

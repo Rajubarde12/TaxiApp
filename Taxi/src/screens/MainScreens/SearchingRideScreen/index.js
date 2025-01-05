@@ -86,6 +86,8 @@ const SearchingRide = ({route, navigation}) => {
     socket_connect();
   }, []);
   const handleDriverAccepted = data => {
+    console.log('this is data', data);
+
     dispatch(SET_DRIVER_ACCPETED_DATA(data?.data, token, navigation));
     dispatch(getBookingDetails(data?.data, token, navigation));
   };

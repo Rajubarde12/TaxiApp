@@ -1,7 +1,15 @@
-import {Image, Pressable, RootTagContext, StyleSheet, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  Pressable,
+  RootTagContext,
+  StyleSheet,
+  View,
+} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import {useSelector} from 'react-redux';
 import {
+  CarLocation,
   ChatDriver,
   DestinationIcon,
   LocationInput,
@@ -27,19 +35,38 @@ import CustomText from '../../../components/CustomText';
 import {fontSize} from '../../../constants/fontSize';
 import fonts from '../../../constants/fonts';
 
-const DriverArrivedScreen = () => {
+const DriverArrivedScreen = ({route, navigation}) => {
+  const {driverLocation, arived} = route.params;
   const {userAddress, destinationAddress, currentRegoin, destinationRegoin} =
     useSelector(state => state.common);
   const {user, token} = useSelector(state => state.user);
-  const {bookingDetails, driveAccpetedData} = useSelector(state => state.rider);
-  const driver = bookingDetails?.driver;
-  console.log('thissi', bookingDetails?.perMileAmount);
 
+  const {bookingDetails, driveAccpetedData} = useSelector(state => state.rider);
+  console.log(driveAccpetedData);
+
+  const driver = bookingDetails?.driver;
   const _map = useRef(null);
   const isFocused = useIsFocused();
   const {socket_connect, socketRef} = useAppContext();
   useEffect(() => {
     socket_connect();
+  }, []);
+  const handleArrivdeStatus = data => {
+    console.log('okay bro chal jayega', data?.data?.status);
+    if (data?.data?.status == 'InProgress') {
+      navigation.navigate('ActiveRiderScreen');
+    }
+  };
+
+  useEffect(() => {
+    if (socketRef.current) {
+      socketRef.current.on('receiveStatusUpdate', handleArrivdeStatus);
+    }
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.off('receiveStatusUpdate', handleArrivdeStatus);
+      }
+    };
   }, []);
 
   return (
@@ -70,15 +97,15 @@ const DriverArrivedScreen = () => {
             latitude: currentRegoin?.latitude,
             longitude: currentRegoin.longitude,
           }}>
-          <LocationMap />
+          <DestinationIcon />
         </Marker>
         <Marker
           coordinate={{
-            latitude: destinationRegoin?.latitude,
-            longitude: destinationRegoin?.longitude,
+            latitude: driverLocation?.latitude,
+            longitude: driverLocation?.longitude,
           }}>
           {/* <Image style={{ height: 20, width: 20, resizeMode: 'contain'}} source={images.loc} /> */}
-          <DestinationIcon />
+          <CarLocation />
         </Marker>
         <MapViewDirections
           apikey={GOOGLE_MAPS_APIKEY}
@@ -87,8 +114,8 @@ const DriverArrivedScreen = () => {
             longitude: currentRegoin?.longitude,
           }}
           destination={{
-            latitude: destinationRegoin?.latitude,
-            longitude: destinationRegoin?.longitude,
+            latitude: driverLocation?.latitude,
+            longitude: driverLocation?.longitude,
           }}
           strokeColor="#000000"
           strokeWidth={3}
@@ -134,9 +161,7 @@ const DriverArrivedScreen = () => {
             paddingHorizontal: 10,
           }}>
           <CustomText>Driver is Arrived...</CustomText>
-          <CustomText size={fontSize.Fourteen} color={colors.grey}>
-            5 min Away
-          </CustomText>
+          <CustomText size={fontSize.Fourteen} color={colors.grey}></CustomText>
         </View>
         <View
           style={{
@@ -158,7 +183,7 @@ const DriverArrivedScreen = () => {
                 backgroundColor: colors.yellow,
               }}></View>
             <View style={{marginLeft: '5%'}}>
-              <CustomText>{driver?.name ?? 'Rohan Sahu'}</CustomText>
+              <CustomText>{driver?.name}</CustomText>
               <CustomText color={colors.grey} size={fontSize.Fourteen}>
                 {bookingDetails?.carType ?? 'Sedan'}
               </CustomText>
@@ -218,7 +243,7 @@ const DriverArrivedScreen = () => {
               }}>
               <View />
               <CustomText size={fontSize.Fourteen} color={colors.grey}>
-                OTP - {'4566'}
+                OTP - {bookingDetails?.otp}
               </CustomText>
             </View>
             <View style={styles.separator}></View>
@@ -271,8 +296,8 @@ const DriverArrivedScreen = () => {
             <CustomText size={fontSize.Twelve} color={colors.grey}>
               Rate per
             </CustomText>
-            <CustomText>{`'$'${
-              bookingDetails?.perMileAmount ?? '0.5'
+            <CustomText>{`$${
+              bookingDetails?.perMileAmount ?? '1.5'
             }`}</CustomText>
           </View>
           <View
@@ -293,11 +318,16 @@ const DriverArrivedScreen = () => {
             <CustomText size={fontSize.Twelve} color={colors.grey}>
               No. of Seats
             </CustomText>
-            <CustomText>4 Seates</CustomText>
+            <CustomText>{bookingDetails?.seatCapacity ?? 4}</CustomText>
           </View>
         </View>
         <View style={{marginTop: '5%'}}>
-          <Button onPress={() => {}} title={'Cancle Ride'} />
+          <Button
+            onPress={() => {
+              navigation.navigate('ActiveRiderScreen');
+            }}
+            title={'Cancle Ride'}
+          />
         </View>
       </View>
     </View>

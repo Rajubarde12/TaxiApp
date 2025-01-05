@@ -47,7 +47,7 @@ const AppContextProvider = ({children}) => {
         return;
       }
       if (socketRef.current.connected) {
-        console.log('connection is active');
+        // console.log('connection is active');
       } else {
         console.log('connection is lost ');
       }

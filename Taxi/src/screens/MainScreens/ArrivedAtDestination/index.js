@@ -42,7 +42,6 @@ const ArrivedAtDestination = () => {
   const {user, token} = useSelector(state => state.user);
   const {bookingDetails, driveAccpetedData} = useSelector(state => state.rider);
   const driver = bookingDetails?.driver;
-  console.log('thissi', bookingDetails?.perMileAmount);
 
   const _map = useRef(null);
   const isFocused = useIsFocused();

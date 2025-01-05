@@ -33,6 +33,7 @@ import {width} from '../../../constants/Dimentions';
 import CustomText from '../../../components/CustomText';
 import {fontSize} from '../../../constants/fontSize';
 import fonts from '../../../constants/fonts';
+import Geolocation from '@react-native-community/geolocation';
 
 const ActiveRiderScreen = () => {
   const {userAddress, destinationAddress, currentRegoin, destinationRegoin} =
@@ -40,15 +41,33 @@ const ActiveRiderScreen = () => {
   const {user, token} = useSelector(state => state.user);
   const {bookingDetails, driveAccpetedData} = useSelector(state => state.rider);
   const driver = bookingDetails?.driver;
-  console.log('thissi', bookingDetails?.perMileAmount);
-
   const _map = useRef(null);
   const isFocused = useIsFocused();
   const {socket_connect, socketRef} = useAppContext();
   useEffect(() => {
     socket_connect();
   }, []);
+  useEffect(() => {
+    const watchId = Geolocation.watchPosition(
+      position => {
+        const {latitude, longitude} = position.coords;
+        console.log(latitude, longitude);
 
+        // setLocation({ latitude, longitude });
+      },
+      error => {
+        console.log(error);
+      },
+      {
+        enableHighAccuracy: true,
+        distanceFilter: 10, // Update location after 10 meters
+        interval: 5000, // Update every 5 seconds
+        fastestInterval: 2000,
+      },
+    );
+
+    return () => Geolocation.clearWatch(watchId); // Cleanup on unmount
+  }, []);
   return (
     <View style={{flex: 1}}>
       <MapView
