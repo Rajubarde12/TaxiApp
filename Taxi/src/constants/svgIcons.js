@@ -49,9 +49,11 @@ import ChatDriver from '../assets/svg/ChatDriver.svg';
 import PhoneDriver from '../assets/svg/phoneDriver.svg';
 import ArrivedDestinationLogo from '../assets/svg/ArrivedDestinationLogo.svg';
 import BusInactive from '../assets/svg/BusInactive.svg';
+import CarLocation from '../assets/svg/CarLocation.svg';
 export {
   Wallet,
   BusInactive,
+  CarLocation,
   ArrivedDestinationLogo,
   CarInActive,
   Driversvg,

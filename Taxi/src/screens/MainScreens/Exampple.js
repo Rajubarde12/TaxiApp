@@ -2,6 +2,7 @@ import {Alert, Image, Pressable, View} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import {useSelector} from 'react-redux';
 import {
+  CarLocation,
   ChatDriver,
   DestinationIcon,
   LocationMap,
@@ -9,7 +10,7 @@ import {
 } from '../../constants/svgIcons';
 import MapViewDirections from 'react-native-maps-directions';
 import {GOOGLE_MAPS_APIKEY} from '../../constants/ApiKeys';
-import {useRef} from 'react';
+import {useRef, useState} from 'react';
 import {useAppContext} from '../../services/Provider';
 import {useEffect} from 'react';
 import socket from '../../services/Socket';
@@ -22,37 +23,30 @@ import CustomText from '../../components/CustomText';
 import {fontSize} from '../../constants/fontSize';
 import {distance} from '../../utils/modals/calculateFunction';
 
-const MapViewWithDirections = () => {
+const MapViewWithDirections = ({navigation}) => {
   const {userAddress, destinationAddress, currentRegoin, destinationRegoin} =
     useSelector(state => state.common);
   const {user, token} = useSelector(state => state.user);
   const {bookingDetails, driveAccpetedData} = useSelector(state => state.rider);
   const driver = bookingDetails?.driver;
-  console.log('thissi', bookingDetails?.perMileAmount);
-
   const _map = useRef(null);
   const isFocused = useIsFocused();
   const {socket_connect, socketRef} = useAppContext();
+  const [driverLocation, setDriverLocation] = useState({
+    latitude: 1.0004,
+    longitude: -2.0,
+  });
   useEffect(() => {
     socket_connect();
   }, []);
   const handleDriverAccepted = data => {
-    console.log(data);
+    setDriverLocation(data?.data);
 
-    Alert.alert(JSON.stringify(data));
+    // setDriverLocation({
+
+    // })
   };
 
-  // useEffect(() => {
-  //   if (socketRef.current) {
-  //     socketRef.current.on('receiveupdatedLocation', handleDriverAccepted);
-  //   }
-
-  //   return () => {
-  //     if (socketRef.current) {
-  //       socketRef.current.off('receiveupdatedLocation', handleDriverAccepted);
-  //     }
-  //   };
-  // }, [isFocused]);
   useEffect(() => {
     if (socketRef.current) {
       console.log('Setting up socket listeners');
@@ -81,18 +75,22 @@ const MapViewWithDirections = () => {
     };
   }, [isFocused]);
   useEffect(() => {
-    const pickupLatitude = currentRegoin?.latitude;
-    const pickupLongitude = currentRegoin?.longitude;
-    const destinationLatitude = destinationRegoin?.latitude;
-    const destinationLongitude = destinationRegoin?.longitude;
-    const totalDistance = distance(
-      pickupLatitude,
-      pickupLongitude,
-      destinationLatitude,
-      destinationLongitude,
-      'K',
-    );
-  }, []);
+    const pickupLatitude = driverLocation?.latitude;
+    const pickupLongitude = driverLocation?.longitude;
+    const destinationLatitude = currentRegoin?.latitude;
+    const destinationLongitude = currentRegoin?.longitude;
+    if (
+      distance(
+        pickupLatitude,
+        pickupLongitude,
+        destinationLatitude,
+        destinationLongitude,
+        'K',
+      ) < 0.118
+    ) {
+      navigation.navigate('DriverArrivedScreen');
+    }
+  }, [driverLocation]);
 
   return (
     <View style={{flex: 1}}>
@@ -122,15 +120,14 @@ const MapViewWithDirections = () => {
             latitude: currentRegoin?.latitude,
             longitude: currentRegoin.longitude,
           }}>
-          <LocationMap />
+          <DestinationIcon />
         </Marker>
         <Marker
           coordinate={{
-            latitude: destinationRegoin?.latitude,
-            longitude: destinationRegoin?.longitude,
+            latitude: driverLocation?.latitude,
+            longitude: driverLocation?.longitude,
           }}>
-          {/* <Image style={{ height: 20, width: 20, resizeMode: 'contain'}} source={images.loc} /> */}
-          <DestinationIcon />
+          <CarLocation />
         </Marker>
         <MapViewDirections
           apikey={GOOGLE_MAPS_APIKEY}
@@ -139,8 +136,8 @@ const MapViewWithDirections = () => {
             longitude: currentRegoin?.longitude,
           }}
           destination={{
-            latitude: destinationRegoin?.latitude,
-            longitude: destinationRegoin?.longitude,
+            latitude: driverLocation?.latitude,
+            longitude: driverLocation?.longitude,
           }}
           strokeColor="#000000"
           strokeWidth={3}
