@@ -5,7 +5,7 @@ import fonts from '../constants/fonts';
 import {fontSize} from '../constants/fontSize';
 import CustomText from './CustomText';
 import {ArrowDown, Eyeopen} from '../constants/svgIcons';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import CountryPicker from 'react-native-country-picker-modal';
 
 const Input = ({
@@ -19,6 +19,7 @@ const Input = ({
   error,
   onFocus,
   keyboardType,
+  onCrountryCode,
   ...props
 }) => {
   const [isSecured, setIsSecured] = useState(true);
@@ -239,6 +240,9 @@ const Input = ({
     ZW: 9, // Zimbabwe
   };
   const [phoneNumberMaxLength, setPhoneNumberMextLength] = useState(10);
+  useEffect(() => {
+    onCrountryCode ? onCrountryCode(countryCode, counrtyCode1) : null;
+  }, [countryCode]);
   return (
     <>
       <CustomText

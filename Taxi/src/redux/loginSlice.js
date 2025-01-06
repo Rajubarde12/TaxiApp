@@ -87,8 +87,12 @@ export const userLogin = (data, navigation) => {
         dispatch(USER_LOGIN_ERROR());
       }
     } catch (error) {
-      console.log(error);
-      Toast.show('Something went wrong');
+      console.log(error.status);
+      if (error.status == '400') {
+        Toast.show('Invalid user name or password');
+      } else {
+        Toast.show('Something went wrong');
+      }
       dispatch(USER_LOGIN_ERROR());
     }
   };

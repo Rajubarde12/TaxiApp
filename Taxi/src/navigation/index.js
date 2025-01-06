@@ -13,6 +13,7 @@ import DriverArrivedScreen from '../screens/MainScreens/driverArrivedScren';
 import ActiveRiderScreen from '../screens/MainScreens/ActiveRiderScreen';
 import ArrivedAtDestination from '../screens/MainScreens/ArrivedAtDestination';
 import CongrationsScreen from '../screens/MainScreens/CongrationLastionsScreen';
+import PayCashScreen from '../screens/MainScreens/PayCashScreen';
 const Stack = createStackNavigator();
 const MyStack = () => {
   const config = {
@@ -79,7 +80,7 @@ const MyStack = () => {
         //   };
         // },
       }}
-      initialRouteName="SplashScreen">
+      initialRouteName="CongrationsScreen">
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="AuthStack" component={AuthStack} />
       <Stack.Screen name="BottumTab" component={BottumTab} />
@@ -99,6 +100,7 @@ const MyStack = () => {
         component={ArrivedAtDestination}
       />
       <Stack.Screen name="CongrationsScreen" component={CongrationsScreen} />
+      <Stack.Screen name="PayCashScreen" component={PayCashScreen} />
     </Stack.Navigator>
   );
 };

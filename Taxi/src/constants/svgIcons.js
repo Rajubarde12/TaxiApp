@@ -51,8 +51,10 @@ import ArrivedDestinationLogo from '../assets/svg/ArrivedDestinationLogo.svg';
 import BusInactive from '../assets/svg/BusInactive.svg';
 import CarLocation from '../assets/svg/CarLocation.svg';
 import Congratulations from '../assets/svg/Congratulations.svg';
+import WalleCashPaid from '../assets/svg/WalleCashPaid.svg';
 export {
   Wallet,
+  WalleCashPaid,
   BusInactive,
   Congratulations,
   CarLocation,

@@ -34,6 +34,7 @@ const RegisterScreen = ({navigation}) => {
     password: '',
     phone: '',
   });
+  const [countryCode, setCountryCode] = useState('91');
   const [error, setError] = useState({
     name: '',
     email: '',
@@ -190,6 +191,9 @@ const RegisterScreen = ({navigation}) => {
           <View style={{marginTop: moderateScale(30), width: '100%'}}>
             <Input
               value={inputs.phone}
+              onCrountryCode={code1 => {
+                setCountryCode(code1);
+              }}
               error={error.phone}
               onChangeText={input => {
                 handleInputs('phone', input);

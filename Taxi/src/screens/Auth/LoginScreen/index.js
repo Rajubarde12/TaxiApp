@@ -30,6 +30,7 @@ import Loader from '../../../components/Loader';
 const LoginScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const {isLoading} = useSelector(state => state.login);
+  const [countryCode, setCountryCode] = useState('91');
   const [inputs, setInputs] = useState({
     email: '',
     password: '',
@@ -90,11 +91,11 @@ const LoginScreen = ({navigation}) => {
       latitude: '34.052235',
       longitude: '-118.243683',
       mobileNumber: inputs.email,
-      countryCode: '91',
+      countryCode: countryCode,
     };
     dispatch(userLogin(data1, navigation));
   };
-
+  console.log('raju', countryCode);
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       <StatusBar
@@ -124,7 +125,7 @@ const LoginScreen = ({navigation}) => {
 
         <View
           style={{
-            height: moderateScale(790),
+            height: '100%',
             marginTop: -20,
             backgroundColor: colors.white,
             borderTopRightRadius: 20,
@@ -148,6 +149,9 @@ const LoginScreen = ({navigation}) => {
           </CustomText>
           <View style={{marginTop: moderateScale(30), width: '100%'}}>
             <Input
+              onCrountryCode={cod1 => {
+                setCountryCode(cod1);
+              }}
               isMobile={true}
               keyboardType={keyboartype.number_pad}
               onFocus={() => {
@@ -155,7 +159,10 @@ const LoginScreen = ({navigation}) => {
               }}
               value={inputs.email}
               onChangeText={input => {
-                setInputs(prev => ({...prev, email: input}));
+                setInputs(prev => ({
+                  ...prev,
+                  email: input.replace(/[^0-9]/g, ''),
+                }));
               }}
               error={error.email}
               placeholder="679666969"
