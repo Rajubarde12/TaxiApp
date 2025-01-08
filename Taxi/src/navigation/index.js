@@ -14,6 +14,7 @@ import ActiveRiderScreen from '../screens/MainScreens/ActiveRiderScreen';
 import ArrivedAtDestination from '../screens/MainScreens/ArrivedAtDestination';
 import CongrationsScreen from '../screens/MainScreens/CongrationLastionsScreen';
 import PayCashScreen from '../screens/MainScreens/PayCashScreen';
+import CancleResonRideScreen from '../screens/MainScreens/CancleRideResonScreen';
 const Stack = createStackNavigator();
 const MyStack = () => {
   const config = {
@@ -80,7 +81,7 @@ const MyStack = () => {
         //   };
         // },
       }}
-      initialRouteName="CongrationsScreen">
+      initialRouteName="SplashScreen">
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="AuthStack" component={AuthStack} />
       <Stack.Screen name="BottumTab" component={BottumTab} />
@@ -91,6 +92,10 @@ const MyStack = () => {
       <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
       <Stack.Screen name="Example" component={Example} />
       <Stack.Screen name="ActiveRiderScreen" component={ActiveRiderScreen} />
+      <Stack.Screen
+        name="CancleResonRideScreen"
+        component={CancleResonRideScreen}
+      />
       <Stack.Screen
         name="DriverArrivedScreen"
         component={DriverArrivedScreen}

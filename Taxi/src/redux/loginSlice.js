@@ -83,13 +83,15 @@ export const userLogin = (data, navigation) => {
         navigation.reset({index: 0, routes: [{name: 'BottumTab'}]});
         Toast.show('Login success!');
       } else {
-        Toast.show('User not exist');
+        Toast.show('Invalid user name or password');
         dispatch(USER_LOGIN_ERROR());
       }
     } catch (error) {
       console.log(error.status);
       if (error.status == '400') {
         Toast.show('Invalid user name or password');
+      } else if (error.status == '404') {
+        Toast.show('User not registred');
       } else {
         Toast.show('Something went wrong');
       }

@@ -74,7 +74,7 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
           style={[
             {
               position: 'absolute',
-              backgroundColor: 'rgba(0, 0, 0, 0.1)',
+              backgroundColor: 'rgba(26, 255, 34, 0.1)',
               height: '100%',
               width: '100%',
               borderRadius: 50,

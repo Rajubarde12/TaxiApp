@@ -20,7 +20,7 @@ const Header = ({onPress, title, map}) => {
         marginTop: StatusBar.currentHeight,
         justifyContent: 'space-between',
       }}>
-      <View style={{width: '30%'}}>
+      <View style={{width: '24%'}}>
         <Pressable
           onPress={() => navigation.goBack()}
           style={{
@@ -37,7 +37,7 @@ const Header = ({onPress, title, map}) => {
           <ArrowBack1 height={25} width={25} />
         </Pressable>
       </View>
-      <View style={{width: map ? null : '30%'}}>
+      <View style={{width: map ? null : '33.33%'}}>
         <CustomText fontFamily={fonts.bold} size={fontSize.Eighteen}>
           {title}
         </CustomText>

@@ -52,8 +52,12 @@ import BusInactive from '../assets/svg/BusInactive.svg';
 import CarLocation from '../assets/svg/CarLocation.svg';
 import Congratulations from '../assets/svg/Congratulations.svg';
 import WalleCashPaid from '../assets/svg/WalleCashPaid.svg';
+import StarFilled from '../assets/svg/StarFilled.svg';
+import CroshBlack from '../assets/svg/CroshBlack.svg';
 export {
   Wallet,
+  CroshBlack,
+  StarFilled,
   WalleCashPaid,
   BusInactive,
   Congratulations,
