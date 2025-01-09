@@ -31,6 +31,7 @@ import {
   setDsetinationUserRegion,
 } from '../../../redux/commonSlice';
 import Toast from 'react-native-simple-toast';
+import {GOOGLE_API_KEY} from '../../../constants/ApiKeys';
 
 const DestinationScreen = ({navigation}) => {
   const [query, setQuery] = useState('');
@@ -42,7 +43,7 @@ const DestinationScreen = ({navigation}) => {
   });
 
   const fetchPlaces = async text => {
-    const apiKey = 'AIzaSyDbxbcNuOlVTolfigYexsDVfyHNrpeQ_eI';
+    const apiKey = GOOGLE_API_KEY;
     const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${text}&key=${apiKey}`;
 
     try {
@@ -62,7 +63,7 @@ const DestinationScreen = ({navigation}) => {
   const dispatch = useDispatch();
 
   const fetchPlaceDetails = async placeId => {
-    const apiKey = 'AIzaSyDbxbcNuOlVTolfigYexsDVfyHNrpeQ_eI';
+    const apiKey = GOOGLE_API_KEY;
     const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${apiKey}`;
 
     try {

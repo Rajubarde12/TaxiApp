@@ -8,7 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   ChatDriver,
   DestinationIcon,
@@ -21,8 +21,12 @@ import {
   Saved1,
 } from '../../../constants/svgIcons';
 import MapViewDirections from 'react-native-maps-directions';
-import {GOOGLE_MAPS_APIKEY} from '../../../constants/ApiKeys';
-import {useRef} from 'react';
+import {
+  AWS_URL,
+  GOOGLE_API_KEY,
+  GOOGLE_MAPS_APIKEY,
+} from '../../../constants/ApiKeys';
+import {useRef, useState} from 'react';
 import {useAppContext} from '../../../services/Provider';
 import {useEffect} from 'react';
 import socket from '../../../services/Socket';
@@ -35,16 +39,21 @@ import CustomText from '../../../components/CustomText';
 import {fontSize} from '../../../constants/fontSize';
 import fonts from '../../../constants/fonts';
 import Geolocation from '@react-native-community/geolocation';
+import axios from 'axios';
+import {getGeo} from '../../../utils/modals/getUserLocation';
+import {setUserCurrentRegoin} from '../../../redux/commonSlice';
 
 const ActiveRiderScreen = ({navigation}) => {
   const {userAddress, destinationAddress, currentRegoin, destinationRegoin} =
     useSelector(state => state.common);
+
   const {user, token} = useSelector(state => state.user);
   const {bookingDetails, driveAccpetedData} = useSelector(state => state.rider);
   const driver = bookingDetails?.driver;
   const _map = useRef(null);
   const isFocused = useIsFocused();
   const {socket_connect, socketRef} = useAppContext();
+  const dispatch = useDispatch();
   useEffect(() => {
     socket_connect();
   }, []);
@@ -63,28 +72,71 @@ const ActiveRiderScreen = ({navigation}) => {
         socketRef.current.off('receiveStatusUpdate', handleArrivdeStatus);
       }
     };
-  }, []);
+  }, [bookingDetails]);
+  const [arrivalTime, setArrivalTime] = useState('');
+
   useEffect(() => {
-    const watchId = Geolocation.watchPosition(
-      position => {
-        const {latitude, longitude} = position.coords;
-        console.log(latitude, longitude);
-
-        // setLocation({ latitude, longitude });
-      },
-      error => {
-        console.log(error);
-      },
-      {
-        enableHighAccuracy: true,
-        distanceFilter: 10, // Update location after 10 meters
-        interval: 5000, // Update every 5 seconds
-        fastestInterval: 2000,
-      },
-    );
-
-    return () => Geolocation.clearWatch(watchId);
+    const intevalid = setInterval(() => {
+      getCurrentLocation();
+    }, 4000);
+    return () => {
+      clearInterval(intevalid);
+    };
   }, []);
+
+  const getCurrentLocation = async () => {
+    const {latitude, longitude} = await getGeo();
+
+    dispatch(
+      setUserCurrentRegoin({
+        latitude,
+        longitude,
+        longitudeDelta: 0.1,
+        latitudeDelta: 0.1,
+      }),
+    );
+  };
+
+  useEffect(() => {
+    getArrivalTime(
+      destinationRegoin?.latitude,
+      destinationRegoin?.longitude,
+      currentRegoin?.latitude,
+      currentRegoin?.longitude,
+    );
+  }, [destinationAddress, currentRegoin]);
+  const getArrivalTime = async (
+    originLat,
+    originLng,
+    destinationLat,
+    destinationLng,
+  ) => {
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/distancematrix/json`,
+        {
+          params: {
+            origins: `${originLat},${originLng}`,
+            destinations: `${destinationLat},${destinationLng}`,
+            key: GOOGLE_API_KEY,
+            mode: 'driving', // Options: driving, walking, bicycling, transit
+          },
+        },
+      );
+
+      if (response.data.rows[0].elements[0].status === 'OK') {
+        const duration = response.data.rows[0].elements[0].duration.text;
+        console.log('this is duration', duration);
+
+        setArrivalTime(duration);
+      } else {
+        console.error('Error in Distance Matrix API response: ', response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching arrival time: ', error);
+    }
+  };
+
   return (
     <View style={{flex: 1}}>
       <MapView
@@ -124,7 +176,7 @@ const ActiveRiderScreen = ({navigation}) => {
           <DestinationIcon />
         </Marker>
         <MapViewDirections
-          apikey={GOOGLE_MAPS_APIKEY}
+          apikey={GOOGLE_API_KEY}
           origin={{
             latitude: currentRegoin?.latitude,
             longitude: currentRegoin?.longitude,
@@ -178,7 +230,7 @@ const ActiveRiderScreen = ({navigation}) => {
           }}>
           <CustomText>Active Ride</CustomText>
           <CustomText size={fontSize.Fourteen} color={colors.grey}>
-            5 min Away
+            {typeof arrivalTime == 'string' ? arrivalTime : ''} Away
           </CustomText>
         </View>
         <View
@@ -199,9 +251,15 @@ const ActiveRiderScreen = ({navigation}) => {
                 width: 60,
                 borderRadius: 40,
                 backgroundColor: colors.yellow,
-              }}></View>
+                overflow: 'hidden',
+              }}>
+              <Image
+                style={{height: '100%', width: '100%'}}
+                source={{uri: `${AWS_URL}${driver?.profileImage}`}}
+              />
+            </View>
             <View style={{marginLeft: '5%'}}>
-              <CustomText>{driver?.name ?? 'Rohan Sahu'}</CustomText>
+              <CustomText>{driver?.name}</CustomText>
               <CustomText color={colors.grey} size={fontSize.Fourteen}>
                 {bookingDetails?.carType ?? 'Sedan'}
               </CustomText>

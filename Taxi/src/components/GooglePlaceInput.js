@@ -6,6 +6,7 @@ import fonts from '../constants/fonts';
 import {Save} from '../constants/svgIcons';
 import {moderateScale} from '../utils/Scalling';
 import {fontSize} from '../constants/fontSize';
+import {GOOGLE_API_KEY} from '../constants/ApiKeys';
 // import Icon from 'react-native-vector-icons/MaterialIcons'; // Or another icon library of your choice
 
 const YourComponent = ({handlePlaceSelect, placeholder}) => (
@@ -50,7 +51,7 @@ const YourComponent = ({handlePlaceSelect, placeholder}) => (
       //     console.log(data, details);
       //   }}
       query={{
-        key: 'AIzaSyDbxbcNuOlVTolfigYexsDVfyHNrpeQ_eI',
+        key: GOOGLE_API_KEY,
         language: 'en',
       }}
       styles={{

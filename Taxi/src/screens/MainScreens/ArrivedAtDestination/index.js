@@ -21,7 +21,7 @@ import {
   Saved1,
 } from '../../../constants/svgIcons';
 import MapViewDirections from 'react-native-maps-directions';
-import {GOOGLE_MAPS_APIKEY} from '../../../constants/ApiKeys';
+import {GOOGLE_API_KEY, GOOGLE_MAPS_APIKEY} from '../../../constants/ApiKeys';
 import {useRef} from 'react';
 import {useAppContext} from '../../../services/Provider';
 import {useEffect} from 'react';
@@ -36,11 +36,12 @@ import {fontSize} from '../../../constants/fontSize';
 import fonts from '../../../constants/fonts';
 import Header from '../../../components/Header';
 
-const ArrivedAtDestination = () => {
+const ArrivedAtDestination = ({navigation}) => {
   const {userAddress, destinationAddress, currentRegoin, destinationRegoin} =
     useSelector(state => state.common);
   const {user, token} = useSelector(state => state.user);
   const {bookingDetails, driveAccpetedData} = useSelector(state => state.rider);
+
   const driver = bookingDetails?.driver;
 
   const _map = useRef(null);
@@ -49,6 +50,22 @@ const ArrivedAtDestination = () => {
   useEffect(() => {
     socket_connect();
   }, []);
+  // const handleArrivdeStatus = data => {
+  //   if (data?.data?.status == 'Drop') {
+  //     navigation.navigate('ArrivedAtDestination');
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (socketRef.current) {
+  //     socketRef.current.on('receiveStatusUpdate', handleArrivdeStatus);
+  //   }
+  //   return () => {
+  //     if (socketRef.current) {
+  //       socketRef.current.off('receiveStatusUpdate', handleArrivdeStatus);
+  //     }
+  //   };
+  // }, []);
 
   return (
     <View style={{flex: 1}}>
@@ -74,23 +91,22 @@ const ArrivedAtDestination = () => {
         userInterfaceStyle={'light'}
         // cacheEnabled
       >
-        <Marker
+        {/* <Marker
           coordinate={{
             latitude: currentRegoin?.latitude,
             longitude: currentRegoin.longitude,
           }}>
           <LocationMap />
-        </Marker>
+        </Marker> */}
         <Marker
           coordinate={{
             latitude: destinationRegoin?.latitude,
             longitude: destinationRegoin?.longitude,
           }}>
-          {/* <Image style={{ height: 20, width: 20, resizeMode: 'contain'}} source={images.loc} /> */}
           <DestinationIcon />
         </Marker>
-        <MapViewDirections
-          apikey={GOOGLE_MAPS_APIKEY}
+        {/* <MapViewDirections
+          apikey={GOOGLE_API_KEY}
           origin={{
             latitude: currentRegoin?.latitude,
             longitude: currentRegoin?.longitude,
@@ -101,7 +117,7 @@ const ArrivedAtDestination = () => {
           }}
           strokeColor="#000000"
           strokeWidth={3}
-        />
+        /> */}
       </MapView>
       <View
         style={{
@@ -124,6 +140,17 @@ const ArrivedAtDestination = () => {
           alignItems: 'center',
           // justifyContent: 'center',
         }}>
+        <View
+          style={{
+            height: 3,
+            width: '30%',
+            alignSelf: 'center',
+            backgroundColor: colors.inputBorder,
+            marginTop: '2%',
+            borderRadius: 1,
+          }}
+        />
+
         <View style={{marginTop: '5%'}}>
           <ArrivedDestinationLogo />
         </View>
@@ -137,7 +164,12 @@ const ArrivedAtDestination = () => {
           {destinationAddress.substring(0, 30)}...
         </CustomText>
         <View style={{marginTop: '10%'}}>
-          <Button title={`Pay Cash $${'15'}`} />
+          <Button
+            onPress={() => navigation.navigate('PayCashScreen')}
+            title={`Pay Cash $ ${parseFloat(bookingDetails?.amount).toFixed(
+              2,
+            )}`}
+          />
         </View>
       </View>
     </View>

@@ -1,5 +1,5 @@
 import {Alert, Image, Pressable, View} from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
+import MapView, {Marker, UrlTile} from 'react-native-maps';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   CarLocation,
@@ -9,7 +9,11 @@ import {
   PhoneDriver,
 } from '../../constants/svgIcons';
 import MapViewDirections from 'react-native-maps-directions';
-import {GOOGLE_MAPS_APIKEY} from '../../constants/ApiKeys';
+import {
+  AWS_URL,
+  GOOGLE_API_KEY,
+  GOOGLE_MAPS_APIKEY,
+} from '../../constants/ApiKeys';
 import {useRef, useState} from 'react';
 import {useAppContext} from '../../services/Provider';
 import {useEffect} from 'react';
@@ -32,6 +36,7 @@ const MapViewWithDirections = ({navigation}) => {
     useSelector(state => state.common);
   const {user, token} = useSelector(state => state.user);
   const {bookingDetails, driveAccpetedData} = useSelector(state => state.rider);
+
   const driver = bookingDetails?.driver;
   const _map = useRef(null);
   const dispatch = useDispatch();
@@ -90,7 +95,7 @@ const MapViewWithDirections = ({navigation}) => {
     ) {
       // navigation.navigate('DriverArrivedScreen');
     }
-  }, [driverLocation]);
+  }, [driverLocation, bookingDetails]);
   const handleArrivdeStatus = data => {
     console.log('this is data', data);
     if (data?.data?.status == 'Arrived') {
@@ -120,7 +125,7 @@ const MapViewWithDirections = ({navigation}) => {
           params: {
             origins: `${originLat},${originLng}`,
             destinations: `${destinationLat},${destinationLng}`,
-            key: GOOGLE_MAPS_APIKEY,
+            key: GOOGLE_API_KEY,
             mode: 'driving', // Options: driving, walking, bicycling, transit
           },
         },
@@ -129,7 +134,6 @@ const MapViewWithDirections = ({navigation}) => {
       if (response.data.rows[0].elements[0].status === 'OK') {
         const duration = response.data.rows[0].elements[0].duration.text;
         console.log('this is duration', duration);
-
         setArrivalTime(duration);
       } else {
         console.error('Error in Distance Matrix API response: ', response.data);
@@ -181,7 +185,7 @@ const MapViewWithDirections = ({navigation}) => {
           onReady={evene => {
             console.log('this is evetn', evene.duration);
           }}
-          apikey={GOOGLE_MAPS_APIKEY}
+          apikey={GOOGLE_API_KEY}
           origin={{
             latitude: currentRegoin?.latitude,
             longitude: currentRegoin?.longitude,
@@ -263,7 +267,13 @@ const MapViewWithDirections = ({navigation}) => {
                 width: 60,
                 borderRadius: 40,
                 backgroundColor: colors.yellow,
-              }}></View>
+                overflow: 'hidden',
+              }}>
+              <Image
+                style={{height: '100%', width: '100%'}}
+                source={{uri: `${AWS_URL}${driver?.profileImage}`}}
+              />
+            </View>
             <View style={{marginLeft: '5%'}}>
               <CustomText>{driver?.name}</CustomText>
               <CustomText color={colors.grey} size={fontSize.Fourteen}>
@@ -335,7 +345,12 @@ const MapViewWithDirections = ({navigation}) => {
           </View>
         </View>
         <View style={{marginTop: '5%'}}>
-          <Button onPress={() => {}} title={'Cancle Ride'} />
+          <Button
+            onPress={() => {
+              navigation.navigate('CancleResonRideScreen');
+            }}
+            title={'Cancle Ride'}
+          />
         </View>
       </View>
     </View>

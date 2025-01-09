@@ -21,8 +21,12 @@ import {
   Saved1,
 } from '../../../constants/svgIcons';
 import MapViewDirections from 'react-native-maps-directions';
-import {GOOGLE_MAPS_APIKEY} from '../../../constants/ApiKeys';
-import {useRef} from 'react';
+import {
+  AWS_URL,
+  GOOGLE_API_KEY,
+  GOOGLE_MAPS_APIKEY,
+} from '../../../constants/ApiKeys';
+import {useRef, useState} from 'react';
 import {useAppContext} from '../../../services/Provider';
 import {useEffect} from 'react';
 import socket from '../../../services/Socket';
@@ -34,6 +38,7 @@ import {width} from '../../../constants/Dimentions';
 import CustomText from '../../../components/CustomText';
 import {fontSize} from '../../../constants/fontSize';
 import fonts from '../../../constants/fonts';
+import Header from '../../../components/Header';
 
 const DriverArrivedScreen = ({route, navigation}) => {
   const {driverLocation, arived} = route.params;
@@ -51,6 +56,7 @@ const DriverArrivedScreen = ({route, navigation}) => {
   useEffect(() => {
     socket_connect();
   }, []);
+  const [arrivalTime, setArrivalTime] = useState('');
   const handleArrivdeStatus = data => {
     if (data?.data?.status == 'InProgress') {
       navigation.navigate('ActiveRiderScreen');
@@ -67,9 +73,49 @@ const DriverArrivedScreen = ({route, navigation}) => {
       }
     };
   }, []);
+  useEffect(() => {
+    getArrivalTime(
+      destinationAddress?.latitude,
+      destinationAddress?.longitude,
+      currentRegoin?.latitude,
+      currentRegoin?.longitude,
+    );
+  }, []);
+  const getArrivalTime = async (
+    originLat,
+    originLng,
+    destinationLat,
+    destinationLng,
+  ) => {
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/distancematrix/json`,
+        {
+          params: {
+            origins: `${originLat},${originLng}`,
+            destinations: `${destinationLat},${destinationLng}`,
+            key: GOOGLE_API_KEY,
+            mode: 'driving', // Options: driving, walking, bicycling, transit
+          },
+        },
+      );
+
+      if (response.data.rows[0].elements[0].status === 'OK') {
+        const duration = response.data.rows[0].elements[0].duration.text;
+        console.log('this is duration', duration);
+
+        setArrivalTime(duration);
+      } else {
+        console.error('Error in Distance Matrix API response: ', response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching arrival time: ', error);
+    }
+  };
 
   return (
     <View style={{flex: 1}}>
+      <Header title={'Driver Arrived'} />
       <MapView
         ref={_map}
         apikey={GOOGLE_MAPS_APIKEY}
@@ -107,7 +153,7 @@ const DriverArrivedScreen = ({route, navigation}) => {
           <CarLocation />
         </Marker>
         <MapViewDirections
-          apikey={GOOGLE_MAPS_APIKEY}
+          apikey={GOOGLE_API_KEY}
           origin={{
             latitude: currentRegoin?.latitude,
             longitude: currentRegoin?.longitude,
@@ -180,7 +226,13 @@ const DriverArrivedScreen = ({route, navigation}) => {
                 width: 60,
                 borderRadius: 40,
                 backgroundColor: colors.yellow,
-              }}></View>
+                overflow: 'hidden',
+              }}>
+              <Image
+                style={{height: '100%', width: '100%'}}
+                source={{uri: `${AWS_URL}${driver?.profileImage}`}}
+              />
+            </View>
             <View style={{marginLeft: '5%'}}>
               <CustomText>{driver?.name}</CustomText>
               <CustomText color={colors.grey} size={fontSize.Fourteen}>

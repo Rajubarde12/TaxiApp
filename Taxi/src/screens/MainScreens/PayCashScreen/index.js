@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, View} from 'react-native';
+import {Image, Pressable, StyleSheet, View} from 'react-native';
 import {colors} from '../../../constants/colors';
 import Header from '../../../components/Header';
 import {
@@ -11,8 +11,16 @@ import fonts from '../../../constants/fonts';
 import {fontSize} from '../../../constants/fontSize';
 import {moderateScale} from '../../../utils/Scalling';
 import Button from '../../../components/Button';
+import {useSelector} from 'react-redux';
+import {AWS_URL} from '../../../constants/ApiKeys';
 
 const PayCashScreen = ({navigation}) => {
+  const {userAddress, destinationAddress, currentRegoin, destinationRegoin} =
+    useSelector(state => state.common);
+  const {user, token} = useSelector(state => state.user);
+  const {bookingDetails, driveAccpetedData} = useSelector(state => state.rider);
+  const driver = bookingDetails?.driver;
+
   return (
     <View style={{flex: 1, backgroundColor: colors.Off_White}}>
       <Header title={'Pay Cash'} />
@@ -43,7 +51,7 @@ const PayCashScreen = ({navigation}) => {
                 size={fontSize.Sixteen}
                 style={{marginLeft: 10}}
                 lines={1}>
-                {'timvvbmmvvvmmvmvbnfnkbfdknbfdfdn'}
+                {userAddress}
               </CustomText>
             </View>
             <View
@@ -67,7 +75,7 @@ const PayCashScreen = ({navigation}) => {
                   alignSelf: 'flex-end',
                 }}>
                 <CustomText size={fontSize.Fourteen} color={colors.grey}>
-                  OTP - {'1234'}
+                  {`${bookingDetails?.totalDistance ?? 5} Miles`}
                 </CustomText>
               </View>
               <View style={styles.separator}></View>
@@ -77,7 +85,7 @@ const PayCashScreen = ({navigation}) => {
               <CustomText
                 lines={1}
                 style={{width: '76%', marginLeft: '2%', marginRight: '0%'}}>
-                {'tktlflflflfllgglgllggll'}
+                {destinationAddress}
               </CustomText>
             </Pressable>
           </View>
@@ -111,9 +119,15 @@ const PayCashScreen = ({navigation}) => {
                 width: 60,
                 borderRadius: 40,
                 backgroundColor: colors.yellow,
-              }}></View>
+                overflow: 'hidden',
+              }}>
+              <Image
+                style={{height: '100%', width: '100%'}}
+                source={{uri: `${AWS_URL}${driver?.profileImage}`}}
+              />
+            </View>
             <View style={{marginLeft: '5%'}}>
-              <CustomText>{'Rohan Sahu'}</CustomText>
+              <CustomText>{driver?.name}</CustomText>
               <CustomText color={colors.grey} size={fontSize.Fourteen}>
                 {'Sedan'}
               </CustomText>
@@ -134,7 +148,9 @@ const PayCashScreen = ({navigation}) => {
             paddingHorizontal: 20,
           }}>
           <CustomText>Total Amount</CustomText>
-          <CustomText>$50.5</CustomText>
+          <CustomText>
+            $ {parseFloat(bookingDetails?.amount).toFixed(2) ?? '10.0'}
+          </CustomText>
         </View>
       </View>
       <View
@@ -148,7 +164,12 @@ const PayCashScreen = ({navigation}) => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <Button title={'Cash Paid'} />
+        <Button
+          onPress={() => {
+            navigation.navigate('CongrationsScreen');
+          }}
+          title={'Cash Paid'}
+        />
       </View>
     </View>
   );

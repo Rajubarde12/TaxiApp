@@ -72,16 +72,6 @@ const HomeScreen = ({navigation}) => {
           }}>
           <View
             style={{
-              height: 3,
-              width: '30%',
-              alignSelf: 'center',
-              backgroundColor: colors.inputBorder,
-              marginTop: '2%',
-              borderRadius: 1,
-            }}
-          />
-          <View
-            style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',

@@ -77,6 +77,8 @@ const SearchingRide = ({route, navigation}) => {
 
   const {userAddress, destinationAddress} = useSelector(state => state.common);
   const {searchInfo} = useSelector(state => state.rider);
+  console.log(JSON.stringify(searchInfo));
+
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const _map = useRef(null);
   const isFocused = useIsFocused();
@@ -86,8 +88,6 @@ const SearchingRide = ({route, navigation}) => {
     socket_connect();
   }, []);
   const handleDriverAccepted = data => {
-    console.log('this is data', data);
-
     dispatch(SET_DRIVER_ACCPETED_DATA(data?.data, token, navigation));
     dispatch(getBookingDetails(data?.data, token, navigation));
   };
@@ -144,26 +144,14 @@ const SearchingRide = ({route, navigation}) => {
             paddingVertical: 20,
             paddingBottom: 40,
             borderRadius: 10,
+            marginTop: 30,
           }}>
           <SearchingRideIcon />
         </Animated.View>
         <View style={styles.modalContainer}>
           <Button
             onPress={() => {
-              dispatch(getBookingDetails(driveAccpetedData, token, navigation));
-              // console.log(searchInfo);
-              // const data = {};
-              // const config = {
-              //   method: 'post',
-              //   maxBodyLength: Infinity,
-              //   url: 'https://taxi-5.onrender.com/api/app/user/cancel-ride',
-              //   headers: {
-              //     'Content-Type': 'application/json',
-              //     Authorization: `Bearer ${token}`,
-              //   },
-              //   data: JSON.stringify(data),
-              // };
-              // navigation.navigate('DestinationScreen');
+              navigation.navigate('CancleResonRideScreen');
             }}
             title={`Cancel`}
           />
