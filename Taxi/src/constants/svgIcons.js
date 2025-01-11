@@ -54,7 +54,39 @@ import Congratulations from '../assets/svg/Congratulations.svg';
 import WalleCashPaid from '../assets/svg/WalleCashPaid.svg';
 import StarFilled from '../assets/svg/StarFilled.svg';
 import CroshBlack from '../assets/svg/CroshBlack.svg';
+import UserYellow from '../assets/svg/userYellow.svg';
+import LocationProdifle from '../assets/svg/LocationProdifle.svg';
+import Bell from '../assets/svg/Bell.svg';
+import WalletProfile from '../assets/svg/WalletProfile.svg';
+import Prebooked from '../assets/svg/Prebooked.svg';
+import Settings from '../assets/svg/Settings.svg';
+import Emergency from '../assets/svg/Emergency.svg';
+import HelpCenter from '../assets/svg/HelpCenter.svg';
+import UserPlush from '../assets/svg/UserPlush.svg';
+import Cupon from '../assets/svg/Cupon.svg';
+import Logout from '../assets/svg/Logout.svg';
+import Right from '../assets/svg/Right.svg';
+import NotificationSettings from '../assets/svg/NotificationSettings.svg';
+import KeySetting from '../assets/svg/KeySetting.svg';
+import DeleteAccount from '../assets/svg/DeleteAccount.svg';
+import LocationAddress from '../assets/svg/LocationAddress.svg';
 export {
+  UserPlush,
+  NotificationSettings,
+  DeleteAccount,
+  LocationAddress,
+  KeySetting,
+  Right,
+  Logout,
+  Cupon,
+  HelpCenter,
+  UserYellow,
+  Emergency,
+  Settings,
+  WalletProfile,
+  Prebooked,
+  Bell,
+  LocationProdifle,
   Wallet,
   CroshBlack,
   StarFilled,

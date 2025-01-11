@@ -17,7 +17,8 @@ const Header = ({onPress, title, map}) => {
         // justifyContent: 'space-between',
         alignItems: 'center',
         zIndex: 5,
-        marginTop: StatusBar.currentHeight,
+        marginTop: StatusBar.currentHeight * 1.5,
+        marginBottom: moderateScale(20),
         justifyContent: 'space-between',
       }}>
       <View style={{width: '24%'}}>

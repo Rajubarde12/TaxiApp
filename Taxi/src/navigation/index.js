@@ -15,6 +15,10 @@ import ArrivedAtDestination from '../screens/MainScreens/ArrivedAtDestination';
 import CongrationsScreen from '../screens/MainScreens/CongrationLastionsScreen';
 import PayCashScreen from '../screens/MainScreens/PayCashScreen';
 import CancleResonRideScreen from '../screens/MainScreens/CancleRideResonScreen';
+import SettingScreen from '../screens/MainScreens/SettingScreen';
+import ManageAddressScreen from '../screens/MainScreens/ManageAddressScreen';
+import AddAddressScreen from '../screens/MainScreens/AddAddressScreen';
+
 const Stack = createStackNavigator();
 const MyStack = () => {
   const config = {
@@ -106,6 +110,12 @@ const MyStack = () => {
       />
       <Stack.Screen name="CongrationsScreen" component={CongrationsScreen} />
       <Stack.Screen name="PayCashScreen" component={PayCashScreen} />
+      <Stack.Screen name="SettingScreen" component={SettingScreen} />
+      <Stack.Screen name="AddAddressScreen" component={AddAddressScreen} />
+      <Stack.Screen
+        name="ManageAddressScreen"
+        component={ManageAddressScreen}
+      />
     </Stack.Navigator>
   );
 };

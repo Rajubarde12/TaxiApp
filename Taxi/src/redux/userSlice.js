@@ -3,6 +3,7 @@ import {createSlice} from '@reduxjs/toolkit';
 import {DATABASE} from '../utils/DATABASE';
 import {MAIN_URL} from '../constants';
 import axios from 'axios';
+import {Alert} from 'react-native';
 const initialState = {user: '', token: ''};
 const userSlice = createSlice({
   name: 'user',
@@ -31,13 +32,9 @@ export const getUserFromLocal = (user = null, token = null) => {
       const finalUser = user ?? JSON.parse(storedUser) ?? null;
       const finalToken = token ?? storedToken ?? null;
 
-      // dispatch({
-      //   type: 'user/SET_USER',
-      //   payload: {
-      //     user: finalUser,
-      //     token: finalToken,
-      //   },
-      // });
+      dispatch({
+        type: 'user/USER_RETRIEVAL_ERROR',
+      });
     } catch (error) {
       console.error('Failed to retrieve user from local storage:', error);
       dispatch({
@@ -47,40 +44,55 @@ export const getUserFromLocal = (user = null, token = null) => {
     }
   };
 };
-export const getUserProfile = async () => {
+export const getUserProfile = () => {
   return async dispatch => {
-    const token = await AsyncStorage.getItem(DATABASE.token);
     try {
-      if (token) {
-        let config = {
-          method: 'get',
-          maxBodyLength: Infinity,
-          url: `${MAIN_URL}/user/get-profile`,
-          headers: {
-            Authorization: `Bearer ${token}`,
+      // Retrieve the token from AsyncStorage
+      const token = await AsyncStorage.getItem(DATABASE.token);
+
+      if (!token) {
+        console.error('Token not found');
+        dispatch({
+          type: 'user/USER_RETRIEVAL_ERROR',
+          payload: 'Token not found',
+        });
+        return;
+      }
+
+      // Axios configuration
+      const config = {
+        method: 'get',
+        url: `${MAIN_URL}/user/get-profile`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      // API call
+      const response = await axios.request(config);
+
+      if (response.data?.status === 200) {
+        console.log('API response:', response.data);
+
+        dispatch({
+          type: 'user/SET_USER',
+          payload: {
+            user: response.data.data,
+            token,
           },
-        };
-        const response = await axios.request(config);
-        if (response.data?.status == 200) {
-          dispatch({
-            type: 'user/SET_USER',
-            payload: {
-              user: response?.data?.data,
-              token: token,
-            },
-          });
-        } else {
-          dispatch({
-            type: 'user/USER_RETRIEVAL_ERROR',
-            err: 'err',
-          });
-        }
+        });
+      } else {
+        console.error('Error in response:', response.data);
+        dispatch({
+          type: 'user/USER_RETRIEVAL_ERROR',
+          payload: response.data?.message || 'Error retrieving user profile',
+        });
       }
     } catch (err) {
-      console.log(err);
+      console.error('Error fetching user profile:', err);
       dispatch({
         type: 'user/USER_RETRIEVAL_ERROR',
-        err,
+        payload: err.message || 'An unexpected error occurred',
       });
     }
   };

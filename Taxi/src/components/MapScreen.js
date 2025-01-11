@@ -5,6 +5,7 @@ import {
   PermissionsAndroid,
   Platform,
   Pressable,
+  Image,
 } from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
@@ -14,6 +15,7 @@ import {
   LiveLocation,
   LocationLogo,
   LocationMap,
+  User,
 } from '../constants/svgIcons';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import GooglePlacesInput from './GooglePlaceInput';
@@ -23,16 +25,16 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setuserAddress, setUserCurrentRegoin} from '../redux/commonSlice';
 import MapViewDirections from 'react-native-maps-directions';
 import {GOOGLE_MAPS_APIKEY} from '../constants/ApiKeys';
+import {moderateScale} from 'react-native-size-matters';
+import {colors} from '../constants/colors';
 
 export default ({
   children,
   isEnalble,
-  onRegoin,
+
   notSHow,
   isIcon,
-  directions,
-  iscall,
-  setRegion,
+
   region,
   handlePlaceSelect,
   getGeo,
@@ -83,7 +85,28 @@ export default ({
             coordinate={currentRegoin}
             title="Your Location"
             description="This is where you are currently located.">
-            <LocationMap />
+            <View
+              style={{
+                height: moderateScale(65),
+                width: moderateScale(65),
+                alignSelf: 'center',
+                borderRadius: moderateScale(45),
+                overflow: 'hidden',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(254, 203, 0,0.6)',
+              }}>
+              <Image
+                style={{
+                  height: '65%',
+                  width: '65%',
+                  borderRadius: moderateScale(60),
+                }}
+                source={{
+                  uri: 'https://png.pngtree.com/background/20230612/original/pngtree-beautiful-cute-girl-wearing-makeup-staring-at-the-camera-picture-image_3186471.jpg',
+                }}
+              />
+            </View>
           </Marker>
         )}
         {isData?.map((item, index) => {
