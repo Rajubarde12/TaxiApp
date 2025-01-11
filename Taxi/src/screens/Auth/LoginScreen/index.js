@@ -165,7 +165,7 @@ const LoginScreen = ({navigation}) => {
                 }));
               }}
               error={error.email}
-              placeholder="679666969"
+              placeholder="Enter your Mobile"
               lable="Phone"
             />
           </View>
@@ -180,15 +180,19 @@ const LoginScreen = ({navigation}) => {
               }}
               error={error.password}
               eye
-              placeholder="***********"
+              placeholder="Entet Your Password"
               lable="Password"
             />
           </View>
-          <View style={{width: '100%', marginTop: 5}}>
+          <Pressable
+            onPress={() => {
+              navigation.navigate('ForgotPasswordScreen');
+            }}
+            style={{width: '100%', marginTop: 5}}>
             <CustomText style={{textAlign: 'right'}} color={colors.yellow}>
               Forgot Password?
             </CustomText>
-          </View>
+          </Pressable>
           <View style={{marginTop: moderateScale(30), width: '100%'}}>
             <Button
               onPress={() => {

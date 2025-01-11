@@ -4,6 +4,7 @@ import {
   Image,
   Linking,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -12,7 +13,8 @@ import {
 import MapScreen from '../../../components/MapScreen';
 import {colors} from '../../../constants/colors';
 import {BottomSheetWrapperComponent} from '../../../components/BottumSheet';
-import {moderateScale} from '../../../utils/Scalling';
+// import {moderateScale} from '../../../utils/Scalling';
+import {moderateScale} from 'react-native-size-matters';
 import CustomText from '../../../components/CustomText';
 import fonts from '../../../constants/fonts';
 import {fontSize} from '../../../constants/fontSize';
@@ -150,7 +152,7 @@ const BookRideScreen = ({route, navigation}) => {
     <View
       style={{
         flex: 1,
-        backgroundColor: colors.white,
+        backgroundColor: colors.Off_White,
       }}>
       <Loader loading={isLoading} />
 
@@ -162,6 +164,7 @@ const BookRideScreen = ({route, navigation}) => {
         }}
         placeholder={address}>
         <Header title={'Book Ride'} />
+
         <View
           style={[
             styles.modalContainer,
@@ -174,217 +177,235 @@ const BookRideScreen = ({route, navigation}) => {
               alignItems: 'center',
             },
           ]}>
-          <View style={styles.container}>
-            <View style={styles.rowContainer}>
-              <RadioBalck height={18} width={18} />
-              <CustomText
-                size={fontSize.Sixteen}
-                style={{marginLeft: 10}}
-                lines={1}>
-                {userAddress}
-              </CustomText>
-            </View>
-            <View style={styles.separator} />
-            <Pressable
-              onPress={() => navigation.goBack()}
-              style={styles.autoPlaceContainer}>
-              <LocationInput height={20} width={20} />
+          <ScrollView
+            contentContainerStyle={{
+              flexGrow: 1,
+              width: '100%',
+              paddingBottom: 30,
+            }}>
+            <View
+              style={[
+                styles.container,
+                {width: '95%', paddingHorizontal: '4%'},
+              ]}>
+              <View
+                style={[styles.rowContainer, {width: '100%', borderWidth: 0}]}>
+                <RadioBalck height={18} width={18} />
+                <CustomText
+                  size={fontSize.Sixteen}
+                  style={{marginLeft: 10}}
+                  lines={1}>
+                  {userAddress}
+                </CustomText>
+              </View>
+              <View style={styles.separator} />
+              <Pressable
+                onPress={() => navigation.goBack()}
+                style={styles.autoPlaceContainer}>
+                <LocationInput height={20} width={20} />
 
-              <CustomText
-                lines={1}
-                style={{width: '76%', marginLeft: '2%', marginRight: '0%'}}>
-                {destinationAddress}
-              </CustomText>
+                <CustomText
+                  lines={1}
+                  style={{width: '72%', marginLeft: '2%', marginRight: '0%'}}>
+                  {destinationAddress}
+                </CustomText>
 
-              {/* <TextInput
+                {/* <TextInput
                 value={''}
                 editable={false}
                 placeholder={destinationAddress.substring(0, 30)}
                 placeholderTextColor="#888"
                 style={styles.input}
               /> */}
-              <Saved1 />
-              <View style={{paddingHorizontal: 5}}>
-                <CustomText
-                  color={'lightgrey'}
-                  size={fontSize.Sixteen}
-                  fontFamily={fonts.medium}>
-                  |
-                </CustomText>
-              </View>
-              <Plush />
-            </Pressable>
-          </View>
-          <View
-            style={[
-              styles.container,
-              {
-                marginTop: 20,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingTop: moderateScale(18),
-                paddingHorizontal: moderateScale(18),
-                paddingVertical: moderateScale(15),
-              },
-            ]}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Watch />
-              <CustomText style={{marginLeft: 10}}>Now</CustomText>
+                <View style={{width: '10%', alignItems: 'center'}}>
+                  <Saved1 height={20} width={20} />
+                </View>
+                <View style={{paddingHorizontal: 5}}>
+                  <CustomText
+                    color={'lightgrey'}
+                    size={fontSize.Sixteen}
+                    fontFamily={fonts.medium}>
+                    |
+                  </CustomText>
+                </View>
+                <Plush />
+              </Pressable>
             </View>
-            <ArrowLeft height={14} width={14} />
-          </View>
-          <View
-            style={{
-              width: '100%',
-              paddingVertical: 10,
-              marginLeft: moderateScale(25),
-            }}>
-            <FlatList
-              data={data}
-              horizontal
-              contentContainerStyle={{paddingVertical: 10}}
-              renderItem={({item, index}) => {
-                const isSelected = selected?.name == item?.name;
-                let Icon = isSelected ? item.icon : item.invactive;
-                return (
-                  <Pressable
-                    onPress={() => {
-                      setSelected(item);
-                    }}
-                    style={{
-                      width: width * 0.45,
-                      borderWidth: 1.5,
-                      marginLeft: index == 0 ? 0 : moderateScale(25),
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingVertical: 20,
-                      paddingBottom: 10,
-                      borderColor: isSelected
-                        ? colors.yellow
-                        : colors.inputBorder,
-                      borderRadius: moderateScale(15),
-                    }}>
-                    <Icon />
-                    {isSelected ? (
+            <View
+              style={[
+                styles.container,
+                {
+                  marginTop: 20,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  // paddingTop: moderateScale(18),
+                  paddingHorizontal: moderateScale(18),
+                  paddingVertical: moderateScale(14),
+                },
+              ]}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Watch />
+                <CustomText style={{marginLeft: 10}}>Now</CustomText>
+              </View>
+              <ArrowLeft height={14} width={14} />
+            </View>
+            <View
+              style={{
+                width: width,
+                paddingVertical: 10,
+                // marginLeft: moderateScale(5),
+                alignItems: 'center',
+                justifyContent: 'center',
+                // borderWidth: 1,
+                zIndex: 20,
+              }}>
+              <FlatList
+                data={data}
+                horizontal
+                contentContainerStyle={{paddingVertical: 10}}
+                renderItem={({item, index}) => {
+                  const isSelected = selected?.name == item?.name;
+                  let Icon = isSelected ? item.icon : item.invactive;
+                  return (
+                    <Pressable
+                      onPress={() => {
+                        setSelected(item);
+                      }}
+                      style={{
+                        width: width * 0.44,
+                        zIndex: 10,
+                        borderWidth: 1.5,
+                        marginLeft: index == 0 ? 0 : moderateScale(15),
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingVertical: 20,
+                        paddingBottom: 10,
+                        borderColor: isSelected
+                          ? colors.yellow
+                          : colors.inputBorder,
+                        borderRadius: moderateScale(8),
+                      }}>
+                      <Icon />
+                      {isSelected ? (
+                        <View
+                          style={{
+                            backgroundColor: colors.yellow,
+                            position: 'absolute',
+                            right: '-5%',
+                            top: '-5%',
+                            zIndex: 15,
+                            height: moderateScale(18),
+                            width: moderateScale(18),
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 20,
+                            elevation: 5,
+                          }}>
+                          <Checkmark
+                            style={{tintColor: 'red'}}
+                            height={14}
+                            width={14}
+                            // tintColor={'red'}
+                          />
+                        </View>
+                      ) : null}
+                      <CustomText color={colors.grey} size={fontSize.Thirteen}>
+                        {item?.time}
+                      </CustomText>
+
+                      <View style={[styles.separator, {width: '90%'}]} />
                       <View
                         style={{
-                          backgroundColor: colors.yellow,
-                          position: 'absolute',
-                          right: '-5%',
-                          top: '-5%',
-                          zIndex: 5,
-                          height: moderateScale(30),
-                          width: moderateScale(30),
+                          flexDirection: 'row',
                           alignItems: 'center',
-                          justifyContent: 'center',
-                          borderRadius: 20,
-                          elevation: 5,
+                          justifyContent: 'space-between',
+                          paddingHorizontal: '5%',
+                          width: '100%',
                         }}>
-                        <Checkmark
-                          style={{tintColor: 'red'}}
-                          height={14}
-                          width={14}
-                          // tintColor={'red'}
-                        />
+                        <CustomText fontFamily={fonts.semi_bold}>
+                          {item?.name}
+                        </CustomText>
+                        <CustomText fontFamily={fonts.semi_bold}>
+                          {item?.price}
+                          <Text
+                            style={{
+                              color: colors.grey,
+                              fontFamily: fonts.medium,
+                            }}>
+                            {' /mile'}
+                          </Text>
+                        </CustomText>
                       </View>
-                    ) : null}
-                    <CustomText color={colors.grey} size={fontSize.Thirteen}>
-                      {item?.time}
-                    </CustomText>
-
-                    <View style={[styles.separator, {width: '90%'}]} />
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        paddingHorizontal: '5%',
-                        width: '100%',
-                      }}>
-                      <CustomText fontFamily={fonts.semi_bold}>
-                        {item?.name}
-                      </CustomText>
-                      <CustomText fontFamily={fonts.semi_bold}>
-                        {item?.price}
-                        <Text
-                          style={{
-                            color: colors.grey,
-                            fontFamily: fonts.medium,
-                          }}>
-                          {' /mile'}
-                        </Text>
-                      </CustomText>
-                    </View>
-                    <View style={{alignSelf: 'flex-start', marginLeft: '5%'}}>
-                      <CustomText style={{alignSelf: 'left'}}>
-                        {item?.capacity}
-                      </CustomText>
-                    </View>
-                  </Pressable>
-                );
-              }}
-            />
-          </View>
-          <View
-            style={[
-              styles.container,
-              {
-                marginTop: 20,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingTop: moderateScale(18),
-                paddaingHorizontal: moderateScale(18),
-                paddingVertical: moderateScale(15),
-              },
-            ]}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Cash />
-              <CustomText style={{marginLeft: 10}}>Cash</CustomText>
+                      <View style={{alignSelf: 'flex-start', marginLeft: '5%'}}>
+                        <CustomText style={{alignSelf: 'left'}}>
+                          {item?.capacity}
+                        </CustomText>
+                      </View>
+                    </Pressable>
+                  );
+                }}
+              />
             </View>
-            <ArrowLeft height={14} width={14} />
-          </View>
-          <View
-            style={[
-              styles.container,
-              {
-                marginTop: 20,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingTop: moderateScale(18),
-                paddingHorizontal: moderateScale(18),
-                paddingVertical: moderateScale(15),
-              },
-            ]}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <UserBook />
-              <CustomText style={{marginLeft: 10}}>Book For Self</CustomText>
+            <View
+              style={[
+                styles.container,
+                {
+                  marginTop: 10,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  // paddingTop: moderateScale(18),
+                  paddingHorizontal: moderateScale(18),
+                  paddingVertical: moderateScale(14),
+                },
+              ]}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Cash />
+                <CustomText style={{marginLeft: 10}}>Cash</CustomText>
+              </View>
+              <ArrowLeft height={14} width={14} />
             </View>
-            <ArrowLeft height={14} width={14} />
-          </View>
-          <View
-            style={[
-              styles.container,
-              {
-                marginTop: 20,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingTop: moderateScale(18),
-                paddingHorizontal: moderateScale(18),
-                paddingVertical: moderateScale(15),
-              },
-            ]}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Promo />
-              <CustomText style={{marginLeft: 10}}>Apply Promo</CustomText>
+            <View
+              style={[
+                styles.container,
+                {
+                  marginTop: 10,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  // paddingTop: moderateScale(18),
+                  paddingHorizontal: moderateScale(18),
+                  paddingVertical: moderateScale(14),
+                },
+              ]}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <UserBook />
+                <CustomText style={{marginLeft: 10}}>Book For Self</CustomText>
+              </View>
+              <ArrowLeft height={14} width={14} />
             </View>
-            <ArrowLeft height={14} width={14} />
-          </View>
+            <View
+              style={[
+                styles.container,
+                {
+                  marginTop: 20,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  // paddingTop: moderateScale(18),
+                  paddingHorizontal: moderateScale(18),
+                  paddingVertical: moderateScale(14),
+                },
+              ]}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Promo />
+                <CustomText style={{marginLeft: 10}}>Apply Promo</CustomText>
+              </View>
+              <ArrowLeft height={14} width={14} />
+            </View>
+          </ScrollView>
         </View>
-
         <View style={styles.modalContainer}>
           <Button
             onPress={() => {
@@ -420,7 +441,7 @@ const data = [
 ];
 const styles = StyleSheet.create({
   modalContainer: {
-    height: moderateScale(150),
+    height: moderateScale(100),
     bottom: 0,
     backgroundColor: colors.white,
     backgroundColor: 'white',
@@ -443,9 +464,10 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     paddingHorizontal: '5%',
     width: '95%',
+    alignSelf: 'center',
     elevation: 5,
     paddingVertical: 20,
-    borderRadius: moderateScale(10),
+    borderRadius: moderateScale(5),
   },
   rowContainer: {
     flexDirection: 'row',
@@ -463,7 +485,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   autoPlaceContainer: {
-    height: moderateScale(70),
+    height: moderateScale(50),
     width: '100%',
     alignSelf: 'center',
     marginTop: -10,

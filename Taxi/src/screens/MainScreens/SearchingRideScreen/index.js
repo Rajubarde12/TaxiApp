@@ -120,19 +120,6 @@ const SearchingRide = ({route, navigation}) => {
         placeholder={address}>
         <Header title={'Book Ride'} />
 
-        {/* <View
-          style={{
-            backgroundColor: 'rgba(255,255,255,0.8)',
-            width: '70%',
-            alignSelf: 'center',
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingVertical: 20,
-            paddingBottom: 40,
-            borderRadius: 10,
-          }}>
-          <SearchingRideIcon />
-        </View> */}
         <Animated.View
           style={{
             transform: [{scale: scaleAnim}],

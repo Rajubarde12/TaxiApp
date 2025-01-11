@@ -7,10 +7,13 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
+  KeyboardAvoidingView,
+  ScrollView,
 } from 'react-native';
 import {colors} from '../../../constants/colors';
 import Header from '../../../components/Header';
-import {moderateScale} from '../../../utils/Scalling';
+// import {moderateScale} from '../../../utils/Scalling';
+import {moderateScale} from 'react-native-size-matters';
 import CustomText from '../../../components/CustomText';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -107,123 +110,132 @@ const DestinationScreen = ({navigation}) => {
   const {userAddress} = useSelector(state => state.common);
 
   return (
-    <View style={{flex: 1, backgroundColor: colors.white}}>
-      <Header title={'Destination'} />
-      <View style={[styles.container, {paddingVertical: 10}]}>
-        <View style={styles.rowContainer}>
-          <RadioBalck height={18} width={18} />
-          <CustomText
-            size={fontSize.Sixteen}
-            style={{marginLeft: 10}}
-            lines={1}>
-            {userAddress}
-          </CustomText>
-        </View>
-        <View style={styles.separator} />
-        <View style={styles.autoPlaceContainer}>
-          <LocationInput height={20} width={20} />
-          <TextInput
-            value={query}
-            onChangeText={text => {
-              setQuery(text);
-              fetchPlaces(text);
-            }}
-            placeholder="Enter Destination"
-            placeholderTextColor="#888"
-            style={styles.input}
-          />
-          <Saved1 />
-          <View style={{paddingHorizontal: 5}}>
+    <View style={{flex: 1, backgroundColor: colors.Off_White}}>
+      <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flexGrow: 1}}>
+        <Header title={'Destination'} />
+        <View style={[styles.container, {paddingVertical: 10}]}>
+          <View style={styles.rowContainer}>
+            <RadioBalck height={18} width={18} />
             <CustomText
-              color={'lightgrey'}
               size={fontSize.Sixteen}
-              fontFamily={fonts.medium}>
-              |
+              style={{marginLeft: 10}}
+              lines={1}>
+              {userAddress}
             </CustomText>
           </View>
-          <Plush />
+          <View style={styles.separator} />
+          <View style={styles.autoPlaceContainer}>
+            <LocationInput height={20} width={20} />
+            <TextInput
+              value={query}
+              onChangeText={text => {
+                setQuery(text);
+                fetchPlaces(text);
+              }}
+              placeholder="Enter Destination"
+              placeholderTextColor="#888"
+              style={styles.input}
+            />
+            <Saved1 />
+            <View style={{paddingHorizontal: 5}}>
+              <CustomText
+                color={'lightgrey'}
+                size={fontSize.Sixteen}
+                fontFamily={fonts.medium}>
+                |
+              </CustomText>
+            </View>
+            <Plush />
+          </View>
         </View>
-      </View>
-      <View
-        style={[
-          styles.container,
-          {
-            marginTop: 20,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingTop: moderateScale(18),
-            paddingHorizontal: moderateScale(18),
-            paddingVertical: moderateScale(15),
-          },
-        ]}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Save />
-          <CustomText style={{marginLeft: 10}}>Saved Places</CustomText>
-        </View>
-        <ArrowLeft height={14} width={14} />
-      </View>
-
-      {places.length > 0 && (
         <View
-          style={[styles.container, {paddingHorizontal: moderateScale(25)}]}>
-          <FlatList
-            data={places}
-            keyExtractor={item => item.place_id}
-            renderItem={({item}) => (
-              <>
-                <TouchableOpacity
-                  onPress={() => fetchPlaceDetails(item.place_id)}
-                  style={styles.placeItem}>
-                  <Restart />
-                  <CustomText style={styles.placeText} lines={1}>
-                    {item.description}
-                  </CustomText>
-                </TouchableOpacity>
-                <View
-                  style={[styles.separator, {width: '100%', marginLeft: 0}]}
-                />
-              </>
-            )}
-            style={styles.listView}
+          style={[
+            styles.container,
+            {
+              marginTop: 20,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingTop: moderateScale(12),
+              paddingHorizontal: moderateScale(10),
+              paddingVertical: moderateScale(12),
+            },
+          ]}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Save />
+            <CustomText style={{marginLeft: 10}}>Saved Places</CustomText>
+          </View>
+          <ArrowLeft height={14} width={14} />
+        </View>
+
+        {places.length > 0 && (
+          <KeyboardAvoidingView>
+            <View
+              style={[
+                styles.container,
+                {paddingHorizontal: moderateScale(12)},
+              ]}>
+              <FlatList
+                scrollEnabled={false}
+                data={places}
+                keyExtractor={item => item.place_id}
+                renderItem={({item}) => (
+                  <>
+                    <TouchableOpacity
+                      onPress={() => fetchPlaceDetails(item.place_id)}
+                      style={styles.placeItem}>
+                      <Restart />
+                      <CustomText style={styles.placeText} lines={1}>
+                        {item.description}
+                      </CustomText>
+                    </TouchableOpacity>
+                    <View
+                      style={[styles.separator, {width: '100%', marginLeft: 0}]}
+                    />
+                  </>
+                )}
+                style={styles.listView}
+              />
+            </View>
+          </KeyboardAvoidingView>
+        )}
+
+        <View
+          style={{
+            height: moderateScale(100),
+            bottom: 0,
+            backgroundColor: colors.white,
+            // position: 'absolute',
+            paddingHorizontal: moderateScale(25),
+            backgroundColor: 'white',
+            shadowColor: '#000',
+            shadowOffset: {width: 0, height: -2},
+            shadowOpacity: 0.1,
+            shadowRadius: 5,
+            elevation: 10,
+            overflow: 'hidden',
+            borderTopRightRadius: 15,
+            borderTopLeftRadius: 15,
+            position: 'absolute',
+            width: width,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Button
+            onPress={() => {
+              if (distainationlatlong?.latitude == 0.0) {
+                Toast.show('Please Select Destination');
+                return;
+              }
+
+              if (distainationlatlong?.latitude != 0.0) {
+                navigation.navigate('BookRideScreen');
+              }
+            }}
+            title={'Confirm Location'}
           />
         </View>
-      )}
-      <View
-        style={{
-          height: moderateScale(150),
-          bottom: 0,
-          backgroundColor: colors.white,
-          // position: 'absolute',
-          paddingHorizontal: moderateScale(25),
-          backgroundColor: 'white',
-          shadowColor: '#000',
-          shadowOffset: {width: 0, height: -2},
-          shadowOpacity: 0.1,
-          shadowRadius: 5,
-          elevation: 10,
-          overflow: 'hidden',
-          borderTopRightRadius: 15,
-          borderTopLeftRadius: 15,
-          position: 'absolute',
-          width: width,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <Button
-          onPress={() => {
-            if (distainationlatlong?.latitude == 0.0) {
-              Toast.show('Please Select Destination');
-              return;
-            }
-
-            if (distainationlatlong?.latitude != 0.0) {
-              navigation.navigate('BookRideScreen');
-            }
-          }}
-          title={'Confirm Location'}
-        />
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -233,11 +245,11 @@ export default DestinationScreen;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
-    marginHorizontal: moderateScale(25),
+    marginHorizontal: moderateScale(10),
     elevation: 3,
     // borderWidth: 1,
     // borderColor: colors.inputBorder,
-    borderRadius: moderateScale(10),
+    borderRadius: moderateScale(5),
     marginTop: '10%',
     overflow: 'hidden',
     paddingTop: 10,
@@ -258,7 +270,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   autoPlaceContainer: {
-    height: moderateScale(70),
+    height: moderateScale(50),
     width: '94%',
     alignSelf: 'center',
     marginTop: -10,
@@ -286,7 +298,7 @@ const styles = StyleSheet.create({
   placeItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: moderateScale(10),
+    paddingTop: moderateScale(7),
   },
   placeText: {
     marginLeft: 10,

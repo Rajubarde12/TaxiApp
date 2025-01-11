@@ -21,10 +21,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {DATABASE} from '../../../utils/DATABASE';
 import {MAIN_URL} from '../../../constants';
 
-const OtpScreen = ({navigation}) => {
+const OtpScreen = ({navigation, route}) => {
   const {otp, user} = useSelector(state => state.login);
   const [loading, setLoading] = useState(false);
-  console.log('tjissii', user?.phone);
+  const phone = route?.params?.phone;
+  const countryCode = route?.params?.countryCode;
+  console.log(phone, countryCode);
 
   const verifyOtp = async otp => {
     console.log(otp);
@@ -34,8 +36,8 @@ const OtpScreen = ({navigation}) => {
       const data = {
         // email: user?.email,
         // otp: otp,
-        mobileNumber: user?.mobileNumber,
-        countryCode: '91',
+        mobileNumber: phone ?? user?.mobileNumber,
+        countryCode: countryCode ?? '91',
         otp: otp,
       };
       let config = {
@@ -49,8 +51,12 @@ const OtpScreen = ({navigation}) => {
       };
       const response = await axios.request(config);
       if (response.data.status === 200) {
-        navigation.navigate('LocationEnableScreen');
-        await AsyncStorage.setItem(DATABASE.user, JSON.stringify(user));
+        if (phone) {
+          navigation.navigate('CreateNewpasswordScreen', {phone, countryCode});
+        } else {
+          navigation.navigate('LocationEnableScreen');
+          await AsyncStorage.setItem(DATABASE.user, JSON.stringify(user));
+        }
         Toast.show('Verification Success');
       }
       setLoading(false);

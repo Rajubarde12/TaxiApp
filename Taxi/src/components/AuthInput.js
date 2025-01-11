@@ -1,5 +1,5 @@
-import {Pressable, TextInput, View} from 'react-native';
-import {moderateScale} from '../utils/Scalling';
+import {Modal, Pressable, TextInput, View} from 'react-native';
+// import {moderateScale} from '../utils/Scalling';
 import {colors} from '../constants/colors';
 import fonts from '../constants/fonts';
 import {fontSize} from '../constants/fontSize';
@@ -7,6 +7,11 @@ import CustomText from './CustomText';
 import {ArrowDown, Eyeopen} from '../constants/svgIcons';
 import {useEffect, useState} from 'react';
 import CountryPicker from 'react-native-country-picker-modal';
+import {
+  moderateScale,
+  scale,
+  moderateVerticalScale,
+} from 'react-native-size-matters';
 
 const Input = ({
   placeholder,
@@ -260,7 +265,7 @@ const Input = ({
             borderRadius: 5,
             flexDirection: 'row',
             alignItems: 'center',
-            height: moderateScale(67),
+            height: moderateScale(45),
           },
         ]}>
         {isMobile ? (
@@ -275,7 +280,7 @@ const Input = ({
               flexDirection: 'row',
               paddingLeft: '1%',
             }}>
-            <CustomText>+{countryCode}</CustomText>
+            <CustomText size={fontSize.Fifteen}>+{countryCode}</CustomText>
             <ArrowDown height={23} width={23} />
             <CountryPicker
               {...{
@@ -311,7 +316,7 @@ const Input = ({
           onChangeText={onChangeText}
           onFocus={onFocus}
           style={{
-            height: moderateScale(67),
+            height: moderateScale(45),
             width: eye || isMobile || isDropDown ? '87%' : '100%',
             color: colors.black,
             paddingLeft: moderateScale(isMobile ? 5 : 20),
@@ -348,6 +353,62 @@ const Input = ({
           {error}
         </CustomText>
       ) : null}
+      <Modal visible={false} transparent={true}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+          }}>
+          <View
+            style={{
+              height: '25%',
+              width: '80%',
+              backgroundColor: colors.white,
+              elevation: 4,
+              borderRadius: 20,
+              alignItems: 'center',
+              alignSelf: 'center',
+              justifyContent: 'space-between',
+              // paddingVertical: moderateVerticalScale(40),
+              // paddingTop: moderateVerticalScale(80),
+              // paddingHorizontal: scale(10),
+            }}>
+            <View
+              style={{
+                width: '100%',
+                alignItems: 'center',
+                borderBottomWidth: 1.5,
+                paddingVertical: moderateVerticalScale(10),
+                borderBottomColor: colors.inputBorder,
+              }}>
+              <CustomText size={fontSize.Eighteen}>Female</CustomText>
+            </View>
+
+            <View
+              style={{
+                width: '100%',
+                alignItems: 'center',
+                borderBottomWidth: 1.5,
+                paddingVertical: moderateVerticalScale(10),
+                borderBottomColor: colors.inputBorder,
+              }}>
+              <CustomText size={fontSize.Eighteen}>Other</CustomText>
+            </View>
+            <View
+              style={{
+                width: '100%',
+                alignItems: 'center',
+                borderBottomWidth: 1.5,
+                paddingVertical: moderateVerticalScale(5),
+                borderBottomColor: colors.inputBorder,
+              }}>
+              <CustomText size={fontSize.Eighteen}>Male</CustomText>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 };

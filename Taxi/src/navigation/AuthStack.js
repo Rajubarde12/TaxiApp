@@ -7,11 +7,13 @@ import OtpScreen from '../screens/Auth/OtpScreen';
 import CompleteProfileScreen from '../screens/Auth/CompletProfile';
 import LocationEnableScreen from '../screens/Auth/LocationElableScreen';
 import CreateNewpasswordScreen from '../screens/Auth/CreatepasswordScreen';
+import ForgotPasswordScreen from '../screens/Auth/ForgotPassowrd';
 
 const AuthStack = () => {
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator
+      // initialRouteName="CreateNewpasswordScreen"
       initialRouteName="IntroFirstScreen"
       screenOptions={{headerShown: false}}>
       <Stack.Screen
@@ -53,6 +55,11 @@ const AuthStack = () => {
       <Stack.Screen
         name="CreateNewpasswordScreen"
         component={CreateNewpasswordScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ForgotPasswordScreen"
+        component={ForgotPasswordScreen}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

@@ -85,6 +85,9 @@ const IntroScreens = ({navigation}) => {
                 activeItem={currentIndex}
                 onPressBack={handleBack}
                 onPressUp={handleNext}
+                onPressSkip={() => {
+                  navigation.navigate('LoginScreen');
+                }}
               />
             </View>
           )}

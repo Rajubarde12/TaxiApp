@@ -1,21 +1,14 @@
 import {
   Alert,
   ImageBackground,
-  Pressable,
+  Platform,
   ScrollView,
   StatusBar,
   Text,
   View,
 } from 'react-native';
 import {colors} from '../../../constants/colors';
-import {
-  ArrowBack1,
-  Checkmark,
-  LocationLogo,
-  LoginSvg,
-  Pencille,
-  User,
-} from '../../../constants/svgIcons';
+import {Checkmark, LoginSvg} from '../../../constants/svgIcons';
 import {LoginBg} from '../../../constants/images';
 import {height} from '../../../constants/Dimentions';
 import {moderateScale} from '../../../utils/Scalling';
@@ -26,66 +19,49 @@ import Input from '../../../components/AuthInput';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Button from '../../../components/Button';
 import AuthSocial from '../../../components/AuthSocial';
-import OTPInput from '../../../components/otpInputComponent';
+import {keyboartype} from '../../../utils/modals/auth';
 import {useState} from 'react';
 import Loader from '../../../components/Loader';
-import Toast from 'react-native-simple-toast';
+import {useDispatch, useSelector} from 'react-redux';
+import {userRegistation} from '../../../redux/loginSlice';
 import {MAIN_URL} from '../../../constants';
 import axios from 'axios';
-
-const CreateNewpasswordScreen = ({navigation, route}) => {
-  const phone = route?.params?.phone;
+import Toast from 'react-native-simple-toast';
+const ForgotPasswordScreen = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
-  const countryCode = route?.params?.countryCode;
-  const validatePassword = password => {
-    let errorMsg = '';
-    if (password.length < 8) {
-      errorMsg = 'Password must be at least 8 characters.';
-    } else if (!/[A-Z]/.test(password)) {
-      errorMsg = 'Password must contain at least one uppercase letter.';
-    } else if (!/[a-z]/.test(password)) {
-      errorMsg = 'Password must contain at least one lowercase letter.';
-    } else if (!/[0-9]/.test(password)) {
-      errorMsg = 'Password must contain at least one number.';
-    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-      errorMsg = 'Password must contain at least one special character.';
-    }
-
-    handleError('password', errorMsg);
-  };
+  const dispatch = useDispatch();
   const [inputs, setInputs] = useState({
-    password: '',
-    confirmPassowrd: '',
+    phone: '',
   });
+  const [countryCode, setCountryCode] = useState('91');
   const [error, setError] = useState({
-    password: '',
-    confirmPassowrd: '',
+    phone: '',
   });
+
+  const handleError = (key, err = '') => {
+    setError(prev => ({...prev, [key]: err}));
+  };
+
   const handleInputs = (key, input) => {
     setInputs(prev => ({...prev, [key]: input}));
     validateField(key, input);
   };
+
   const validateField = (key, value) => {
     switch (key) {
-      case 'password':
-        validatePassword(value);
+      case 'phone':
+        handleError(
+          key,
+          /^[0-9]{10}$/.test(value)
+            ? ''
+            : 'Enter a valid 10-digit phone number',
+        );
         break;
-      case 'confirmPassowrd':
-        if (value != inputs.password) {
-          setError(prev => ({
-            ...prev,
-            confirmPassowrd: 'Passwords do not match',
-          }));
-        } else if (value === inputs.password) {
-          setError(prev => ({...prev, confirmPassowrd: ''}));
-        }
       default:
         break;
     }
   };
-  const handleError = (key, err = '') => {
-    setError(prev => ({...prev, [key]: err}));
-  };
+
   const handleSubmit = async () => {
     let valid = true;
     Object.keys(inputs).forEach(key => {
@@ -99,15 +75,13 @@ const CreateNewpasswordScreen = ({navigation, route}) => {
       try {
         setIsLoading(true);
         let data = {
-          mobileNumber: phone,
+          mobileNumber: inputs.phone,
           countryCode: countryCode,
-          new_password:inputs.password
         };
         let config = {
           method: 'post',
           maxBodyLength: Infinity,
-          url: `${MAIN_URL}/auth/reset-password-new
-`,
+          url: `${MAIN_URL}/auth/forget-password-new`,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -117,13 +91,14 @@ const CreateNewpasswordScreen = ({navigation, route}) => {
         if (response.data.status == 200) {
           setIsLoading(false);
           Toast.show(response.data?.message);
-          navigation.replace('LoginScreen');
+          navigation.navigate('OtpScreen', {
+            phone: inputs.phone,
+            countryCode: countryCode,
+          });
         } else {
           setIsLoading(false);
         }
       } catch (err) {
-        console.log(err);
-
         if (err.status == '404') {
           Toast.show('User not registered!!');
         } else {
@@ -139,94 +114,86 @@ const CreateNewpasswordScreen = ({navigation, route}) => {
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       <Loader loading={isLoading} />
+
       <StatusBar
         translucent
         backgroundColor="transparent"
         barStyle="light-content"
       />
-      <Pressable
-        onPress={() => {
-          navigation.goBack();
-        }}
-        style={{
-          marginTop: StatusBar.currentHeight * 1.5,
-          marginLeft: moderateScale(25),
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: 40,
-          width: 40,
-          borderWidth: 1,
-          borderColor: colors.inputBorder,
-          borderRadius: 20,
-        }}>
-        <ArrowBack1 height={20} width={20} />
-      </Pressable>
-      <View style={{marginTop: StatusBar.currentHeight * 1}} />
+      <View style={{height: StatusBar.currentHeight * 1.5}} />
       <KeyboardAwareScrollView
-        contentContainerStyle={{flexGrow: 1}}
+        contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}
         enableOnAndroid={true}
         extraHeight={50} // Adjust height to lift the view
         extraScrollHeight={30} // Scroll a bit more
       >
+        <View style={{marginTop: StatusBar.currentHeight * 2}} />
+
         <View
           style={{
             paddingHorizontal: moderateScale(30),
             alignItems: 'center',
           }}>
           <CustomText
-            // mTop={moderateScale(15)}
+            mTop={moderateScale(15)}
             size={fontSize.TwentyFive}
             fontFamily={fonts.medium}>
-            New Password
+            Create Account
           </CustomText>
-          <View style={{paddingHorizontal: '10%'}}>
+          <View style={{paddingHorizontal: '20%'}}>
             <CustomText
               mTop={moderateScale(15)}
               color={colors.grey}
               size={fontSize.Fourteen}
               style={{textAlign: 'center'}}
               fontFamily={fonts.medium}>
-              Your new password must be different from previously used
-              passwords.
+              Fill your information below or register with your social account.
             </CustomText>
           </View>
+
           <View style={{marginTop: moderateScale(30), width: '100%'}}>
             <Input
-              value={inputs.password}
-              error={error.password}
-              onChangeText={input => {
-                handleInputs('password', input);
+              value={inputs.phone}
+              onCrountryCode={code1 => {
+                setCountryCode(code1);
               }}
-              eye
-              placeholder="Password"
-              lable="Password"
-            />
-          </View>
-          <View style={{marginTop: moderateScale(30), width: '100%'}}>
-            <Input
-              value={inputs.confirmPassowrd}
-              error={error.confirmPassowrd}
+              error={error.phone}
               onChangeText={input => {
-                handleInputs('confirmPassowrd', input);
+                handleInputs('phone', input);
               }}
-              eye
-              placeholder="Confirm Password"
-              lable="Confirm Password"
+              keyboardType={keyboartype.number_pad}
+              isMobile={true}
+              placeholder="Phone"
+              lable="Phone"
             />
           </View>
 
-          <View style={{marginTop: moderateScale(40), width: '100%'}}>
+          <View style={{marginTop: moderateScale(30), width: '100%'}}>
             <Button
               onPress={() => {
                 handleSubmit();
+                // navigation.navigate('OtpScreen');
               }}
-              title={'Create New Password'}
+              title={'Sign In'}
               width1={'100%'}
             />
           </View>
+          <CustomText
+            mTop={moderateScale(30)}
+            size={fontSize.Fourteen}
+            color={colors.grey}>
+            Or Sing Up With
+          </CustomText>
+          <View style={{width: '100%', marginTop: moderateScale(30)}}>
+            <AuthSocial />
+          </View>
+          <CustomText mTop={moderateScale(20)}>
+            Already have an account?
+            <Text style={{color: colors.yellow}}> Sign In</Text>
+          </CustomText>
         </View>
       </KeyboardAwareScrollView>
     </View>
   );
 };
-export default CreateNewpasswordScreen;
+export default ForgotPasswordScreen;
