@@ -101,7 +101,7 @@ const CreateNewpasswordScreen = ({navigation, route}) => {
         let data = {
           mobileNumber: phone,
           countryCode: countryCode,
-          new_password:inputs.password
+          password: inputs.password,
         };
         let config = {
           method: 'post',

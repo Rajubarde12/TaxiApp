@@ -1,4 +1,11 @@
-import {FlatList, Image, Pressable, ScrollView, View} from 'react-native';
+import {
+  Alert,
+  FlatList,
+  Image,
+  Pressable,
+  ScrollView,
+  View,
+} from 'react-native';
 import {colors} from '../../../constants/colors';
 import Header from '../../../components/Header';
 // import {moderateScale} from '../../../utils/Scalling';
@@ -24,6 +31,8 @@ import CustomText from '../../../components/CustomText';
 import {fontSize} from '../../../constants/fontSize';
 import fonts from '../../../constants/fonts';
 import {width} from '../../../constants/Dimentions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {DATABASE} from '../../../utils/DATABASE';
 
 const ProfileScreen = ({navigation}) => {
   const {user} = useSelector(state => state.user);
@@ -32,7 +41,7 @@ const ProfileScreen = ({navigation}) => {
   const handleNavigation = title => {
     switch (title) {
       case 'Your Profile':
-        navigation.navigate('ProfileScreen');
+        navigation.navigate('UserProfileScreen');
         break;
 
       case 'Manage Address':
@@ -73,13 +82,22 @@ const ProfileScreen = ({navigation}) => {
 
       case 'Logout':
         // Add your logout logic here, such as clearing AsyncStorage, resetting state, etc.
-        console.log('Logout action triggered');
+        handleLogout();
         break;
 
       default:
         console.error(`No navigation implemented for title: ${title}`);
         break;
     }
+  };
+  const handleLogout = async () => {
+    Alert.alert('called');
+    await AsyncStorage.clear();
+    console.log(await AsyncStorage.getItem(DATABASE.token));
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'AuthStack', params: {screen: 'LoginScreen'}}],
+    });
   };
 
   return (

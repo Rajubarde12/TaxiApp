@@ -18,6 +18,7 @@ import CancleResonRideScreen from '../screens/MainScreens/CancleRideResonScreen'
 import SettingScreen from '../screens/MainScreens/SettingScreen';
 import ManageAddressScreen from '../screens/MainScreens/ManageAddressScreen';
 import AddAddressScreen from '../screens/MainScreens/AddAddressScreen';
+import UserProfileScreen from '../screens/MainScreens/UserProfileScreen';
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -116,6 +117,7 @@ const MyStack = () => {
         name="ManageAddressScreen"
         component={ManageAddressScreen}
       />
+      <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} />
     </Stack.Navigator>
   );
 };

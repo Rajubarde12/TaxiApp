@@ -57,7 +57,7 @@ const OtpScreen = ({navigation, route}) => {
           navigation.navigate('LocationEnableScreen');
           await AsyncStorage.setItem(DATABASE.user, JSON.stringify(user));
         }
-        Toast.show('Verification Success');
+        // Toast.show('Verification Success');
       }
       setLoading(false);
       Toast.show(response.data.message);
