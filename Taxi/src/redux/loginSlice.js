@@ -3,7 +3,7 @@ import axios from 'axios';
 import {MAIN_URL} from '../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {DATABASE} from '../utils/DATABASE';
-import {getUserFromLocal} from './userSlice';
+import {getUserFromLocal, getUserProfile} from './userSlice';
 import Toast from 'react-native-simple-toast';
 const initialState = {
   user: null,
@@ -74,12 +74,8 @@ export const userLogin = (data, navigation) => {
           JSON.stringify(response?.data?.data?.user),
         );
         await AsyncStorage.setItem(DATABASE.token, response?.data?.data?.token);
-        dispatch(
-          getUserFromLocal(
-            response?.data?.data?.user,
-            response?.data?.data?.token,
-          ),
-        );
+
+        dispatch(getUserProfile(response?.data?.data?.token));
         navigation.reset({index: 0, routes: [{name: 'BottumTab'}]});
         Toast.show('Login success!');
       } else {
@@ -92,6 +88,8 @@ export const userLogin = (data, navigation) => {
         Toast.show('Invalid user name or password');
       } else if (error.status == '404') {
         Toast.show('User not registred');
+      } else if (error.status == '400') {
+        Toast.show('Invalid password');
       } else {
         Toast.show('Something went wrong');
       }

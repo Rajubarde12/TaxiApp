@@ -2,8 +2,10 @@ import {
   Alert,
   FlatList,
   Image,
+  Modal,
   Pressable,
   ScrollView,
+  ToastAndroid,
   View,
 } from 'react-native';
 import {colors} from '../../../constants/colors';
@@ -39,6 +41,10 @@ import {keyboartype} from '../../../utils/modals/auth';
 import ImagePicker from 'react-native-image-crop-picker';
 import {requestPermissions} from '../../../utils/modals/reguestMediaPremission';
 import axios from 'axios';
+import {MAIN_URL} from '../../../constants';
+import Toast from 'react-native-simple-toast';
+import Button from '../../../components/Button';
+import {getUserProfile} from '../../../redux/userSlice';
 
 const UserProfileScreen = ({navigation}) => {
   const {user} = useSelector(state => state.user);
@@ -50,8 +56,8 @@ const UserProfileScreen = ({navigation}) => {
   });
   const [image, setImage] = useState({name: '', type: '', uri: ''});
   const pickImage = async () => {
-    handleProfileUpdate();
-    return;
+    // handleProfileUpdate();
+    // return;
 
     ImagePicker.openPicker({
       width: 300,
@@ -64,9 +70,36 @@ const UserProfileScreen = ({navigation}) => {
           type: image.mime,
           uri: image.path,
         });
+        handleProfilePhoto({
+          name: image.filename || 'photo.jpg', // Default name for camera captures
+          type: image.mime,
+          uri: image.path,
+        });
       })
       .catch(err => {
         console.error('Error picking image:', err);
+      });
+  };
+  const openCamera = () => {
+    ImagePicker.openCamera({
+      width: 300,
+      height: 400,
+      cropping: true,
+    })
+      .then(image => {
+        setImage({
+          name: image.filename || 'photo.jpg', // Default name for camera captures
+          type: image.mime,
+          uri: image.path,
+        });
+        handleProfilePhoto({
+          name: image.filename || 'photo.jpg', // Default name for camera captures
+          type: image.mime,
+          uri: image.path,
+        });
+      })
+      .catch(err => {
+        console.error('Error capturing image:', err);
       });
   };
 
@@ -123,7 +156,8 @@ const UserProfileScreen = ({navigation}) => {
         break;
     }
   };
-  const handleProfileUpdate = async () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const handleProfilePhoto = async (image, data1) => {
     try {
       // Fetch the token from AsyncStorage
       const token = await AsyncStorage.getItem(DATABASE.token);
@@ -136,38 +170,37 @@ const UserProfileScreen = ({navigation}) => {
 
       // Prepare FormData
       const data = new FormData();
-      const newImageUri = 'file:///' + image.uri.split('file:/').join('');
-      console.log(newImageUri, image);
 
-      //   data.append('profileImage', {
-      //     uri: newImageUri?.split('/').pop(), // URI of the selected image
-      //     name: image.name || 'profile.jpg', // File name (optional)
-      //     type: image.type || 'image/jpeg', // MIME type
-      //   });
-      data.append('name', 'raju bared');
-      const data2 = {
-        name: 'raju',
-      };
-      // Axios request configuration
+      data.append('profileImage', {
+        uri: image?.uri, // URI of the selected image
+        name: image?.name || 'profile.jpg', // File name (optional)
+        type: image?.type || 'image/jpeg', // MIME type
+      });
+
       const config = {
         method: 'post',
-        url: 'http://taxi-5.onrender.com/api/app/user/update-profile',
+        url: `${MAIN_URL}/user/update-profile`,
         headers: {
-          Authorization: `Bearer ${token}`, // Ensure token is valid
+          Authorization: `Bearer ${token}`,
           contentType: 'multipart/form-data',
-          language: 'hindi', // Automatically set boundaries
+          language: 'hindi',
         },
-        data: data, // FormData
-        // maxBodyLength: Infinity,
+        data: JSON.stringify(image ? data : data1),
       };
 
-      // Make the API request
       const response = await axios.request(config);
-      console.log('Profile update response:', response.data);
-      Alert.alert('Success', 'Profile updated successfully!');
+      if (response.data.status == 200) {
+        if (!image) {
+          navigation.goBack();
+          dispatch(getUserProfile());
+        }
+        Toast.show(image ? 'Profile image uplaoded' : 'Profile updated');
+      } else {
+        Toast.show('Something went wrong');
+      }
     } catch (error) {
       console.error('Error updating profile:', error);
-      Alert.alert('Error', 'Failed to update profile.');
+      Toast.show('Something went wrong');
     }
   };
   const handleSubmit = () => {
@@ -178,6 +211,14 @@ const UserProfileScreen = ({navigation}) => {
         valid = false;
       }
     });
+    if (valid) {
+      let data = new FormData();
+      data.append('name', inputs.name);
+      data.append('email', inputs.email);
+      data.append('mobileNumber', inputs.mobileNumber);
+      data.append('countryCode', countryCode);
+      handleProfilePhoto(null, data);
+    }
   };
 
   return (
@@ -208,7 +249,8 @@ const UserProfileScreen = ({navigation}) => {
           />
           <Pressable
             onPress={() => {
-              pickImage();
+              // pickImage();
+              setModalVisible(true);
             }}
             style={{
               right: 0,
@@ -263,7 +305,92 @@ const UserProfileScreen = ({navigation}) => {
           }}
           placeholder={'Email'}
         />
+        <Modal visible={modalVisible} transparent={true}>
+          <Pressable
+            onPress={() => {
+              setModalVisible(false);
+            }}
+            style={{
+              flex: 1,
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <View
+              style={{
+                height: '15%',
+                width: '90%',
+                backgroundColor: colors.yellow,
+                borderRadius: 20,
+                elevation: 3,
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                paddingHorizontal: '10%',
+              }}>
+              <Pressable
+                onPress={() => {
+                  pickImage();
+                  setModalVisible(false);
+                }}>
+                <Image
+                  // tintColor={colors.white}
+                  style={{
+                    // backgroundColor: colors.yellow,
+                    tintColor: colors.white,
+                    height: 40,
+                    width: 40,
+                  }}
+                  source={require('../../../assets/Gallary.png')}
+                />
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  openCamera();
+                  setModalVisible(false);
+                }}>
+                <Image
+                  // tintColor={colors.white}
+                  style={{
+                    // backgroundColor: colors.yellow,
+                    tintColor: colors.white,
+                    height: 40,
+                    width: 40,
+                  }}
+                  source={require('../../../assets/Camera.png')}
+                />
+              </Pressable>
+            </View>
+          </Pressable>
+        </Modal>
       </ScrollView>
+      <View
+        style={{
+          bottom: 0,
+          backgroundColor: colors.white,
+          // position: 'absolute',
+          paddingHorizontal: moderateScale(25),
+          backgroundColor: 'white',
+          shadowColor: '#000',
+          height: moderateScale(120),
+          width: '100%',
+          shadowOffset: {width: 0, height: -2},
+          shadowOpacity: 0.1,
+          shadowRadius: 5,
+          elevation: 10,
+          overflow: 'hidden',
+          borderTopRightRadius: 15,
+          borderTopLeftRadius: 15,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <Button
+          onPress={() => {
+            handleSubmit();
+          }}
+          title={'Update Profile'}
+        />
+      </View>
     </View>
   );
 };

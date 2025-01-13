@@ -12,7 +12,7 @@ export async function requestPermissions() {
         status => status === PermissionsAndroid.RESULTS.GRANTED,
       );
 
-      if (allGranted) {
+      if (granted['android.permission.CAMERA']==P) {
         return true; // All permissions granted
       } else {
         Alert.alert('Permissions Denied', 'Some permissions were not granted.');

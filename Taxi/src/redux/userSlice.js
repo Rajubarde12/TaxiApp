@@ -4,7 +4,7 @@ import {DATABASE} from '../utils/DATABASE';
 import {MAIN_URL} from '../constants';
 import axios from 'axios';
 import {Alert} from 'react-native';
-const initialState = {user: '', token: ''};
+const initialState = {user: '', token: '', savedAddress: []};
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -16,9 +16,12 @@ const userSlice = createSlice({
     USER_RETRIEVAL_ERROR: (state, action) => {
       return state;
     },
+    GET_SAVED_ADDRESS: (state, action) => {
+      state.savedAddress = action.payload;
+    },
   },
 });
-export const {SET_USER} = userSlice.actions;
+export const {SET_USER, GET_SAVED_ADDRESS} = userSlice.actions;
 export default userSlice.reducer;
 
 export const getUserFromLocal = (user = null, token = null) => {
@@ -44,7 +47,7 @@ export const getUserFromLocal = (user = null, token = null) => {
     }
   };
 };
-export const getUserProfile = () => {
+export const getUserProfile = token1 => {
   return async dispatch => {
     try {
       // Retrieve the token from AsyncStorage
@@ -78,7 +81,7 @@ export const getUserProfile = () => {
           type: 'user/SET_USER',
           payload: {
             user: response.data.data,
-            token,
+            token: token1 ?? token,
           },
         });
       } else {
@@ -94,6 +97,36 @@ export const getUserProfile = () => {
         type: 'user/USER_RETRIEVAL_ERROR',
         payload: err.message || 'An unexpected error occurred',
       });
+    }
+  };
+};
+
+export const getSavedAddress = () => {
+  return async dispatch => {
+    try {
+      const token = await AsyncStorage.getItem(DATABASE.token);
+
+      let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `${MAIN_URL}/user/get-all-address`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      axios
+        .request(config)
+        .then(response => {
+          if (response.data.status == 200) {
+            dispatch(GET_SAVED_ADDRESS(response.data?.data?.data));
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    } catch (err) {
+      console.log(err);
     }
   };
 };

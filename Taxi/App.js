@@ -12,7 +12,11 @@ import {
 import {Provider} from 'react-redux';
 import store from './src/redux';
 import {useEffect, useState} from 'react';
-import {getUserFromLocal, getUserProfile} from './src/redux/userSlice';
+import {
+  getSavedAddress,
+  getUserFromLocal,
+  getUserProfile,
+} from './src/redux/userSlice';
 import OutoffTexi from './OutofTexi';
 import AppContextProvider from './src/services/Provider';
 import PayCashScreen from './src/screens/MainScreens/PayCashScreen';
@@ -62,6 +66,7 @@ const App = () => {
   useEffect(() => {
     store.dispatch(getUserFromLocal());
     store.dispatch(getUserProfile());
+    store.dispatch(getSavedAddress());
   }, []);
   // return <OutoffTexi />;
 

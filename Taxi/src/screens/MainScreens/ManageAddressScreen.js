@@ -8,14 +8,18 @@ import CustomText from '../../components/CustomText';
 import {fontSize} from '../../constants/fontSize';
 import fonts from '../../constants/fonts';
 import {LocalTile} from 'react-native-maps';
+import {useSelector} from 'react-redux';
 
 const ManageAddressScreen = ({navigation}) => {
+  const {savedAddress} = useSelector(state => state.user);
+  console.log(savedAddress);
+
   return (
     <View style={{flex: 1, backgroundColor: colors.white, paddingBottom: 20}}>
       <Header map={true} title={'Manage Address'} />
-      <View style={{flex: data.length > 8 ? 1 : null}}>
+      <View style={{flex: savedAddress?.length > 8 ? 1 : null}}>
         <FlatList
-          data={data}
+          data={savedAddress}
           keyExtractor={(_, index) => index.toString()}
           contentContainerStyle={{
             width: width,
@@ -37,19 +41,19 @@ const ManageAddressScreen = ({navigation}) => {
                   // alignItems: 'center',
                   // justifyContent: 'space-between',
                 }}>
-                <LocalTile Height={23} width={23} />
+                <LocationAddress Height={23} width={23} />
                 <View style={{marginLeft: moderateScale(15)}}>
                   <CustomText
                     size={fontSize.Eighteen}
                     fontFamily={fonts.semi_bold}>
-                    {item.title}
+                    {item?.addressType}
                   </CustomText>
                   <CustomText
                     color={colors.grey}
                     mTop={moderateScale(5)}
                     size={fontSize.Fourteen}
                     fontFamily={fonts.medium}>
-                    {item.address}
+                    {item?.address}
                   </CustomText>
                 </View>
               </View>

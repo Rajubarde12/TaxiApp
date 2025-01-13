@@ -91,7 +91,6 @@ const ProfileScreen = ({navigation}) => {
     }
   };
   const handleLogout = async () => {
-    Alert.alert('called');
     await AsyncStorage.clear();
     console.log(await AsyncStorage.getItem(DATABASE.token));
     navigation.reset({

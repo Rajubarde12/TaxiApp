@@ -1,57 +1,102 @@
 import {FlatList, Pressable, TextInput, View} from 'react-native';
 import MapScreen from '../../../components/MapScreen';
 import {colors} from '../../../constants/colors';
-import {BottomSheetWrapperComponent} from '../../../components/BottumSheet';
-// import {moderateScale} from '../../../utils/Scalling';
 import {moderateScale} from 'react-native-size-matters';
 import CustomText from '../../../components/CustomText';
 import fonts from '../../../constants/fonts';
 import {fontSize} from '../../../constants/fontSize';
-import {LiveLocation, Location2, Office} from '../../../constants/svgIcons';
 import {width} from '../../../constants/Dimentions';
 import Header from '../../../components/Header';
 import Button from '../../../components/Button';
 import {useState} from 'react';
-import {setuserAddress, setUserCurrentRegoin} from '../../../redux/commonSlice';
-import {
-  getCoordsFromAddressName,
-  getGeo,
-} from '../../../utils/modals/getUserLocation';
 import {useDispatch, useSelector} from 'react-redux';
 import Input from '../../../components/AuthInput';
+import {GOOGLE_API_KEY} from '../../../constants/ApiKeys';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {DATABASE} from '../../../utils/DATABASE';
+import {apiService} from '../../../redux/ApiRequest';
+import Toast from 'react-native-simple-toast';
+import {MAIN_URL} from '../../../constants';
+import {getSavedAddress} from '../../../redux/userSlice';
+import Loader from '../../../components/Loader';
 const AddAddressScreen = ({route, navigation}) => {
   const {currentRegoin} = useSelector(state => state.common);
+  const [completAdress, setCompleteAdress] = useState('');
+  const [floor, setFloor] = useState('');
+  const [landmark, setLandMark] = useState('');
+  const [selectedAdress, setSelectedAdress] = useState({
+    title: 'Home',
+    id: '1',
+  });
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const handlePlaceSelect = async (data, details) => {
-    const {lat, lng} = details.geometry.location;
+  const fetchPlaces = async () => {
+    const token = await AsyncStorage.getItem(DATABASE.token);
+    console.log(token);
 
-    const address = await getCoordsFromAddressName(lat, lng);
+    const apiKey = GOOGLE_API_KEY;
+    const address = `${completAdress}, ${floor}, ${landmark}`;
 
-    dispatch(
-      setUserCurrentRegoin({
-        latitude: lat,
-        longitude: lng,
-        latitudeDelta: 0.01, // Adjust zoom level as needed
-        longitudeDelta: 0.01,
-      }),
-    );
-    dispatch(setuserAddress(address));
-  };
-  const {region: regoiParams, address} = route?.params || {};
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          address,
+        )}&key=${apiKey}`,
+      );
+      const json = await response.json();
+      console.log(json);
 
-  const getUserLocation = async () => {
-    const {latitude, longitude} = await getGeo();
+      if (json.status === 'OK') {
+        const location = json?.results[0]?.geometry?.location;
+        const adrees = json?.results[0]?.formatted_address;
+        let dat1a = JSON.stringify({
+          type: 'Pickup',
+          address: '1234 Elm Street, Springfield',
+          latitude: 37.7749,
+          longitude: -122.4194,
+          addressType: 'Residential',
+          floor: '3rd Floor',
+          landmark: 'Near Central Park',
+        });
 
-    dispatch(
-      setUserCurrentRegoin({
-        latitude,
-        longitude,
-        longitudeDelta: 0.1,
-        latitudeDelta: 0.1,
-      }),
-    );
-    const address = await getCoordsFromAddressName(latitude, longitude);
-    dispatch(setuserAddress(address));
+        const data = {
+          type: 'Pickup',
+          address: adrees,
+          latitude: location?.lat,
+          longitude: location?.lng,
+          addressType: selectedAdress?.title,
+          floor: floor,
+          landmark: landmark,
+        };
+        let config = {
+          method: 'post',
+          maxBodyLength: Infinity,
+          url: `${MAIN_URL}/user/add-address`,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          data: JSON.stringify(data),
+        };
+
+        const response = await axios.request(config);
+        if (response.data.status == 200) {
+          navigation.goBack();
+          setLoading(false);
+          dispatch(getSavedAddress());
+          Toast.show('adress added');
+        }
+      } else {
+        Toast.show('Unable to fetch location. Please check the address.');
+        setLoading(fonts);
+      }
+    } catch (error) {
+      console.error('Error fetching location:', error);
+      Toast.show('Something went wrong with address ');
+      setLoading(false);
+    }
   };
 
   return (
@@ -60,17 +105,14 @@ const AddAddressScreen = ({route, navigation}) => {
         flex: 1,
         backgroundColor: colors.white,
       }}>
+      <Loader loading={loading} />
       <MapScreen
-        getGeo={getUserLocation}
         region={currentRegoin}
-        handlePlaceSelect={handlePlaceSelect}
         regionz
-        // isIcon
         notSHow={true}
         onRegoin={region => {
           console.log(region);
-        }}
-        placeholder={address}>
+        }}>
         <Header map={true} title={'Pick-Up'} />
 
         <View
@@ -98,6 +140,38 @@ const AddAddressScreen = ({route, navigation}) => {
             mTop={moderateScale(7)}>
             Save Address As
           </CustomText>
+          <View>
+            <FlatList
+              data={addressType}
+              horizontal={true}
+              contentContainerStyle={{
+                paddingHorizontal: moderateScale(0),
+                marginTop: moderateScale(20),
+              }}
+              keyExtractor={item => item.id}
+              showsHorizontalScrollIndicator={false}
+              renderItem={({item, index}) => {
+                return (
+                  <Pressable
+                    onPress={() => {
+                      setSelectedAdress(item);
+                    }}
+                    style={{
+                      paddingHorizontal: 15,
+                      marginLeft: index == 0 ? 0 : 10,
+                      paddingVertical: 6,
+                      backgroundColor:
+                        selectedAdress?.title == item?.title
+                          ? colors.yellow
+                          : colors.white,
+                      borderRadius: 20,
+                    }}>
+                    <CustomText>{item.title}</CustomText>
+                  </Pressable>
+                );
+              }}
+            />
+          </View>
           <>
             <CustomText
               size={fontSize.Eighteen}
@@ -115,6 +189,10 @@ const AddAddressScreen = ({route, navigation}) => {
                 paddingHorizontal: '3%',
               }}>
               <TextInput
+                value={completAdress}
+                onChangeText={input => {
+                  setCompleteAdress(input);
+                }}
                 style={{fontFamily: fonts.medium, color: colors.black}}
                 multiline
                 placeholder="Enter Your Adress"
@@ -123,9 +201,23 @@ const AddAddressScreen = ({route, navigation}) => {
             </View>
           </>
           <View style={{height: moderateScale(15)}} />
-          <Input placeholder={'Floor'} lable={'Floor'} />
+          <Input
+            value={floor}
+            onChangeText={input => {
+              setFloor(input);
+            }}
+            placeholder={'Floor'}
+            lable={'Floor'}
+          />
           <View style={{height: moderateScale(15)}} />
-          <Input placeholder={'Landmark'} lable={'Landmark'} />
+          <Input
+            value={landmark}
+            onChangeText={input => {
+              setLandMark(input);
+            }}
+            placeholder={'Landmark'}
+            lable={'Landmark'}
+          />
           <View
             style={{
               position: 'absolute',
@@ -135,7 +227,8 @@ const AddAddressScreen = ({route, navigation}) => {
             }}>
             <Button
               onPress={() => {
-                navigation.navigate('DestinationScreen');
+                // navigation.navigate('DestinationScreen');
+                fetchPlaces(floor + ',' + landmark + ',' + completAdress);
               }}
               title={'Confirm Location'}
             />
@@ -146,17 +239,21 @@ const AddAddressScreen = ({route, navigation}) => {
   );
 };
 export default AddAddressScreen;
-const data = [
+const addressType = [
   {
+    title: 'Home',
     id: '1',
-    icon: Location2,
-    title: 'Destination',
-    desc: 'Enter Destination',
   },
   {
-    id: '2',
-    icon: Office,
     title: 'Office',
-    desc: '35 KM Away',
+    id: '2',
+  },
+  {
+    title: 'Parent’s House',
+    id: '3',
+  },
+  {
+    title: 'Friend’s House',
+    id: '4',
   },
 ];
