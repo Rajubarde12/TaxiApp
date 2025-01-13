@@ -64,7 +64,11 @@ const OtpScreen = ({navigation, route}) => {
     } catch (err) {
       setLoading(false);
       console.log(err);
-      Toast.show('Something went wrong');
+      if (err.status == 400) {
+        Toast.show('Invalid OTP');
+      } else {
+        Toast.show('Something went wrong');
+      }
     }
   };
   const [opt, setOtp] = useState('');
