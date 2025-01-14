@@ -45,6 +45,7 @@ import {MAIN_URL} from '../../../constants';
 import Toast from 'react-native-simple-toast';
 import Button from '../../../components/Button';
 import {getUserProfile} from '../../../redux/userSlice';
+import {phoneLengths} from '../../../constants/phoneLengths';
 
 const UserProfileScreen = ({navigation}) => {
   const {user} = useSelector(state => state.user);
@@ -114,6 +115,7 @@ const UserProfileScreen = ({navigation}) => {
     });
   }, []);
   const [countryCode, setCountryCode] = useState('91');
+  const [countryCode1, setCountryCode1] = useState('IN');
   const [error, setError] = useState({
     name: '',
     email: '',
@@ -130,6 +132,7 @@ const UserProfileScreen = ({navigation}) => {
   };
 
   const validateField = (key, value) => {
+    const length = phoneLengths[countryCode1] || 10;
     switch (key) {
       case 'name':
         handleError(
@@ -280,8 +283,9 @@ const UserProfileScreen = ({navigation}) => {
         />
         <View height={moderateScale(20)} />
         <Input
-          onCrountryCode={cod1 => {
+          onCrountryCode={(cod1, code) => {
             setCountryCode(cod1);
+            setCountryCode1(code);
           }}
           value={inputs.phone}
           isMobile={true}

@@ -26,11 +26,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getAndroidId, getDeviceToken} from 'react-native-device-info';
 import {userLogin} from '../../../redux/loginSlice';
 import Loader from '../../../components/Loader';
+import {phoneLengths} from '../../../constants/phoneLengths';
 
 const LoginScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const {isLoading} = useSelector(state => state.login);
   const [countryCode, setCountryCode] = useState('91');
+  const [countryCode1, setCountryCode1] = useState('IN');
   const [inputs, setInputs] = useState({
     email: '',
     password: '',
@@ -40,6 +42,7 @@ const LoginScreen = ({navigation}) => {
     password: '',
   });
   const validate = () => {
+    let length = phoneLengths[countryCode1];
     const pasword_regix =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -47,7 +50,7 @@ const LoginScreen = ({navigation}) => {
       setError(prev => ({...prev, email: 'Phone is required'}));
       return;
     }
-    if (inputs.email.length < 10) {
+    if (inputs.email.length < length) {
       setError(prev => ({...prev, email: 'Invalid phone'}));
       return;
     }
@@ -149,8 +152,9 @@ const LoginScreen = ({navigation}) => {
           </CustomText>
           <View style={{marginTop: moderateScale(30), width: '100%'}}>
             <Input
-              onCrountryCode={cod1 => {
+              onCrountryCode={(cod1, code) => {
                 setCountryCode(cod1);
+                setCountryCode1(cod1);
               }}
               isMobile={true}
               keyboardType={keyboartype.number_pad}

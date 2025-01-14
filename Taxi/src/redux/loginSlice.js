@@ -22,7 +22,7 @@ const loginSlice = createSlice({
       state.user = null;
     },
     USER_LOGIN_SUCCESS: (state, action) => {
-      state.isLoading = true;
+      state.isLoading = false;
       state.user = action.payload.user;
       state.token = action.payload.token;
     },
@@ -111,9 +111,12 @@ export const userRegistation = (data, navigation) => {
         data: JSON.stringify(data),
       };
       const response = await axios.request(config);
-      console.log(response.data);
-
       if (response?.data?.status == 201) {
+        console.log(
+          'this is userdata',
+          JSON.stringify(response?.data?.data?.user),
+        );
+
         dispatch(
           USER_REGISTER_SUCCESS({
             user: response?.data?.data?.user,
@@ -122,7 +125,7 @@ export const userRegistation = (data, navigation) => {
         );
 
         dispatch(getUserFromLocal());
-        navigation.replace('OtpScreen');
+        navigation.replace('OtpScreen', {countryCode: data?.countryCode});
         Toast.show('Otp Sent');
       } else {
         Toast.show(response.message);

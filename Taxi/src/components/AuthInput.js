@@ -309,7 +309,7 @@ const Input = ({
         {isMobile ? <CustomText color={colors.grey}>|</CustomText> : null}
 
         <TextInput
-          maxLength={isMobile ? phoneNumberMaxLength : undefined}
+          maxLength={isMobile ? phoneNumberMaxLength ?? 10 : undefined}
           secureTextEntry={eye ? isSecured : null}
           placeholder={placeholder}
           placeholderTextColor={colors.grey}

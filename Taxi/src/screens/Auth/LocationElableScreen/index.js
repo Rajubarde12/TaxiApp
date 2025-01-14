@@ -28,25 +28,9 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Button from '../../../components/Button';
 import AuthSocial from '../../../components/AuthSocial';
 import OTPInput from '../../../components/otpInputComponent';
+import {requestLocationPermission} from '../../../utils/modals/auth';
 
 const LocationEnableScreen = ({navigation}) => {
-  const requestLocationPermission = async () => {
-    if (Platform.OS === 'android') {
-      const granted = await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-      ]);
-
-      // Check if both permissions are granted
-      return (
-        granted['android.permission.ACCESS_FINE_LOCATION'] ===
-          PermissionsAndroid.RESULTS.GRANTED &&
-        granted['android.permission.ACCESS_COARSE_LOCATION'] ===
-          PermissionsAndroid.RESULTS.GRANTED
-      );
-    }
-    return true;
-  };
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       <StatusBar
@@ -117,7 +101,7 @@ const LocationEnableScreen = ({navigation}) => {
             <Button
               onPress={async () => {
                 await requestLocationPermission();
-                navigation.navigate('CreateNewpasswordScreen');
+                navigation.navigate('LoginScreen');
               }}
               title={'Allow Location Access'}
               width1={'100%'}

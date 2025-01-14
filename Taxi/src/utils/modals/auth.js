@@ -1,3 +1,5 @@
+import {PermissionsAndroid} from 'react-native';
+
 export function validatePassword(password) {
   const minLength = 8;
   const lowercaseRegex = /[a-z]/;
@@ -35,4 +37,21 @@ export const keyboartype = {
   email_address: 'email-address',
   phone_pad: 'phone-pad',
   url: 'url',
+};
+export const requestLocationPermission = async () => {
+  if (Platform.OS === 'android') {
+    const granted = await PermissionsAndroid.requestMultiple([
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+    ]);
+
+    // Check if both permissions are granted
+    return (
+      granted['android.permission.ACCESS_FINE_LOCATION'] ===
+        PermissionsAndroid.RESULTS.GRANTED &&
+      granted['android.permission.ACCESS_COARSE_LOCATION'] ===
+        PermissionsAndroid.RESULTS.GRANTED
+    );
+  }
+  return true;
 };

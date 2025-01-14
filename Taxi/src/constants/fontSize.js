@@ -1,6 +1,6 @@
 import {Dimensions} from 'react-native';
 import {scale, verticalScale, moderateScale} from 'react-native-size-matters';
-const calculateFontSize = baseSize => moderateScale(baseSize * 0.8);
+const calculateFontSize = baseSize => moderateScale(baseSize * 0.75);
 
 export const fontSize = {
   Six: calculateFontSize(6),

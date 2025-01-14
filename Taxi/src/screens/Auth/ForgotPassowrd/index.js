@@ -2,6 +2,7 @@ import {
   Alert,
   ImageBackground,
   Platform,
+  Pressable,
   ScrollView,
   StatusBar,
   Text,
@@ -182,15 +183,20 @@ const ForgotPasswordScreen = ({navigation}) => {
             mTop={moderateScale(30)}
             size={fontSize.Fourteen}
             color={colors.grey}>
-            Or Sing Up With
+            Or Sign Up With
           </CustomText>
           <View style={{width: '100%', marginTop: moderateScale(30)}}>
             <AuthSocial />
           </View>
-          <CustomText mTop={moderateScale(20)}>
-            Already have an account?
-            <Text style={{color: colors.yellow}}> Sign In</Text>
-          </CustomText>
+          <Pressable
+            onPress={() => {
+              navigation.goBack();
+            }}>
+            <CustomText mTop={moderateScale(20)}>
+              Already have an account?
+              <Text style={{color: colors.yellow}}> Sign In</Text>
+            </CustomText>
+          </Pressable>
         </View>
       </KeyboardAwareScrollView>
     </View>

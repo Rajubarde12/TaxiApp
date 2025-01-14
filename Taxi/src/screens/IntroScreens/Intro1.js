@@ -32,7 +32,12 @@ const IntroFirstScreen = ({navigation}) => {
             source={require('../../assets/jpg/Intro1Image.jpg')}
           />
         </View>
-        <View style={{alignItems: 'center', paddingTop: moderateScale(50)}}>
+        <View
+          style={{
+            alignItems: 'center',
+            paddingTop: moderateScale(50),
+            paddingHorizontal: moderateScale(20),
+          }}>
           <CustomText
             textAlignment="center"
             fontFamily={fonts.semi_bold}

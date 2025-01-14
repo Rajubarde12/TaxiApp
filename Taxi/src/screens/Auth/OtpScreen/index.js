@@ -1,4 +1,11 @@
-import {ImageBackground, ScrollView, StatusBar, Text, View} from 'react-native';
+import {
+  ImageBackground,
+  Pressable,
+  ScrollView,
+  StatusBar,
+  Text,
+  View,
+} from 'react-native';
 import {colors} from '../../../constants/colors';
 import {Checkmark, LoginSvg} from '../../../constants/svgIcons';
 import {LoginBg} from '../../../constants/images';
@@ -26,11 +33,8 @@ const OtpScreen = ({navigation, route}) => {
   const [loading, setLoading] = useState(false);
   const phone = route?.params?.phone;
   const countryCode = route?.params?.countryCode;
-  console.log(phone, countryCode);
 
   const verifyOtp = async otp => {
-    console.log(otp);
-
     setLoading(true);
     try {
       const data = {
@@ -40,6 +44,8 @@ const OtpScreen = ({navigation, route}) => {
         countryCode: countryCode ?? '91',
         otp: otp,
       };
+      console.log(data);
+
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
@@ -55,7 +61,7 @@ const OtpScreen = ({navigation, route}) => {
           navigation.navigate('CreateNewpasswordScreen', {phone, countryCode});
         } else {
           navigation.navigate('LocationEnableScreen');
-          await AsyncStorage.setItem(DATABASE.user, JSON.stringify(user));
+          // await AsyncStorage.setItem(DATABASE.user, JSON.stringify(user));
         }
         // Toast.show('Verification Success');
       }
@@ -72,6 +78,42 @@ const OtpScreen = ({navigation, route}) => {
     }
   };
   const [opt, setOtp] = useState('');
+  const resendOtp = async () => {
+    setLoading(true);
+    let data = JSON.stringify({
+      mobileNumber: phone,
+      countryCode: countryCode,
+      type: 'User',
+    });
+    console.log(data);
+
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `${MAIN_URL}/auth/resend-otp-new`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then(response => {
+        if (response.data.status == 200) {
+          Toast.show(response.data.message);
+        } else {
+          Toast.show('Something went wrong');
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log(error);
+        Toast.show('Something went wrong');
+        setLoading(false);
+      });
+  };
+
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       <Loader loading={loading} />
@@ -131,15 +173,19 @@ const OtpScreen = ({navigation, route}) => {
               alignItems: 'center',
             }}>
             <CustomText color={colors.grey}>Didn’t receive OTP?</CustomText>
-
-            <CustomText
-              style={{textDecorationLine: 'underline'}}
-              mTop={moderateScale(5)}
-              //   size={fontSize.Eighteen}
-              fontFamily={fonts.semi_bold}
-              color={colors.grey}>
-              Resend Code
-            </CustomText>
+            <Pressable
+              onPress={() => {
+                resendOtp();
+              }}>
+              <CustomText
+                style={{textDecorationLine: 'underline'}}
+                mTop={moderateScale(5)}
+                //   size={fontSize.Eighteen}
+                fontFamily={fonts.semi_bold}
+                color={colors.grey}>
+                Resend Code
+              </CustomText>
+            </Pressable>
           </View>
           <View style={{marginTop: moderateScale(30), width: '100%'}}>
             <Button
