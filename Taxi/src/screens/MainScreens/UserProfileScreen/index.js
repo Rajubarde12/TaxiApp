@@ -150,9 +150,9 @@ const UserProfileScreen = ({navigation}) => {
       case 'phone':
         handleError(
           key,
-          /^[0-9]{10}$/.test(value)
-            ? ''
-            : 'Enter a valid 10-digit phone number',
+          value.length < length
+            ? `Enter a valid ${length}-digit phone number`
+            : '',
         );
         break;
       default:
