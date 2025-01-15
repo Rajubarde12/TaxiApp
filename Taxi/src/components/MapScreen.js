@@ -13,8 +13,10 @@ import {useEffect, useState} from 'react';
 import {
   CarLocation,
   LiveLocation,
+  Location2,
   LocationLogo,
   LocationMap,
+  LocationProdifle,
   User,
 } from '../constants/svgIcons';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
@@ -85,28 +87,7 @@ export default ({
             coordinate={currentRegoin}
             title="Your Location"
             description="This is where you are currently located.">
-            <View
-              style={{
-                height: moderateScale(65),
-                width: moderateScale(65),
-                alignSelf: 'center',
-                borderRadius: moderateScale(45),
-                overflow: 'hidden',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(254, 203, 0,0.6)',
-              }}>
-              <Image
-                style={{
-                  height: '65%',
-                  width: '65%',
-                  borderRadius: moderateScale(60),
-                }}
-                source={{
-                  uri: 'https://png.pngtree.com/background/20230612/original/pngtree-beautiful-cute-girl-wearing-makeup-staring-at-the-camera-picture-image_3186471.jpg',
-                }}
-              />
-            </View>
+            <LocationMap />
           </Marker>
         )}
         {isData?.map((item, index) => {
@@ -123,27 +104,6 @@ export default ({
             </Marker>
           );
         })}
-        {/* {directions ? (
-          <MapViewDirections
-            origin={currentRegoin}
-            waypoints={[currentRegoin, destinationRegoin]}
-            destination={destinationRegoin}
-            apikey={GOOGLE_MAPS_APIKEY}
-            strokeWidth={3}
-            strokeColor="blue"
-            optimizeWaypoints={true}
-            onStart={params => {
-              console.log(
-                `Started routing between "${params.origin}" and "${params.destination}"`,
-              );
-            }}
-            onReady={result => {
-              console.log(`Distance: ${result.distance} km`);
-              console.log(`Duration: ${result.duration} min.`);
-            }}
-            onError={errorMessage => console.error('Error:', errorMessage)}
-          />
-        ) : null} */}
       </MapView>
 
       {children}

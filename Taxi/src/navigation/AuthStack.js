@@ -13,8 +13,7 @@ const AuthStack = () => {
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator
-      // initialRouteName="CreateNewpasswordScreen"
-      initialRouteName="IntroFirstScreen"
+      initialRouteName="CompleteProfileScreen"
       screenOptions={{headerShown: false}}>
       <Stack.Screen
         name="IntroFirstScreen"

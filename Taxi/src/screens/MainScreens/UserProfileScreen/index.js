@@ -179,6 +179,7 @@ const UserProfileScreen = ({navigation}) => {
         name: image?.name || 'profile.jpg', // File name (optional)
         type: image?.type || 'image/jpeg', // MIME type
       });
+      data.append('type', 'User');
 
       const config = {
         method: 'post',
@@ -220,6 +221,7 @@ const UserProfileScreen = ({navigation}) => {
       data.append('email', inputs.email);
       data.append('mobileNumber', inputs.mobileNumber);
       data.append('countryCode', countryCode);
+      data.append('type', 'User');
       handleProfilePhoto(null, data);
     }
   };

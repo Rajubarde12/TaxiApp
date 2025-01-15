@@ -6,11 +6,12 @@ import {
   Pressable,
   ScrollView,
   StatusBar,
+  StyleSheet,
   Text,
   View,
 } from 'react-native';
 import {colors} from '../../../constants/colors';
-import {Checkmark, LoginSvg} from '../../../constants/svgIcons';
+import {ArrowDown, Checkmark, LoginSvg} from '../../../constants/svgIcons';
 import {LoginBg} from '../../../constants/images';
 import {height} from '../../../constants/Dimentions';
 import {moderateScale} from '../../../utils/Scalling';
@@ -27,6 +28,7 @@ import Loader from '../../../components/Loader';
 import {useDispatch, useSelector} from 'react-redux';
 import {userRegistation} from '../../../redux/loginSlice';
 import Toast from 'react-native-simple-toast';
+import SelectDropdown from 'react-native-select-dropdown';
 
 const RegisterScreen = ({navigation}) => {
   const {isLoading} = useSelector(state => state.login);
@@ -39,6 +41,11 @@ const RegisterScreen = ({navigation}) => {
   });
   const [countryCode, setCountryCode] = useState('91');
   const [countryCode1, setCountryCode1] = useState('IN');
+  const emojisWithIcons = [
+    {title: 'Male', description: 'emoticon-happy-outline'},
+    {title: 'Female', description: 'emoticon-happy-outline'},
+    {title: 'Other', description: 'emoticon-happy-outline'},
+  ];
   const [error, setError] = useState({
     name: '',
     email: '',
@@ -317,6 +324,8 @@ const RegisterScreen = ({navigation}) => {
     handleError('password', errorMsg);
   };
   const handleSubmit = () => {
+    navigation.navigate('CompleteProfileScreen');
+    return;
     let valid = true;
     Object.keys(inputs).forEach(key => {
       validateField(key, inputs[key]);
@@ -441,8 +450,48 @@ const RegisterScreen = ({navigation}) => {
               lable="Password"
             />
           </View>
+
           <View style={{marginTop: moderateScale(30), width: '100%'}}>
-            <Input placeholder="Enter Your Gender" lable="Gender" />
+            <SelectDropdown
+              data={emojisWithIcons}
+              onSelect={(selectedItem, index) => {
+                console.log(selectedItem, index);
+              }}
+              renderButton={(selectedItem, isOpened) => {
+                return (
+                  <View style={styles.dropdownButtonStyle}>
+                    <CustomText color={colors.grey} size={fontSize.Fifteen}>
+                      {(selectedItem && selectedItem.title) || 'Select Gender'}
+                    </CustomText>
+                    <ArrowDown />
+                  </View>
+                );
+              }}
+              renderItem={(item, index, isSelected) => {
+                return (
+                  <View
+                    style={{
+                      ...styles.dropdownItemStyle,
+                    }}>
+                    {/* <Icon name={item.icon} style={styles.dropdownItemIconStyle} /> */}
+                    <Text
+                      style={[
+                        styles.dropdownItemTxtStyle,
+                        {
+                          color: true ? colors.black : colors.grey,
+                        },
+                      ]}>
+                      {item.title}
+                    </Text>
+                  </View>
+                );
+              }}
+              showsVerticalScrollIndicator={false}
+              dropdownStyle={styles.dropdownMenuStyle}
+              // renderSearchInputRightIcon={() => {
+              //   return <ArrowDown />;
+              // }}
+            />
           </View>
           <View
             style={{
@@ -516,3 +565,53 @@ const RegisterScreen = ({navigation}) => {
   );
 };
 export default RegisterScreen;
+const styles = StyleSheet.create({
+  dropdownButtonStyle: {
+    borderWidth: 1,
+    width: '100%',
+    borderColor: colors.inputBorder,
+    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: moderateScale(70),
+    paddingHorizontal: '5%',
+    justifyContent: 'space-between',
+  },
+  dropdownButtonTxtStyle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#151E26',
+  },
+  dropdownButtonArrowStyle: {
+    fontSize: 28,
+  },
+  dropdownButtonIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
+  },
+  dropdownMenuStyle: {
+    backgroundColor: '#E9ECEF',
+    borderRadius: 8,
+  },
+  dropdownItemStyle: {
+    width: '100%',
+    flexDirection: 'row',
+    paddingHorizontal: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingLeft: '5%',
+  },
+  dropdownItemTxtStyle: {
+    flex: 1,
+    fontSize: fontSize.Eighteen,
+    // fontWeight: '',
+    // color: '#151E26',
+    color: colors.black,
+  },
+  dropdownItemIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
+  },
+});

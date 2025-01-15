@@ -27,7 +27,7 @@ const Active = () => {
   const [loading, setLoading] = useState([]);
   const isFocused = useIsFocused();
   useEffect(() => {
-    // getBookingList();
+    getBookingList();
   }, [isFocused]);
   const getBookingList = async () => {
     try {
@@ -70,7 +70,6 @@ const Active = () => {
           data={activeList}
           contentContainerStyle={{paddingBottom: moderateScale(10)}}
           renderItem={({item, index}) => {
-            let datStirng = '';
             const date = item?.start_ride_time
               ? new Date(item?.start_ride_time.replace(' ', 'T'))
               : null;
@@ -95,7 +94,6 @@ const Active = () => {
                   year: 'numeric',
                 })} | ${timePart}`
               : null;
-            console.log(item?.driver?.profileImage);
 
             return (
               <View
@@ -108,23 +106,6 @@ const Active = () => {
                   borderColor: colors.inputBorder,
                   paddingBottom: 10,
                 }}>
-                {/* <View
-                style={{
-                  marginBottom: 10,
-                  paddingVertical: 10,
-                  backgroundColor: 'rgba(254, 203, 0,0.2)',
-                  width: '45%',
-                  borderRadius: 20,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <CustomText
-                  fontFamily={fonts.semi_bold}
-                  size={fontSize.Fourteen}
-                  color={colors.yellow}>
-                  Cancled By Driver
-                </CustomText>
-              </View> */}
                 <View
                   style={{
                     flexDirection: 'row',
@@ -165,7 +146,7 @@ const Active = () => {
                       style={{marginLeft: 4}}
                       color={colors.grey}
                       size={fontSize.Thirteen}>
-                      5.0
+                      {item?.driver_rating}
                     </CustomText>
                   </View>
                 </View>

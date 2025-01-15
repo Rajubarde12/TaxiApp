@@ -118,7 +118,7 @@ const SearchingRide = ({route, navigation}) => {
           console.log(region);
         }}
         placeholder={address}>
-        <Header title={'Book Ride'} />
+        <Header map={true} title={'Searching Ride'} />
 
         <Animated.View
           style={{
