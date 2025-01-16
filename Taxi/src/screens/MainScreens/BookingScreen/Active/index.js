@@ -1,10 +1,20 @@
-import {FlatList, Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {moderateScale} from '../../../../utils/Scalling';
 import {colors} from '../../../../constants/colors';
 import CustomText from '../../../../components/CustomText';
 import {fontSize} from '../../../../constants/fontSize';
 import fonts from '../../../../constants/fonts';
 import {
+  CarLocation,
+  DestinationIcon,
   LocationInput,
   LocationLogo,
   RadioBalck,
@@ -12,7 +22,7 @@ import {
   Wallet,
   Watch,
 } from '../../../../constants/svgIcons';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {MAIN_URL} from '../../../../constants';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -20,15 +30,22 @@ import {DATABASE} from '../../../../utils/DATABASE';
 import {useIsFocused} from '@react-navigation/native';
 import Loader from '../../../../components/Loader';
 import {timeConvert} from '../../../../utils/modals/calculateFunction';
-import {AWS_URL} from '../../../../constants/ApiKeys';
+import {
+  AWS_URL,
+  GOOGLE_API_KEY,
+  GOOGLE_MAPS_APIKEY,
+} from '../../../../constants/ApiKeys';
+import MapViewDirections from 'react-native-maps-directions';
+import MapView, {Marker} from 'react-native-maps';
+import {height} from '../../../../constants/Dimentions';
 
 const Active = () => {
   const [activeList, setActiveList] = useState([]);
   const [loading, setLoading] = useState([]);
-  const isFocused = useIsFocused();
+
   useEffect(() => {
     getBookingList();
-  }, [isFocused]);
+  }, []);
   const getBookingList = async () => {
     try {
       const token = await AsyncStorage.getItem(DATABASE.token);
@@ -60,15 +77,14 @@ const Active = () => {
       setLoading(false);
     }
   };
-  console.log('this is bokking', activeList);
-
+  const _map = useRef(null);
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       <Loader loading={loading} />
       <View>
         <FlatList
-          data={activeList}
-          contentContainerStyle={{paddingBottom: moderateScale(10)}}
+          data={activeList.slice(0, 1)}
+          contentContainerStyle={{paddingBottom: moderateScale(-10)}}
           renderItem={({item, index}) => {
             const date = item?.start_ride_time
               ? new Date(item?.start_ride_time.replace(' ', 'T'))
@@ -98,13 +114,13 @@ const Active = () => {
             return (
               <View
                 style={{
-                  marginTop: moderateScale(index == 0 ? 20 : 5),
+                  marginTop: moderateScale(index == 0 ? 20 : 20),
                   paddingHorizontal: moderateScale(20),
                   paddingTop: moderateScale(20),
                   borderRadius: moderateScale(20),
                   borderWidth: 2,
                   borderColor: colors.inputBorder,
-                  paddingBottom: 10,
+                  paddingBottom: moderateScale(120),
                 }}>
                 <View
                   style={{
@@ -237,6 +253,105 @@ const Active = () => {
                     {item?.vehicleNumber}
                   </CustomText>
                 </View>
+
+                {item?.pickupLatitude &&
+                item?.destinationLatitude &&
+                item?.destinationLongitude &&
+                item?.pickupLongitude ? (
+                  <View
+                    style={{
+                      height: moderateScale(200),
+                      marginTop: moderateScale(45),
+                      borderRadius: 10,
+                      overflow: 'hidden',
+                    }}>
+                    <MapView
+                      ref={_map}
+                      apikey={GOOGLE_MAPS_APIKEY}
+                      style={{
+                        flex: 1,
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                      }}
+                      initialRegion={{
+                        latitude: item?.pickupLatitude,
+                        longitude: item?.pickupLongitude,
+                        latitudeDelta: 0.05,
+                        longitudeDelta: 0.05,
+                      }}
+                      onRegionChangeComplete={e => {}}
+                      userInterfaceStyle={'light'}
+                      // cacheEnabled
+                    >
+                      <Marker
+                        coordinate={{
+                          latitude: item?.pickupLatitude,
+                          longitude: item?.pickupLongitude,
+                        }}>
+                        <DestinationIcon />
+                      </Marker>
+                      <Marker
+                        coordinate={{
+                          latitude: item?.destinationLatitude,
+                          longitude: item?.destinationLongitude,
+                        }}>
+                        <CarLocation />
+                      </Marker>
+                      <MapViewDirections
+                        onReady={evene => {}}
+                        apikey={GOOGLE_API_KEY}
+                        origin={{
+                          latitude: item?.pickupLatitude,
+                          longitude: item?.pickupLongitude,
+                        }}
+                        destination={{
+                          latitude: item?.destinationLatitude,
+                          longitude: item?.destinationLongitude,
+                        }}
+                        strokeColor="#000000"
+                        strokeWidth={3}
+                      />
+                    </MapView>
+                  </View>
+                ) : null}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginTop: '20%',
+                  }}>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: '#faf8f2',
+                      paddingHorizontal: 50,
+                      paddingVertical: 10,
+                      borderRadius: 20,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '45%',
+                    }}>
+                    <CustomText color={colors.yellow} size={fontSize.Eighteen}>
+                      Cancel
+                    </CustomText>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: colors.yellow,
+                      width: '45%',
+                      paddingVertical: 10,
+                      borderRadius: 20,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <CustomText color={colors.white} size={fontSize.Eighteen}>
+                      Reschedule
+                    </CustomText>
+                  </TouchableOpacity>
+                </View>
               </View>
             );
           }}
@@ -248,14 +363,10 @@ const Active = () => {
 export default Active;
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: colors.white,
     marginTop: '8%',
-    // borderWidth: 1,
     paddingHorizontal: '2%',
     width: '95%',
-    // elevation: 5,
-    // paddingVertical: 20,
-    // borderRadius: moderateScale(10),
+    // borderWidth: 1,
   },
   rowContainer: {
     flexDirection: 'row',
@@ -269,10 +380,7 @@ const styles = StyleSheet.create({
     borderColor: colors.inputBorder,
     marginBottom: 10,
     width: '100%',
-    // marginLeft: '14%',
     marginTop: 10,
-    height: '5%',
-    // paddingBottom: '5%',
   },
   autoPlaceContainer: {
     height: moderateScale(70),

@@ -148,7 +148,12 @@ const DestinationScreen = ({navigation}) => {
             <Plush />
           </View>
         </View>
-        <View
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('ManageAddressScreen', {
+              screen: 'DestinationScreen',
+            });
+          }}
           style={[
             styles.container,
             {
@@ -161,12 +166,14 @@ const DestinationScreen = ({navigation}) => {
               paddingVertical: moderateScale(12),
             },
           ]}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <TouchableOpacity
+            disabled
+            style={{flexDirection: 'row', alignItems: 'center'}}>
             <Save />
             <CustomText style={{marginLeft: 10}}>Saved Places</CustomText>
-          </View>
+          </TouchableOpacity>
           <ArrowLeft height={14} width={14} />
-        </View>
+        </TouchableOpacity>
 
         {places.length > 0 && (
           <KeyboardAvoidingView>

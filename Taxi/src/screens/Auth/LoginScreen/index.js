@@ -31,8 +31,8 @@ import {phoneLengths} from '../../../constants/phoneLengths';
 const LoginScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const {isLoading} = useSelector(state => state.login);
-  const [countryCode, setCountryCode] = useState('91');
-  const [countryCode1, setCountryCode1] = useState('IN');
+  const [countryCode, setCountryCode] = useState('354');
+  const [countryCode1, setCountryCode1] = useState('IS');
   const [inputs, setInputs] = useState({
     email: '',
     password: '',
@@ -58,30 +58,16 @@ const LoginScreen = ({navigation}) => {
       setError(prev => ({...prev, password: 'Password is required'}));
       return;
     }
-    // if (validatePassword(inputs.password) != 'matched') {
-    //   setError(prev => ({
-    //     ...prev,
-    //     password: validatePassword(inputs.password),
-    //   }));
-    //   return;
-    // }
+
     login();
   };
+
   const login = async () => {
     const deviceToken = await getAndroidId();
 
     const voipToken = 'abC1234VoipTkn5678';
     const deviceType = Platform.OS === 'android' ? 'Android' : 'IOS';
-    const data = {
-      latitude: '34.052235',
-      longitude: '-118.243683',
-      mobileNumber: '1234512345',
-      countryCode: '91',
-      deviceToken,
-      voipToken,
-      deviceType,
-      ...inputs,
-    };
+
     let data1 = {
       email: '',
       password: inputs.password,
@@ -98,7 +84,7 @@ const LoginScreen = ({navigation}) => {
     };
     dispatch(userLogin(data1, navigation));
   };
-  console.log('raju', countryCode);
+  console.log('raju', countryCode, countryCode1);
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       <StatusBar
@@ -154,8 +140,10 @@ const LoginScreen = ({navigation}) => {
             <Input
               onCrountryCode={(cod1, code) => {
                 setCountryCode(cod1);
-                setCountryCode1(cod1);
+                setCountryCode1(code);
               }}
+              counrtyCode={countryCode}
+              counrtyCode1={countryCode1}
               isMobile={true}
               keyboardType={keyboartype.number_pad}
               onFocus={() => {

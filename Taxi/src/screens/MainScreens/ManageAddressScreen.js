@@ -8,11 +8,13 @@ import CustomText from '../../components/CustomText';
 import {fontSize} from '../../constants/fontSize';
 import fonts from '../../constants/fonts';
 import {LocalTile} from 'react-native-maps';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {setSelectedAddressFromList} from '../../redux/commonSlice';
 
-const ManageAddressScreen = ({navigation}) => {
+const ManageAddressScreen = ({navigation, route}) => {
+  const screen = route?.params?.screen;
   const {savedAddress} = useSelector(state => state.user);
-  console.log(savedAddress);
+  const dispatch = useDispatch();
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white, paddingBottom: 20}}>
@@ -27,7 +29,13 @@ const ManageAddressScreen = ({navigation}) => {
           }}
           renderItem={({item, index}) => {
             return (
-              <View
+              <Pressable
+                onPress={() => {
+                  dispatch(setSelectedAddressFromList(item));
+                  if (screen == 'DestinationScreen') {
+                    navigation.goBack();
+                  }
+                }}
                 style={{
                   width: '100%',
                   borderWidth: 0,
@@ -56,7 +64,7 @@ const ManageAddressScreen = ({navigation}) => {
                     {item?.address}
                   </CustomText>
                 </View>
-              </View>
+              </Pressable>
             );
           }}
         />

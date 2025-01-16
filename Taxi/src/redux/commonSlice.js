@@ -14,6 +14,7 @@ const initialState = {
     longitudeDelta: 0.01,
   },
   destinationAddress: '',
+  selectedAddressFromList: '',
 };
 const common = createSlice({
   name: 'common',
@@ -31,6 +32,9 @@ const common = createSlice({
     setDsetinationUserRegion(state, action) {
       state.destinationRegoin = action.payload;
     },
+    setSelectedAddressFromList: (state, action) => {
+      state.selectedAddressFromList = action.payload;
+    },
   },
 });
 export const {
@@ -38,5 +42,6 @@ export const {
   setUserCurrentRegoin,
   setDestinationAdress,
   setDsetinationUserRegion,
+  setSelectedAddressFromList,
 } = common.actions;
 export default common.reducer;

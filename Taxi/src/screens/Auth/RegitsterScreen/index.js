@@ -39,8 +39,8 @@ const RegisterScreen = ({navigation}) => {
     password: '',
     phone: '',
   });
-  const [countryCode, setCountryCode] = useState('91');
-  const [countryCode1, setCountryCode1] = useState('IN');
+  const [countryCode, setCountryCode] = useState('354');
+  const [countryCode1, setCountryCode1] = useState('IS');
   const emojisWithIcons = [
     {title: 'Male', description: 'emoticon-happy-outline'},
     {title: 'Female', description: 'emoticon-happy-outline'},
@@ -275,7 +275,7 @@ const RegisterScreen = ({navigation}) => {
     ZW: 9, // Zimbabwe
   };
   const validateField = (key, value) => {
-    const length = phoneLengths[countryCode1] || 10;
+    const length = phoneLengths[countryCode1] || 7;
 
     switch (key) {
       case 'name':
@@ -305,7 +305,6 @@ const RegisterScreen = ({navigation}) => {
         break;
     }
   };
-  console.log(countryCode);
 
   const validatePassword = password => {
     let errorMsg = '';
@@ -324,8 +323,6 @@ const RegisterScreen = ({navigation}) => {
     handleError('password', errorMsg);
   };
   const handleSubmit = () => {
-    navigation.navigate('CompleteProfileScreen');
-    return;
     let valid = true;
     Object.keys(inputs).forEach(key => {
       validateField(key, inputs[key]);
@@ -429,6 +426,8 @@ const RegisterScreen = ({navigation}) => {
                 setCountryCode1(code);
               }}
               error={error.phone}
+              counrtyCode={countryCode}
+              counrtyCode1={countryCode1}
               onChangeText={input => {
                 handleInputs('phone', input);
               }}

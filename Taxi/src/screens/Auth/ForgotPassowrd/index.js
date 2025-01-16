@@ -28,13 +28,15 @@ import {userRegistation} from '../../../redux/loginSlice';
 import {MAIN_URL} from '../../../constants';
 import axios from 'axios';
 import Toast from 'react-native-simple-toast';
+import {phoneLengths} from '../../../constants/phoneLengths';
 const ForgotPasswordScreen = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const [inputs, setInputs] = useState({
     phone: '',
   });
-  const [countryCode, setCountryCode] = useState('91');
+  const [countryCode, setCountryCode] = useState('354');
+  const [countryCode1, setCountryCode1] = useState('IS');
   const [error, setError] = useState({
     phone: '',
   });
@@ -49,14 +51,17 @@ const ForgotPasswordScreen = ({navigation}) => {
   };
 
   const validateField = (key, value) => {
+    const length = phoneLengths[countryCode1] || 7;
     switch (key) {
+      case 'phone':
       case 'phone':
         handleError(
           key,
-          /^[0-9]{10}$/.test(value)
-            ? ''
-            : 'Enter a valid 10-digit phone number',
+          value.length < length
+            ? `Enter a valid ${length}-digit phone number`
+            : '',
         );
+        break;
         break;
       default:
         break;
@@ -155,8 +160,11 @@ const ForgotPasswordScreen = ({navigation}) => {
           <View style={{marginTop: moderateScale(30), width: '100%'}}>
             <Input
               value={inputs.phone}
-              onCrountryCode={code1 => {
+              counrtyCode={countryCode}
+              counrtyCode1={countryCode1}
+              onCrountryCode={(code1, code) => {
                 setCountryCode(code1);
+                setCountryCode1(code);
               }}
               error={error.phone}
               onChangeText={input => {
@@ -175,7 +183,7 @@ const ForgotPasswordScreen = ({navigation}) => {
                 handleSubmit();
                 // navigation.navigate('OtpScreen');
               }}
-              title={'Sign In'}
+              title={'Send Otp'}
               width1={'100%'}
             />
           </View>
@@ -194,7 +202,7 @@ const ForgotPasswordScreen = ({navigation}) => {
             }}>
             <CustomText mTop={moderateScale(20)}>
               Already have an account?
-              <Text style={{color: colors.yellow}}> Sign In</Text>
+              <Text style={{color: colors.yellow}}> Sign In=</Text>
             </CustomText>
           </Pressable>
         </View>

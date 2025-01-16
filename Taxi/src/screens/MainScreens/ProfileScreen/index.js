@@ -33,6 +33,7 @@ import fonts from '../../../constants/fonts';
 import {width} from '../../../constants/Dimentions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {DATABASE} from '../../../utils/DATABASE';
+import {AWS_URL} from '../../../constants/ApiKeys';
 
 const ProfileScreen = ({navigation}) => {
   const {user} = useSelector(state => state.user);
@@ -98,7 +99,6 @@ const ProfileScreen = ({navigation}) => {
       routes: [{name: 'AuthStack', params: {screen: 'LoginScreen'}}],
     });
   };
-
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       <Header map={true} title="Profile" />
@@ -119,7 +119,9 @@ const ProfileScreen = ({navigation}) => {
               borderRadius: moderateScale(60),
             }}
             source={{
-              uri: 'https://png.pngtree.com/background/20230612/original/pngtree-beautiful-cute-girl-wearing-makeup-staring-at-the-camera-picture-image_3186471.jpg',
+              uri: user?.profileImage
+                ? `${AWS_URL}${user?.profileImage}`
+                : 'https://png.pngtree.com/background/20230612/original/pngtree-beautiful-cute-girl-wearing-makeup-staring-at-the-camera-picture-image_3186471.jpg',
             }}
           />
           <View

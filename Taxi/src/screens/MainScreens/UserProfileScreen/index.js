@@ -46,6 +46,7 @@ import Toast from 'react-native-simple-toast';
 import Button from '../../../components/Button';
 import {getUserProfile} from '../../../redux/userSlice';
 import {phoneLengths} from '../../../constants/phoneLengths';
+import {AWS_URL} from '../../../constants/ApiKeys';
 
 const UserProfileScreen = ({navigation}) => {
   const {user} = useSelector(state => state.user);
@@ -71,7 +72,7 @@ const UserProfileScreen = ({navigation}) => {
           type: image.mime,
           uri: image.path,
         });
-        handleProfilePhoto({
+        handleProfilePhoto(true, {
           name: image.filename || 'photo.jpg', // Default name for camera captures
           type: image.mime,
           uri: image.path,
@@ -93,7 +94,7 @@ const UserProfileScreen = ({navigation}) => {
           type: image.mime,
           uri: image.path,
         });
-        handleProfilePhoto({
+        handleProfilePhoto(true, {
           name: image.filename || 'photo.jpg', // Default name for camera captures
           type: image.mime,
           uri: image.path,
@@ -113,6 +114,7 @@ const UserProfileScreen = ({navigation}) => {
         email: user?.email ?? '',
       };
     });
+    setCountryCode();
   }, []);
   const [countryCode, setCountryCode] = useState('91');
   const [countryCode1, setCountryCode1] = useState('IN');
@@ -160,53 +162,91 @@ const UserProfileScreen = ({navigation}) => {
     }
   };
   const [modalVisible, setModalVisible] = useState(false);
-  const handleProfilePhoto = async (image, data1) => {
+  const handleProfilePhoto = async (bool, image) => {
     try {
-      // Fetch the token from AsyncStorage
       const token = await AsyncStorage.getItem(DATABASE.token);
-      console.log(token);
-
       if (!token) {
         Alert.alert('Error', 'Authentication token is missing.');
         return;
       }
 
-      // Prepare FormData
-      const data = new FormData();
+      // Initialize variables
+      let imagetoUpload = '';
 
-      data.append('profileImage', {
-        uri: image?.uri, // URI of the selected image
-        name: image?.name || 'profile.jpg', // File name (optional)
-        type: image?.type || 'image/jpeg', // MIME type
-      });
-      data.append('type', 'User');
+      // Upload image if provided
+      if (bool) {
+        const imageData = new FormData();
+        imageData.append('image', {
+          uri: image.uri, // URI of the selected image
+          name: image.name || 'profile.jpg', // File name (default: profile.jpg)
+          type: image.type || 'image/jpeg', // MIME type (default: image/jpeg)
+        });
+        imageData.append('type', 'User');
 
-      const config = {
+        const imageUploadConfig = {
+          method: 'post',
+          url: 'https://taxi-5.onrender.com/api/common/image-upload?image',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+            language: 'hindi',
+          },
+          data: imageData,
+        };
+
+        const imageResponse = await axios.request(imageUploadConfig);
+        if (imageResponse.data?.status === 200) {
+          imagetoUpload = imageResponse.data.data.upload;
+          console.log(imagetoUpload);
+        } else {
+          Toast.show('Image upload failed');
+          return;
+        }
+      }
+      let profileData;
+      if (bool) {
+        profileData = {
+          profileImage: imagetoUpload,
+        };
+      } else {
+        profileData = {
+          name: inputs.name,
+          email: inputs.email,
+          mobileNumber: inputs.phone,
+          countryCode: countryCode,
+          type: 'User',
+        };
+      }
+      console.log(profileData);
+      // return;
+
+      const profileUpdateConfig = {
         method: 'post',
         url: `${MAIN_URL}/user/update-profile`,
         headers: {
           Authorization: `Bearer ${token}`,
-          contentType: 'multipart/form-data',
+          'Content-Type': 'application/json',
           language: 'hindi',
         },
-        data: JSON.stringify(image ? data : data1),
+        data: JSON.stringify(profileData),
       };
 
-      const response = await axios.request(config);
-      if (response.data.status == 200) {
-        if (!image) {
+      const profileResponse = await axios.request(profileUpdateConfig);
+      if (profileResponse.data?.status === 200) {
+        if (!bool) {
           navigation.goBack();
-          dispatch(getUserProfile());
         }
-        Toast.show(image ? 'Profile image uplaoded' : 'Profile updated');
+        dispatch(getUserProfile());
+        Toast.show(bool ? 'Profile image uploaded' : 'Profile updated');
       } else {
-        Toast.show('Something went wrong');
+        Toast.show('Profile update failed');
       }
     } catch (error) {
       console.error('Error updating profile:', error);
       Toast.show('Something went wrong');
     }
   };
+
   const handleSubmit = () => {
     let valid = true;
     Object.keys(inputs).forEach(key => {
@@ -216,13 +256,7 @@ const UserProfileScreen = ({navigation}) => {
       }
     });
     if (valid) {
-      let data = new FormData();
-      data.append('name', inputs.name);
-      data.append('email', inputs.email);
-      data.append('mobileNumber', inputs.mobileNumber);
-      data.append('countryCode', countryCode);
-      data.append('type', 'User');
-      handleProfilePhoto(null, data);
+      handleProfilePhoto(false);
     }
   };
 
@@ -249,12 +283,13 @@ const UserProfileScreen = ({navigation}) => {
               uri:
                 image?.uri != ''
                   ? image.uri
+                  : user?.profileImage
+                  ? `${AWS_URL}${user?.profileImage}`
                   : 'https://png.pngtree.com/background/20230612/original/pngtree-beautiful-cute-girl-wearing-makeup-staring-at-the-camera-picture-image_3186471.jpg',
             }}
           />
           <Pressable
             onPress={() => {
-              // pickImage();
               setModalVisible(true);
             }}
             style={{
@@ -290,6 +325,8 @@ const UserProfileScreen = ({navigation}) => {
             setCountryCode1(code);
           }}
           value={inputs.phone}
+          counrtyCode={countryCode}
+          counrtyCode1={countryCode1}
           isMobile={true}
           error={error.phone}
           keyboardType={keyboartype.number_pad}
@@ -340,9 +377,7 @@ const UserProfileScreen = ({navigation}) => {
                   setModalVisible(false);
                 }}>
                 <Image
-                  // tintColor={colors.white}
                   style={{
-                    // backgroundColor: colors.yellow,
                     tintColor: colors.white,
                     height: 40,
                     width: 40,

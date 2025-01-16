@@ -25,12 +25,12 @@ const Input = ({
   onFocus,
   keyboardType,
   onCrountryCode,
+  counrtyCode,
+  counrtyCode1,
   ...props
 }) => {
   const [isSecured, setIsSecured] = useState(true);
   const [visible, seVisible] = useState(false);
-  const [countryCode, setCouryCode] = useState(91);
-  const [counrtyCode1, setCountCode1] = useState('IN');
   const phoneLengths = {
     AF: 9, // Afghanistan
     AL: 9, // Albania
@@ -244,10 +244,10 @@ const Input = ({
     ZM: 9, // Zambia
     ZW: 9, // Zimbabwe
   };
-  const [phoneNumberMaxLength, setPhoneNumberMextLength] = useState(10);
-  useEffect(() => {
-    onCrountryCode ? onCrountryCode(countryCode, counrtyCode1) : null;
-  }, [countryCode]);
+  const [phoneNumberMaxLength, setPhoneNumberMextLength] = useState(
+    phoneLengths['IS'],
+  );
+
   return (
     <>
       <CustomText
@@ -274,13 +274,13 @@ const Input = ({
               seVisible(true);
             }}
             style={{
-              width: '18%',
+              width: '22%',
               alignItems: 'center',
               justifyContent: 'center',
               flexDirection: 'row',
               paddingLeft: '1%',
             }}>
-            <CustomText size={fontSize.Fifteen}>+{countryCode}</CustomText>
+            <CustomText size={fontSize.Fifteen}>+{counrtyCode}</CustomText>
             <ArrowDown height={23} width={23} />
             <CountryPicker
               {...{
@@ -288,9 +288,8 @@ const Input = ({
                   seVisible(false);
                 },
                 onSelect: data => {
-                  setCouryCode(data?.callingCode[0]);
-                  setPhoneNumberMextLength(phoneLengths[data?.cca2] || 91);
-                  setCountCode1(data?.cca2 || 'IN');
+                  setPhoneNumberMextLength(phoneLengths[data?.cca2] || 'IS');
+                  onCrountryCode(data?.callingCode[0], data?.cca2 || 'IS');
                 },
               }}
               withFilter={true}
@@ -317,11 +316,11 @@ const Input = ({
           onFocus={onFocus}
           style={{
             height: moderateScale(45),
-            width: eye || isMobile || isDropDown ? '87%' : '100%',
+            width: eye || isDropDown ? '87%' : isMobile ? '73%' : '100%',
             color: colors.black,
-            paddingLeft: moderateScale(isMobile ? 5 : 20),
+            paddingLeft: moderateScale(isMobile ? 10 : 20),
             fontFamily: fonts.medium,
-            fontSize: fontSize.Fifteen,
+            borderWidth: 0,
           }}
           keyboardType={keyboardType}
           value={value}
@@ -371,9 +370,6 @@ const Input = ({
               alignItems: 'center',
               alignSelf: 'center',
               justifyContent: 'space-between',
-              // paddingVertical: moderateVerticalScale(40),
-              // paddingTop: moderateVerticalScale(80),
-              // paddingHorizontal: scale(10),
             }}>
             <View
               style={{
