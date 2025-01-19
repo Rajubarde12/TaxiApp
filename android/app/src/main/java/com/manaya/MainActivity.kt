@@ -1,4 +1,4 @@
-package com.manaya
+package com.taxi.taxi247
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

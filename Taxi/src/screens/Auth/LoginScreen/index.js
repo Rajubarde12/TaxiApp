@@ -1,9 +1,7 @@
 import {
-  Alert,
   ImageBackground,
   Platform,
   Pressable,
-  ScrollView,
   StatusBar,
   Text,
   View,
@@ -11,7 +9,6 @@ import {
 import {colors} from '../../../constants/colors';
 import {LoginSvg} from '../../../constants/svgIcons';
 import {LoginBg} from '../../../constants/images';
-import {height} from '../../../constants/Dimentions';
 import {moderateScale} from '../../../utils/Scalling';
 import CustomText from '../../../components/CustomText';
 import {fontSize} from '../../../constants/fontSize';
@@ -21,9 +18,9 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Button from '../../../components/Button';
 import AuthSocial from '../../../components/AuthSocial';
 import {useState} from 'react';
-import {keyboartype, validatePassword} from '../../../utils/modals/auth';
+import {keyboartype} from '../../../utils/modals/auth';
 import {useDispatch, useSelector} from 'react-redux';
-import {getAndroidId, getDeviceToken} from 'react-native-device-info';
+import {getAndroidId} from 'react-native-device-info';
 import {userLogin} from '../../../redux/loginSlice';
 import Loader from '../../../components/Loader';
 import {phoneLengths} from '../../../constants/phoneLengths';
@@ -84,7 +81,7 @@ const LoginScreen = ({navigation}) => {
     };
     dispatch(userLogin(data1, navigation));
   };
-  console.log('raju', countryCode, countryCode1);
+
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       <StatusBar

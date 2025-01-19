@@ -9,7 +9,6 @@ const initialState = {
   user: null,
   isLoading: false,
   token: '',
-  // registrationData: null,
   otp: '',
 };
 
@@ -83,7 +82,7 @@ export const userLogin = (data, navigation) => {
         dispatch(USER_LOGIN_ERROR());
       }
     } catch (error) {
-      console.log(error.status);
+      console.log(error);
       if (error.status == '400') {
         Toast.show('Invalid user name or password');
       } else if (error.status == '404') {
@@ -111,6 +110,7 @@ export const userRegistation = (data, navigation) => {
         data: JSON.stringify(data),
       };
       const response = await axios.request(config);
+
       if (response?.data?.status == 201) {
         console.log(
           'this is userdata',

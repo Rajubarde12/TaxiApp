@@ -19,6 +19,7 @@ import SettingScreen from '../screens/MainScreens/SettingScreen';
 import ManageAddressScreen from '../screens/MainScreens/ManageAddressScreen';
 import AddAddressScreen from '../screens/MainScreens/AddAddressScreen';
 import UserProfileScreen from '../screens/MainScreens/UserProfileScreen';
+import ScheDuleRide from '../screens/ScheduleRide';
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -118,6 +119,7 @@ const MyStack = () => {
         component={ManageAddressScreen}
       />
       <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} />
+      <Stack.Screen name="ScheDuleRide" component={ScheDuleRide} />
     </Stack.Navigator>
   );
 };

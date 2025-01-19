@@ -217,8 +217,6 @@ const UserProfileScreen = ({navigation}) => {
           type: 'User',
         };
       }
-      console.log(profileData);
-      // return;
 
       const profileUpdateConfig = {
         method: 'post',
