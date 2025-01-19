@@ -20,6 +20,7 @@ import ManageAddressScreen from '../screens/MainScreens/ManageAddressScreen';
 import AddAddressScreen from '../screens/MainScreens/AddAddressScreen';
 import UserProfileScreen from '../screens/MainScreens/UserProfileScreen';
 import ScheDuleRide from '../screens/ScheduleRide';
+import AddRattingScreen from '../screens/AddRatting';
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -64,31 +65,10 @@ const MyStack = () => {
             },
           },
         },
-        // cardStyleInterpolator: ({current, next, layouts}) => {
-        //   const translateX = current.progress.interpolate({
-        //     inputRange: [0, 1],
-        //     outputRange: [layouts.screen.width, 0], // Current screen slides in
-        //   });
-
-        //   const previousTranslateX = next
-        //     ? next.progress.interpolate({
-        //         inputRange: [0, 1],
-        //         outputRange: [0, -layouts.screen.width * 0.3], // Previous screen slides out
-        //       })
-        //     : 0;
-
-        //   return {
-        //     cardStyle: {
-        //       transform: [{translateX}],
-        //     },
-        //     overlayStyle: {
-        //       transform: [{translateX: previousTranslateX}],
-        //     },
-        //   };
-        // },
       }}
       initialRouteName="SplashScreen">
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
+      <Stack.Screen name="AddRattingScreen" component={AddRattingScreen} />
       <Stack.Screen name="AuthStack" component={AuthStack} />
       <Stack.Screen name="BottumTab" component={BottumTab} />
       <Stack.Screen name="PickupScreen" component={PickupScreen} />

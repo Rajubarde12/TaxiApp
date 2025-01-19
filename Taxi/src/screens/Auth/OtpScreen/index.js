@@ -60,8 +60,7 @@ const OtpScreen = ({navigation, route}) => {
         if (phone) {
           navigation.navigate('CreateNewpasswordScreen', {phone, countryCode});
         } else {
-          navigation.navigate('LocationEnableScreen');
-          // await AsyncStorage.setItem(DATABASE.user, JSON.stringify(user));
+          navigation.reset({index: 0, routes: [{name: 'LoginScreen'}]});
         }
         // Toast.show('Verification Success');
       }

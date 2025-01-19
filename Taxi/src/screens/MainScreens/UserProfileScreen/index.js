@@ -116,8 +116,8 @@ const UserProfileScreen = ({navigation}) => {
     });
     setCountryCode();
   }, []);
-  const [countryCode, setCountryCode] = useState('91');
-  const [countryCode1, setCountryCode1] = useState('IN');
+  const [countryCode, setCountryCode] = useState('354');
+  const [countryCode1, setCountryCode1] = useState('IS');
   const [error, setError] = useState({
     name: '',
     email: '',
@@ -197,7 +197,6 @@ const UserProfileScreen = ({navigation}) => {
         const imageResponse = await axios.request(imageUploadConfig);
         if (imageResponse.data?.status === 200) {
           imagetoUpload = imageResponse.data.data.upload;
-          console.log(imagetoUpload);
         } else {
           Toast.show('Image upload failed');
           return;

@@ -32,9 +32,8 @@ import axios from 'axios';
 import Header from '../../components/Header';
 
 const MapViewWithDirections = ({navigation}) => {
-  const {userAddress, destinationAddress, currentRegoin, destinationRegoin} =
-    useSelector(state => state.common);
-  const {user, token} = useSelector(state => state.user);
+  const {currentRegoin} = useSelector(state => state.common);
+  const {token} = useSelector(state => state.user);
   const {bookingDetails, driveAccpetedData} = useSelector(state => state.rider);
 
   const driver = bookingDetails?.driver;

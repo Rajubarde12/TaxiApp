@@ -19,7 +19,7 @@ import {
 } from '../../../constants/svgIcons';
 import {LoginBg} from '../../../constants/images';
 import {height} from '../../../constants/Dimentions';
-import {moderateScale} from '../../../utils/Scalling';
+import {moderateScale} from 'react-native-size-matters';
 import CustomText from '../../../components/CustomText';
 import {fontSize} from '../../../constants/fontSize';
 import fonts from '../../../constants/fonts';
@@ -97,17 +97,20 @@ const LocationEnableScreen = ({navigation}) => {
             </CustomText>
           </View>
 
-          <View style={{marginTop: moderateScale(400), width: '100%'}}>
+          <View style={{marginTop: moderateScale(200), width: '100%'}}>
             <Button
               onPress={async () => {
                 await requestLocationPermission();
-                navigation.navigate('LoginScreen');
+                navigation.reset({index: 0, routes: [{name: 'BottumTab'}]});
               }}
               title={'Allow Location Access'}
               width1={'100%'}
             />
           </View>
           <CustomText
+            onPress={() => {
+              navigation.reset({index: 0, routes: [{name: 'BottumTab'}]});
+            }}
             mTop={moderateScale(50)}
             size={fontSize.Eighteen}
             color={colors.yellow}

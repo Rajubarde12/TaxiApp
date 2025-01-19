@@ -269,7 +269,7 @@ const ActiveRiderScreen = ({navigation}) => {
             <CustomText>
               $ 1.25/ <Text style={{color: colors.grey}}> per mile</Text>
             </CustomText>
-            <CustomText>TSUVFFLD</CustomText>
+            <CustomText>{bookingDetails?.crnNumber}</CustomText>
           </View>
         </View>
       </View>

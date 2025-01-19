@@ -75,7 +75,11 @@ export const userLogin = (data, navigation) => {
         await AsyncStorage.setItem(DATABASE.token, response?.data?.data?.token);
 
         dispatch(getUserProfile(response?.data?.data?.token));
-        navigation.reset({index: 0, routes: [{name: 'BottumTab'}]});
+        if (response?.data?.data?.user?.isProfileCompleted == false) {
+          navigation.replace('CompleteProfileScreen');
+        } else {
+          navigation.reset({index: 0, routes: [{name: 'BottumTab'}]});
+        }
         Toast.show('Login success!');
       } else {
         Toast.show('Invalid user name or password');

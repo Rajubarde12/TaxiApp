@@ -13,9 +13,16 @@ import {moderateScale} from '../../utils/Scalling';
 import CustomText from '../../components/CustomText';
 import {fontSize} from '../../constants/fontSize';
 import {CroshBlack, RadioUnifll, RadioYellow} from '../../constants/svgIcons';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import fonts from '../../constants/fonts';
 import Button from '../../components/Button';
+import Toast from 'react-native-simple-toast';
+import {MAIN_URL} from '../../constants';
+import Loader from '../../components/Loader';
+import {useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {DATABASE} from '../../utils/DATABASE';
+import axios from 'axios';
 const data = [
   {
     id: 1,
@@ -43,15 +50,84 @@ const data = [
   },
 ];
 
-const CancleResonRideScreen = () => {
+const CancleResonRideScreen = ({navigation, route}) => {
+  const {searchInfo} = useSelector(state => state.rider);
+
+  const {bookingDetails, driveAccpetedData} = useSelector(state => state.rider);
+  const bookingId =
+    route?.params?.bookingId ?? driveAccpetedData?.bookingId
+      ? driveAccpetedData?.bookingId
+      : searchInfo?.bookingId;
+
+  const crNumber = route?.params?.crNumber ?? bookingDetails?.crnNumber;
+  const [loading, setLoading] = useState(false);
+
   const [selectedreason, setSelectedReson] = useState({
     id: 1,
     title: 'Schedule Change',
   });
   const [visible, setVisible] = useState(false);
   const [visible2, setVisible2] = useState(false);
+  const [skiped, setSkiped] = useState(false);
+
+  const [bookingInput, setBookingInput] = useState('');
+  useEffect(() => {
+    setTimeout(() => {
+      if (!skiped) {
+        setVisible(true);
+      }
+    }, 30000);
+  }, []);
+  const handleCancle = async () => {
+    try {
+      const token = await AsyncStorage.getItem(DATABASE.token);
+      setLoading(true);
+      if (selectedreason.title == 'Other' && bookingInput == '') {
+        Toast.show('Please Enter you Cancel reason');
+        return;
+      }
+      const data = {
+        // bookingId: bookingId,
+        // reason:
+        //   selectedreason?.title == 'Other'
+        //     ? bookingInput
+        //     : selectedreason?.title,
+        bookingId: bookingId,
+        reason:
+          selectedreason?.title == 'Other'
+            ? bookingInput
+            : selectedreason?.title,
+      };
+      console.log(data);
+
+      const config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `${MAIN_URL}/booking/cancel-ride`,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        data: JSON.stringify(data),
+      };
+      const response = await axios.request(config);
+
+      if (response.data.status == 200) {
+        setLoading(false);
+        setVisible(false);
+        setVisible2(true);
+      }
+    } catch (err) {
+      // Toast.show('SOmething went wrong');
+      setLoading(false);
+      console.log(err);
+      setVisible2(true);
+    }
+  };
+
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
+      <Loader loading={loading} />
       <Modal visible={visible}>
         {/* <StatusBar translucent={true} /> */}
         <View
@@ -90,6 +166,7 @@ const CancleResonRideScreen = () => {
               <TouchableOpacity
                 onPress={() => {
                   setVisible(false);
+                  setSkiped(true);
                 }}
                 style={{
                   width: '45%',
@@ -103,8 +180,7 @@ const CancleResonRideScreen = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  setVisible(false);
-                  setVisible2(true);
+                  handleCancle();
                 }}
                 style={{
                   width: '45%',
@@ -167,12 +243,14 @@ const CancleResonRideScreen = () => {
               color={colors.grey}
               size={fontSize.Fourteen}
               mTop={moderateScale(20)}>
-              Your booking with CRN : #854HG23has been cancelled successfully.
+              {crNumber
+                ? `Your booking with CRN : #${crNumber} has been cancelled successfully.`
+                : 'Your Booking Has been Cancelled'}
             </CustomText>
             <View style={{height: '20%'}} />
             <Button
               onPress={() => {
-                setVisible2(false);
+                navigation.reset({index: 0, routes: [{name: 'BottumTab'}]});
               }}
               title={'Got It'}
             />
@@ -237,6 +315,10 @@ const CancleResonRideScreen = () => {
                 paddingHorizontal: '2%',
               }}>
               <TextInput
+                value={bookingInput}
+                onChangeText={input => {
+                  setBookingInput(input);
+                }}
                 style={{fontFamily: fonts.semi_bold, color: colors.black}}
                 multiline
                 placeholder="Enter Your Reason"
@@ -259,7 +341,7 @@ const CancleResonRideScreen = () => {
         }}>
         <Button
           onPress={() => {
-            setVisible(true);
+            handleCancle();
           }}
           title={'Cancel Ride'}
         />

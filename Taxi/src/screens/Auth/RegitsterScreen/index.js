@@ -450,7 +450,7 @@ const RegisterScreen = ({navigation}) => {
             />
           </View>
 
-          <View style={{marginTop: moderateScale(30), width: '100%'}}>
+          {/* <View style={{marginTop: moderateScale(30), width: '100%'}}>
             <SelectDropdown
               data={emojisWithIcons}
               onSelect={(selectedItem, index) => {
@@ -472,7 +472,6 @@ const RegisterScreen = ({navigation}) => {
                     style={{
                       ...styles.dropdownItemStyle,
                     }}>
-                    {/* <Icon name={item.icon} style={styles.dropdownItemIconStyle} /> */}
                     <Text
                       style={[
                         styles.dropdownItemTxtStyle,
@@ -487,11 +486,8 @@ const RegisterScreen = ({navigation}) => {
               }}
               showsVerticalScrollIndicator={false}
               dropdownStyle={styles.dropdownMenuStyle}
-              // renderSearchInputRightIcon={() => {
-              //   return <ArrowDown />;
-              // }}
             />
-          </View>
+          </View> */}
           <View
             style={{
               width: '100%',

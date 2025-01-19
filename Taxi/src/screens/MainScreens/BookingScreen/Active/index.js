@@ -39,7 +39,7 @@ import MapViewDirections from 'react-native-maps-directions';
 import MapView, {Marker} from 'react-native-maps';
 import {height} from '../../../../constants/Dimentions';
 
-const Active = () => {
+const Active = ({navigation}) => {
   const [activeList, setActiveList] = useState([]);
   const [loading, setLoading] = useState([]);
 
@@ -78,6 +78,21 @@ const Active = () => {
     }
   };
   const _map = useRef(null);
+  const list_Empty_View = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: height * 0.5,
+        }}>
+        <CustomText size={fontSize.Twenty} color={colors.black}>
+          No data found
+        </CustomText>
+      </View>
+    );
+  };
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       <Loader loading={loading} />
@@ -325,6 +340,12 @@ const Active = () => {
                     marginTop: '20%',
                   }}>
                   <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('CancleResonRideScreen', {
+                        bookingId: activeList[0]?.['_id'],
+                        crNumber: activeList[0]?.['crnNumber'],
+                      });
+                    }}
                     style={{
                       backgroundColor: '#faf8f2',
                       paddingHorizontal: 50,
@@ -355,6 +376,7 @@ const Active = () => {
               </View>
             );
           }}
+          ListEmptyComponent={list_Empty_View}
         />
       </View>
     </View>

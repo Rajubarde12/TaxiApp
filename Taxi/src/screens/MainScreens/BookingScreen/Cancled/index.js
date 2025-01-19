@@ -19,6 +19,7 @@ import axios from 'axios';
 import {DATABASE} from '../../../../utils/DATABASE';
 import {AWS_URL} from '../../../../constants/ApiKeys';
 import Loader from '../../../../components/Loader';
+import {height} from '../../../../constants/Dimentions';
 
 const Completed = () => {
   const [loading, setLoading] = useState([]);
@@ -57,6 +58,21 @@ const Completed = () => {
       console.log(err);
       setLoading(false);
     }
+  };
+  const list_Empty_View = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: height * 0.5,
+        }}>
+        <CustomText size={fontSize.Twenty} color={colors.black}>
+          No data found
+        </CustomText>
+      </View>
+    );
   };
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
@@ -244,6 +260,7 @@ const Completed = () => {
             </View>
           );
         }}
+        ListEmptyComponent={list_Empty_View}
       />
     </View>
   );

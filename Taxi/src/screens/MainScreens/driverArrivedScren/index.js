@@ -47,7 +47,6 @@ const DriverArrivedScreen = ({route, navigation}) => {
   const {user, token} = useSelector(state => state.user);
 
   const {bookingDetails, driveAccpetedData} = useSelector(state => state.rider);
-  console.log(driveAccpetedData);
 
   const driver = bookingDetails?.driver;
   const _map = useRef(null);

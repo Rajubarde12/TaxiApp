@@ -1,8 +1,14 @@
 import {View} from 'react-native';
 import {Congratulations} from '../../../constants/svgIcons';
 import Header from '../../../components/Header';
+import {useEffect} from 'react';
 
-const CongrationsScreen = () => {
+const CongrationsScreen = ({navigation}) => {
+  useEffect(() => {
+    setTimeout(() => {
+      navigation.replace('AddRattingScreen');
+    }, 5000);
+  }, []);
   return (
     <View style={{flex: 1}}>
       <Header title={'Loyalty Point'} />
