@@ -13,16 +13,16 @@ import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 
 
 import TabBarButton from "../components/TabBarButton";
-import Animated, {
-  Easing,
+import  {
+  
   ReduceMotion,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  withTiming,
+
 } from "react-native-reanimated";
-import { BookingTab, ChatTab, HomeTab, ProfileTab, WalletTab } from "../constants/svgIcons";
-import { moderateScale } from "../utils/Scalling";
+import { BookingTab, BookingTabActive, ChatTab, ChatTabActive, HomeTab, HomeTabActive, ProfileTab, ProfileTabActive, WalletTab, WalletTabActive } from "../constants/svgIcons";
+
 const { width } = Dimensions.get("window");
 const TabBar: React.FC<BottomTabBarProps> = ({
   state,
@@ -32,12 +32,12 @@ const TabBar: React.FC<BottomTabBarProps> = ({
  
 
 
-  const Icon: Record<string, () => JSX.Element> = {
-    Home: () => <HomeTab  />,
-    Wallet: () => <WalletTab />,
-    Chat: () => <ChatTab  />,
-    Profile: () => <ProfileTab />,
-    Bookings: () => <BookingTab  />,
+  const Icon: Record<string, (bool:boolean) => JSX.Element> = {
+    Home: (bool:boolean) =>bool? <HomeTabActive color={"red"} />:<HomeTab/>,
+    Wallet: (bool:boolean) =>bool?<WalletTabActive/>: <WalletTab />,
+    Chat: (bool:boolean) =>bool?<ChatTabActive/>: <ChatTab  />,
+    Profile: (bool:boolean) =>bool?<ProfileTabActive/>: <ProfileTab />,
+    Bookings: (bool) =>bool?<BookingTabActive/>: <BookingTab  />,
   };
 
   const [dimentions, setDimentions] = useState({
@@ -145,7 +145,7 @@ const TabBar: React.FC<BottomTabBarProps> = ({
               }
               cartQuantity={0}
               isFocused={isFocused}
-              Icon={Icon[route.name] || (() => <Text>?</Text>)}
+              Icon={Icon[route.name](isFocused) || (() => <Text>?</Text>)}
               lable={route.name}
             />
           );

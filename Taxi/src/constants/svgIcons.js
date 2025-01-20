@@ -70,8 +70,18 @@ import NotificationSettings from '../assets/svg/NotificationSettings.svg';
 import KeySetting from '../assets/svg/KeySetting.svg';
 import DeleteAccount from '../assets/svg/DeleteAccount.svg';
 import LocationAddress from '../assets/svg/LocationAddress.svg';
+import HomeTabActive from '../assets/svg/HomeTabActive.svg';
+import ProfileTabActive from '../assets/svg/ProfileTabActive.svg';
+import BookingTabActive from '../assets/svg/BookingTabActive.svg';
+import WalletTabActive from '../assets/svg/WalletTabActive.svg';
+import ChatTabActive from '../assets/svg/ChatTabActive.svg';
 export {
   UserPlush,
+  HomeTabActive,
+  ProfileTabActive,
+  ChatTabActive,
+  WalletTabActive,
+  BookingTabActive,
   NotificationSettings,
   DeleteAccount,
   LocationAddress,

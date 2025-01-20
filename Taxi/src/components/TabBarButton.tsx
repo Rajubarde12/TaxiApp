@@ -74,17 +74,18 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
           style={[
             {
               position: 'absolute',
-              backgroundColor: 'rgba(26, 255, 34, 0.1)',
-              height: '100%',
+              backgroundColor: 'rgba(254, 203, 0,0.1)',
+              height: '150%',
               width: '100%',
               borderRadius: 50,
+              overflow:'hidden'
             },
             rippleStyle,
           ]}
         />
       </View>
 
-      <Icon />
+      {Icon}
     </Pressable>
   );
 };

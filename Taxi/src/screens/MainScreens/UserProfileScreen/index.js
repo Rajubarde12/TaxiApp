@@ -58,9 +58,6 @@ const UserProfileScreen = ({navigation}) => {
   });
   const [image, setImage] = useState({name: '', type: '', uri: ''});
   const pickImage = async () => {
-    // handleProfileUpdate();
-    // return;
-
     ImagePicker.openPicker({
       width: 300,
       height: 400,
@@ -104,6 +101,7 @@ const UserProfileScreen = ({navigation}) => {
         console.error('Error capturing image:', err);
       });
   };
+  console.log('this is user', user);
 
   useEffect(() => {
     setInputs(prev => {
@@ -114,8 +112,8 @@ const UserProfileScreen = ({navigation}) => {
         email: user?.email ?? '',
       };
     });
-    setCountryCode();
-  }, []);
+    setCountryCode(user?.countryCode);
+  }, [user]);
   const [countryCode, setCountryCode] = useState('354');
   const [countryCode1, setCountryCode1] = useState('IS');
   const [error, setError] = useState({
