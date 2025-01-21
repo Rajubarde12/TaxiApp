@@ -1,11 +1,10 @@
 import {Alert, Image, Pressable, View} from 'react-native';
-import MapView, {Marker, UrlTile} from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   CarLocation,
   ChatDriver,
   DestinationIcon,
-  LocationMap,
   PhoneDriver,
 } from '../../constants/svgIcons';
 import MapViewDirections from 'react-native-maps-directions';
@@ -35,7 +34,6 @@ const MapViewWithDirections = ({navigation}) => {
   const {currentRegoin} = useSelector(state => state.common);
   const {token} = useSelector(state => state.user);
   const {bookingDetails, driveAccpetedData} = useSelector(state => state.rider);
-
   const driver = bookingDetails?.driver;
   const _map = useRef(null);
   const dispatch = useDispatch();
@@ -76,6 +74,7 @@ const MapViewWithDirections = ({navigation}) => {
     const pickupLongitude = driverLocation?.longitude;
     const destinationLatitude = currentRegoin?.latitude;
     const destinationLongitude = currentRegoin?.longitude;
+
     getArrivalTime(
       pickupLatitude,
       pickupLongitude,
@@ -95,7 +94,6 @@ const MapViewWithDirections = ({navigation}) => {
     }
   }, [driverLocation, bookingDetails]);
   const handleArrivdeStatus = data => {
-    console.log('this is data', data);
     if (data?.data?.status == 'Arrived') {
       dispatch(
         getBookingDetails(
@@ -131,7 +129,7 @@ const MapViewWithDirections = ({navigation}) => {
 
       if (response.data.rows[0].elements[0].status === 'OK') {
         const duration = response.data.rows[0].elements[0].duration.text;
-        console.log('this is duration', duration);
+
         setArrivalTime(duration);
       } else {
         console.error('Error in Distance Matrix API response: ', response.data);
@@ -180,9 +178,7 @@ const MapViewWithDirections = ({navigation}) => {
           <CarLocation />
         </Marker>
         <MapViewDirections
-          onReady={evene => {
-            console.log('this is evetn', evene.duration);
-          }}
+          onReady={evene => {}}
           apikey={GOOGLE_API_KEY}
           origin={{
             latitude: currentRegoin?.latitude,

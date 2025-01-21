@@ -163,7 +163,7 @@ const BookRideScreen = ({route, navigation}) => {
           console.log(region);
         }}
         placeholder={address}>
-        <Header title={'Book Ride'} />
+        <Header map={true} title={'Book Ride'} />
 
         <View
           style={[
@@ -210,13 +210,6 @@ const BookRideScreen = ({route, navigation}) => {
                   {destinationAddress}
                 </CustomText>
 
-                {/* <TextInput
-                value={''}
-                editable={false}
-                placeholder={destinationAddress.substring(0, 30)}
-                placeholderTextColor="#888"
-                style={styles.input}
-              /> */}
                 <View style={{width: '10%', alignItems: 'center'}}>
                   <Saved1 height={20} width={20} />
                 </View>
@@ -254,10 +247,10 @@ const BookRideScreen = ({route, navigation}) => {
               style={{
                 width: width,
                 paddingVertical: 10,
-                // marginLeft: moderateScale(5),
+
                 alignItems: 'center',
                 justifyContent: 'center',
-                // borderWidth: 1,
+
                 zIndex: 20,
               }}>
               <FlatList
@@ -409,8 +402,6 @@ const BookRideScreen = ({route, navigation}) => {
         <View style={styles.modalContainer}>
           <Button
             onPress={() => {
-              // navigation.navigate('SearchingRide');
-              // navigation.navigate('Example');
               searchRide();
             }}
             title={`Book ${selected?.name}`}

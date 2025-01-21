@@ -1,46 +1,12 @@
-import {
-  Alert,
-  FlatList,
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import MapScreen from '../../../components/MapScreen';
 import {colors} from '../../../constants/colors';
-import {BottomSheetWrapperComponent} from '../../../components/BottumSheet';
 import {moderateScale} from '../../../utils/Scalling';
-import CustomText from '../../../components/CustomText';
-import fonts from '../../../constants/fonts';
-import {fontSize} from '../../../constants/fontSize';
-import {
-  ArrowLeft,
-  ArrowRight,
-  Bus,
-  Car,
-  Cash,
-  Checkmark,
-  LiveLocation,
-  Location2,
-  LocationInput,
-  LocationLogo,
-  Office,
-  Plush,
-  Promo,
-  RadioBalck,
-  Save,
-  Saved1,
-  SearchingRideIcon,
-  UserBook,
-  Watch,
-} from '../../../constants/svgIcons';
+import {Bus, Car, SearchingRideIcon} from '../../../constants/svgIcons';
 import {width} from '../../../constants/Dimentions';
 import Header from '../../../components/Header';
 import Button from '../../../components/Button';
 import {useDispatch, useSelector} from 'react-redux';
-import {Marker} from 'react-native-maps';
 import {useAppContext} from '../../../services/Provider';
 import {useIsFocused} from '@react-navigation/native';
 import {useEffect, useRef} from 'react';
@@ -50,10 +16,8 @@ import {
   SET_DRIVER_ACCPETED_DATA,
 } from '../../../redux/riderSlice';
 const SearchingRide = ({route, navigation}) => {
-  const {driveAccpetedData} = useSelector(state => state.rider);
   const {token} = useSelector(state => state.user);
-
-  const {region, address} = route?.params || {};
+  const {address} = route?.params || {};
   useEffect(() => {
     const pulse = Animated.loop(
       Animated.sequence([
@@ -74,13 +38,8 @@ const SearchingRide = ({route, navigation}) => {
     pulse.start();
     return () => pulse.stop();
   }, [scaleAnim]);
-
-  const {userAddress, destinationAddress} = useSelector(state => state.common);
   const {searchInfo} = useSelector(state => state.rider);
-  console.log(JSON.stringify(searchInfo));
-
   const scaleAnim = useRef(new Animated.Value(1)).current;
-  const _map = useRef(null);
   const isFocused = useIsFocused();
   const {socket_connect, socketRef} = useAppContext();
   const dispatch = useDispatch();
@@ -114,9 +73,7 @@ const SearchingRide = ({route, navigation}) => {
         isData={searchInfo?.data}
         directions={true}
         isEnalble={true}
-        onRegoin={region => {
-          console.log(region);
-        }}
+        onRegoin={region => {}}
         placeholder={address}>
         <Header map={true} title={'Searching Ride'} />
 

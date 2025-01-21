@@ -75,8 +75,10 @@ import ProfileTabActive from '../assets/svg/ProfileTabActive.svg';
 import BookingTabActive from '../assets/svg/BookingTabActive.svg';
 import WalletTabActive from '../assets/svg/WalletTabActive.svg';
 import ChatTabActive from '../assets/svg/ChatTabActive.svg';
+import Danger from '../assets/svg/Danger.svg';
 export {
   UserPlush,
+  Danger,
   HomeTabActive,
   ProfileTabActive,
   ChatTabActive,

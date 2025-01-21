@@ -57,12 +57,12 @@ const AddRattingScreen = ({navigation}) => {
 
       if (response.data.status == 200) {
         Toast.show('Thank you!');
-        navigation.reset({index: 0, routes: [{name: 'BottumTab'}]});
+        // navigation.reset({index: 0, routes: [{name: 'BottumTab'}]});
       }
     } catch (err) {
       console.log(err, config);
       Toast.show('Thank you');
-      navigation.reset({index: 0, routes: [{name: 'BottumTab'}]});
+      // navigation.reset({index: 0, routes: [{name: 'BottumTab'}]});
     }
   };
   return (

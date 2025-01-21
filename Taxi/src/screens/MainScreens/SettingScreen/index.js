@@ -1,36 +1,32 @@
-import {FlatList, Image, ScrollView, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  Modal,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {colors} from '../../../constants/colors';
 import Header from '../../../components/Header';
-// import {moderateScale} from '../../../utils/Scalling';
+
 import {
-  ArrowRight,
-  Bell,
-  Cupon,
+  Danger,
   DeleteAccount,
-  Emergency,
-  HelpCenter,
   KeySetting,
-  LocationProdifle,
-  Logout,
   NotificationSettings,
-  Pencille,
-  Prebooked,
   Right,
-  Settings,
-  UserPlush,
-  UserYellow,
-  WalletProfile,
 } from '../../../constants/svgIcons';
 import {moderateScale} from 'react-native-size-matters';
 import {useSelector} from 'react-redux';
 import CustomText from '../../../components/CustomText';
 import {fontSize} from '../../../constants/fontSize';
 import fonts from '../../../constants/fonts';
-import {width} from '../../../constants/Dimentions';
+import {height, width} from '../../../constants/Dimentions';
+import {useState} from 'react';
 
 const SettingScreen = () => {
   const {user} = useSelector(state => state.user);
-  console.log(user);
+  const [visible, setVisilbe] = useState(false);
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
@@ -54,7 +50,12 @@ const SettingScreen = () => {
             renderItem={({item, index}) => {
               let Icon = item.icon;
               return (
-                <View
+                <TouchableOpacity
+                  onPress={() => {
+                    if (item.title == 'Delete Account') {
+                      setVisilbe(true);
+                    }
+                  }}
                   style={{
                     width: '100%',
                     borderWidth: 0,
@@ -80,10 +81,83 @@ const SettingScreen = () => {
                     </CustomText>
                   </View>
                   <Right height={22} width={22} />
-                </View>
+                </TouchableOpacity>
               );
             }}
           />
+          <Modal visible={visible} transparent={true}>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: 'rgba(0,0,0,0.3)',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <View
+                style={{
+                  height: height * 0.38,
+                  width: width * 0.9,
+                  backgroundColor: colors.white,
+                  borderRadius: 10,
+                  elevation: 3,
+                  alignItems: 'center',
+                  paddingHorizontal: '8%',
+                }}>
+                <Danger style={{marginTop: '5%'}} />
+                <CustomText
+                  fontFamily={fonts.medium}
+                  color={colors.grey}
+                  size={fontSize.Eighteen}
+                  mTop={'5%'}
+                  style={{textAlign: 'center'}}>
+                  Do you want to get free 1 day full plan access to explore more
+                  features?
+                </CustomText>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginTop: '20%',
+                    width: '100%',
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setVisilbe(true);
+                    }}
+                    style={{
+                      backgroundColor: '#faf8f2',
+                      // paddingHorizontal: 30,
+                      paddingVertical: 10,
+                      borderRadius: 20,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '45%',
+                    }}>
+                    <CustomText color={colors.yellow} size={fontSize.Eighteen}>
+                      No
+                    </CustomText>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setVisilbe(false);
+                    }}
+                    style={{
+                      backgroundColor: colors.yellow,
+                      width: '45%',
+                      paddingVertical: 10,
+                      borderRadius: 20,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <CustomText color={colors.black} size={fontSize.Eighteen}>
+                      Yes
+                    </CustomText>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
         </View>
       </ScrollView>
     </View>
