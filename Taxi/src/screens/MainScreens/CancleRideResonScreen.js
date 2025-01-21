@@ -118,10 +118,10 @@ const CancleResonRideScreen = ({navigation, route}) => {
         setVisible2(true);
       }
     } catch (err) {
-      // Toast.show('SOmething went wrong');
+      Toast.show('SOmething went wrong');
       setLoading(false);
       console.log(err);
-      setVisible2(true);
+      // setVisible2(true);
     }
   };
 

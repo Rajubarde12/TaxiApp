@@ -10,8 +10,10 @@ import fonts from '../../constants/fonts';
 import {LocalTile} from 'react-native-maps';
 import {useDispatch, useSelector} from 'react-redux';
 import {setSelectedAddressFromList} from '../../redux/commonSlice';
+import {useNavigation} from '@react-navigation/native';
 
-const ManageAddressScreen = ({navigation, route}) => {
+const ManageAddressScreen = ({route}) => {
+  const navigation = useNavigation();
   const screen = route?.params?.screen;
   const {savedAddress} = useSelector(state => state.user);
   const dispatch = useDispatch();
@@ -33,7 +35,9 @@ const ManageAddressScreen = ({navigation, route}) => {
                 onPress={() => {
                   dispatch(setSelectedAddressFromList(item));
                   if (screen == 'DestinationScreen') {
-                    navigation.goBack();
+                    navigation.navigate('DestinationScreen', {
+                      address: item?.address,
+                    });
                   }
                 }}
                 style={{
@@ -46,8 +50,6 @@ const ManageAddressScreen = ({navigation, route}) => {
                   borderBottomWidth: 1,
                   borderBottomColor: colors.inputBorder,
                   flexDirection: 'row',
-                  // alignItems: 'center',
-                  // justifyContent: 'space-between',
                 }}>
                 <LocationAddress Height={23} width={23} />
                 <View style={{marginLeft: moderateScale(15)}}>

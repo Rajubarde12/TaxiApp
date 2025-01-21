@@ -3,7 +3,7 @@ import axios from 'axios';
 import {MAIN_URL} from '../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {DATABASE} from '../utils/DATABASE';
-import {getUserFromLocal, getUserProfile} from './userSlice';
+import {getSavedAddress, getUserFromLocal, getUserProfile} from './userSlice';
 import Toast from 'react-native-simple-toast';
 const initialState = {
   user: null,
@@ -75,6 +75,7 @@ export const userLogin = (data, navigation) => {
         await AsyncStorage.setItem(DATABASE.token, response?.data?.data?.token);
 
         dispatch(getUserProfile(response?.data?.data?.token));
+        dispatch(getSavedAddress(response?.data?.data?.token));
         if (response?.data?.data?.user?.isProfileCompleted == false) {
           navigation.replace('CompleteProfileScreen');
         } else {

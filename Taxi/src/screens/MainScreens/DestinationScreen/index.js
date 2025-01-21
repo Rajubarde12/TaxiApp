@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -36,14 +36,18 @@ import {
 import Toast from 'react-native-simple-toast';
 import {GOOGLE_API_KEY} from '../../../constants/ApiKeys';
 
-const DestinationScreen = ({navigation}) => {
+const DestinationScreen = ({navigation, route}) => {
   const [query, setQuery] = useState('');
   const [places, setPlaces] = useState([]);
+  const address = route?.params?.address;
 
   const [distainationlatlong, setDestinationLatelong] = useState({
     latitude: 0.0,
     longitude: 0.0,
   });
+  useEffect(() => {
+    address ? fetchPlaces(address) : null;
+  }, [address]);
 
   const fetchPlaces = async text => {
     const apiKey = GOOGLE_API_KEY;
@@ -54,7 +58,11 @@ const DestinationScreen = ({navigation}) => {
       const json = await response.json();
 
       if (json.status === 'OK') {
-        setPlaces(json.predictions);
+        if (address) {
+          fetchPlaceDetails(json?.predictions[0]?.place_id);
+        } else {
+          setPlaces(json.predictions);
+        }
       } else {
         setPlaces([]);
       }
@@ -286,18 +294,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,
-    // borderWidth: 2,
     borderColor: colors.inputBorder,
   },
   input: {
     height: 50,
     borderColor: '#ddd',
-    // borderWidth: 1,
     paddingLeft: 10,
     paddingRight: 10,
-    fontSize: 16,
-    color: '#333',
+    fontSize: fontSize.Sixteen,
+    color: colors.black,
     flex: 1,
+    fontFamily: fonts.medium,
   },
   listView: {
     backgroundColor: 'white',
