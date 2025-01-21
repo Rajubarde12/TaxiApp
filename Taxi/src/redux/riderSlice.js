@@ -57,7 +57,6 @@ export const startSearchRiding = (data, token, navigation) => {
         data: JSON.stringify(data),
       };
       const response = await axios.request(config);
-      console.log(response.data);
 
       if (response.data.status == 200) {
         dispatch(SEARCH_RIDE_SUCCESS(response.data.data));
@@ -65,10 +64,8 @@ export const startSearchRiding = (data, token, navigation) => {
       } else {
         dispatch(SEARCH_RIDE_ERROR());
         Toast.show('Something went wrong');
-        console.log(response?.data);
       }
     } catch (err) {
-      console.log(err.toJSON());
       Toast.show('Something went wrong');
       console.log(err);
       dispatch(SEARCH_RIDE_ERROR());
@@ -102,7 +99,6 @@ export const getBookingDetails = (
         });
       } else {
         Toast.show('Something went wrong!');
-        console.log(response?.data);
       }
     } catch (error) {
       console.log(error);

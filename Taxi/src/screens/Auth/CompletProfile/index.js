@@ -265,8 +265,6 @@ const CompleteProfileScreen = ({navigation}) => {
             <SelectDropdown
               data={emojisWithIcons}
               onSelect={(selectedItem, index) => {
-                console.log(selectedItem?.title);
-
                 setGender(selectedItem?.title);
               }}
               renderButton={(selectedItem, isOpened) => {

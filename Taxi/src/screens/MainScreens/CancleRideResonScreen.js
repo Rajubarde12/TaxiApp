@@ -98,7 +98,6 @@ const CancleResonRideScreen = ({navigation, route}) => {
             ? bookingInput
             : selectedreason?.title,
       };
-      console.log(data);
 
       const config = {
         method: 'post',

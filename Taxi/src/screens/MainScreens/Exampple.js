@@ -66,7 +66,6 @@ const MapViewWithDirections = ({navigation}) => {
 
     return () => {
       if (socketRef.current) {
-        console.log('Cleaning up socket listeners');
         socketRef.current.off('receiveupdatedLocation', handleDriverAccepted);
         socketRef.current.off('receiveStatusUpdate', handleArrivdeStatus);
       }

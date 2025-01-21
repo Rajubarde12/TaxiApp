@@ -126,7 +126,6 @@ const ActiveRiderScreen = ({navigation}) => {
 
       if (response.data.rows[0].elements[0].status === 'OK') {
         const duration = response.data.rows[0].elements[0].duration.text;
-        console.log('this is duration', duration);
 
         setArrivalTime(duration);
       } else {

@@ -88,9 +88,14 @@ const HomeScreen = ({navigation}) => {
               paddingTop: moderateScale(35),
             }}>
             <CustomText fontFamily={fonts.semi_bold}>Where to?</CustomText>
-            <CustomText color={colors.yellow} fontFamily={fonts.semi_bold}>
-              Manage
-            </CustomText>
+            <Pressable
+              onPress={() => {
+                navigation.navigate('ManageAddressScreen');
+              }}>
+              <CustomText color={colors.yellow} fontFamily={fonts.semi_bold}>
+                Manage
+              </CustomText>
+            </Pressable>
           </View>
           <FlatList
             data={data}

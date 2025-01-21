@@ -44,7 +44,6 @@ const OtpScreen = ({navigation, route}) => {
         countryCode: countryCode ?? '91',
         otp: otp,
       };
-      console.log(data);
 
       let config = {
         method: 'post',
@@ -84,7 +83,6 @@ const OtpScreen = ({navigation, route}) => {
       countryCode: countryCode,
       type: 'User',
     });
-    console.log(data);
 
     let config = {
       method: 'post',

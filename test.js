@@ -21,7 +21,6 @@ const requestOptions = {
   body: raw,
   redirect: 'follow',
 };
-console.log(myHeaders);
 
 fetch('http://taxi-5.onrender.com/api/app/user/add-address', requestOptions)
   .then(response => response.text())

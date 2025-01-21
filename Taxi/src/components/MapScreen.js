@@ -91,8 +91,6 @@ export default ({
           </Marker>
         )}
         {isData?.map((item, index) => {
-          console.log(item?.latitude, item?.longitude);
-
           return (
             <Marker
               key={index.toString()}

@@ -50,9 +50,7 @@ export const getUserFromLocal = (user = null, token = null) => {
 export const getUserProfile = token1 => {
   return async dispatch => {
     try {
-      // Retrieve the token from AsyncStorage
       const token = await AsyncStorage.getItem(DATABASE.token);
-
       if (!token) {
         console.error('Token not found');
         dispatch({
@@ -75,8 +73,6 @@ export const getUserProfile = token1 => {
       const response = await axios.request(config);
 
       if (response.data?.status === 200) {
-        console.log('API response:', response.data);
-
         dispatch({
           type: 'user/SET_USER',
           payload: {
