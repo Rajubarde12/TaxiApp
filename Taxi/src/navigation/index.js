@@ -21,6 +21,7 @@ import AddAddressScreen from '../screens/MainScreens/AddAddressScreen';
 import UserProfileScreen from '../screens/MainScreens/UserProfileScreen';
 import ScheDuleRide from '../screens/ScheduleRide';
 import AddRattingScreen from '../screens/AddRatting';
+import AccountDeleteScreen from '../screens/MainScreens/AccountDeteletScreen';
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -78,6 +79,10 @@ const MyStack = () => {
       <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
       <Stack.Screen name="Example" component={Example} />
       <Stack.Screen name="ActiveRiderScreen" component={ActiveRiderScreen} />
+      <Stack.Screen
+        name="AccountDeleteScreen"
+        component={AccountDeleteScreen}
+      />
       <Stack.Screen
         name="CancleResonRideScreen"
         component={CancleResonRideScreen}

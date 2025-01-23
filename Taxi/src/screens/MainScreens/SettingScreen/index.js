@@ -1,7 +1,9 @@
 import {
+  Alert,
   FlatList,
   Image,
   Modal,
+  Pressable,
   ScrollView,
   TouchableOpacity,
   View,
@@ -10,6 +12,7 @@ import {colors} from '../../../constants/colors';
 import Header from '../../../components/Header';
 
 import {
+  CroshBlack,
   Danger,
   DeleteAccount,
   KeySetting,
@@ -23,14 +26,55 @@ import {fontSize} from '../../../constants/fontSize';
 import fonts from '../../../constants/fonts';
 import {height, width} from '../../../constants/Dimentions';
 import {useState} from 'react';
+import Button from '../../../components/Button';
+import Loader from '../../../components/Loader';
+import {MAIN_URL} from '../../../constants';
+import axios from 'axios';
+import Toast from 'react-native-simple-toast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {DATABASE} from '../../../utils/DATABASE';
 
-const SettingScreen = () => {
+const SettingScreen = ({navigation}) => {
   const {user} = useSelector(state => state.user);
   const [visible, setVisilbe] = useState(false);
+  const [visible2, setVisilbe2] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const onPressDeleteAccount = async () => {
+    const token = await AsyncStorage.getItem(DATABASE.token);
+    setVisilbe2(false);
+
+    try {
+      setLoading(true);
+      let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `${MAIN_URL}/user/delete-account`,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios.request(config);
+      if (response?.data?.status == 200) {
+        navigation.navigate('AuthStack', {
+          screen: 'OtpScreen',
+          params: {isDelete: true},
+        });
+      }
+      Toast.show('Otp Sent');
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      Toast.show('Something went wrong!');
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       <Header map={true} title="Profile" />
+      <Loader loading={loading} />
 
       <ScrollView contentContainerStyle={{paddingBottom: moderateScale(20)}}>
         <View
@@ -123,7 +167,8 @@ const SettingScreen = () => {
                   }}>
                   <TouchableOpacity
                     onPress={() => {
-                      setVisilbe(true);
+                      setVisilbe(false);
+                      setVisilbe2(true);
                     }}
                     style={{
                       backgroundColor: '#faf8f2',
@@ -155,6 +200,66 @@ const SettingScreen = () => {
                     </CustomText>
                   </TouchableOpacity>
                 </View>
+              </View>
+            </View>
+          </Modal>
+          <Modal visible={visible2} animationType="slide" transparent={true}>
+            <View style={{flex: 1, backgroundColor: 'rgba(246, 246, 246,0.8)'}}>
+              <View
+                style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  backgroundColor: colors.white,
+                  width: '100%',
+                  elevation: 5,
+                  height: moderateScale(250),
+                  alignItems: 'center',
+                  //   justifyContent: 'center',
+                  //   paddingTop: '5%',
+                }}>
+                <View
+                  style={{
+                    height: 3,
+                    width: '30%',
+                    alignSelf: 'center',
+                    backgroundColor: colors.inputBorder,
+                    marginTop: '2%',
+                    borderRadius: 1,
+                  }}
+                />
+                <View style={{height: '5%'}} />
+                <Pressable
+                  onPress={() => setVisilbe2(false)}
+                  style={{
+                    backgroundColor: colors.yellow,
+                    height: 45,
+                    width: 45,
+                    borderRadius: 25,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <CroshBlack height={18} width={18} />
+                </Pressable>
+                <CustomText
+                  fontFamily={fonts.semi_bold}
+                  size={fontSize.Eighteen}
+                  mTop={moderateScale(20)}>
+                  Do You Want to Delete Your Accound
+                </CustomText>
+                <CustomText
+                  style={{textAlign: 'center'}}
+                  color={colors.grey}
+                  size={fontSize.Fourteen}
+                  mTop={moderateScale(20)}>
+                  {'We will send an Otp for confirmation'}
+                </CustomText>
+                <View style={{height: '20%'}} />
+                <Button
+                  onPress={() => {
+                    onPressDeleteAccount();
+                  }}
+                  title={'Delete Account'}
+                />
               </View>
             </View>
           </Modal>

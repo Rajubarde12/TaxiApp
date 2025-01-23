@@ -26,6 +26,8 @@ import Toast from 'react-native-simple-toast';
 
 const AddRattingScreen = ({navigation}) => {
   const {bookingDetails, driveAccpetedData} = useSelector(state => state.rider);
+  // console.log(bookingDetails);
+
   const driver = bookingDetails?.driver;
   const {user} = useSelector(state => state?.user);
   const [rating, setRating] = useState(1);
@@ -34,13 +36,20 @@ const AddRattingScreen = ({navigation}) => {
   const AddRating = async () => {
     const token = await AsyncStorage.getItem(DATABASE.token);
     const data = {
+      // to_user_id: user['_id'],
+      // booking_id: driveAccpetedData?.bookingId,
+      // rideId: driveAccpetedData?.bookingId,
+      // rating_type: 'Now',
+      // rating: rating,
+      // description: description,
       to_user_id: user['_id'],
       booking_id: driveAccpetedData?.bookingId,
-      rideId: driveAccpetedData?.bookingId,
-      rating_type: 'Now',
+      rideId: bookingDetails['_id'],
+      rating_type: 'User',
       rating: rating,
       description: description,
     };
+    console.log(data);
 
     const config = {
       method: 'post',
@@ -57,7 +66,7 @@ const AddRattingScreen = ({navigation}) => {
 
       if (response.data.status == 200) {
         Toast.show('Thank you!');
-        // navigation.reset({index: 0, routes: [{name: 'BottumTab'}]});
+        navigation.reset({index: 0, routes: [{name: 'BottumTab'}]});
       }
     } catch (err) {
       console.log(err, config);

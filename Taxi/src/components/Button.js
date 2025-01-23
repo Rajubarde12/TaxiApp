@@ -5,13 +5,13 @@ import {colors} from '../constants/colors';
 import {width} from '../constants/Dimentions';
 import fonts from '../constants/fonts';
 
-const Button = ({title, onPress, width1}) => {
+const Button = ({title, onPress, width1, backgroundColor}) => {
   return (
     <TouchableOpacity
       onPress={onPress}
       style={{
         height: moderateScale(65),
-        backgroundColor: colors.yellow,
+        backgroundColor: backgroundColor ?? colors.yellow,
         width: width1 ?? width * 0.8,
         alignItems: 'center',
         justifyContent: 'center',

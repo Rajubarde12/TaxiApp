@@ -40,27 +40,27 @@ const ExitToastModal = ({visible, onClose}) => {
 const App = () => {
   LogBox.ignoreAllLogs();
   const [toastVisible, setToastVisible] = useState(false);
-  useEffect(() => {
-    const backAction = () => {
-      if (toastVisible) {
-        BackHandler.exitApp();
-      } else {
-        setToastVisible(true);
-        exitTimer = setTimeout(() => setToastVisible(false), 3000);
-      }
-      return true;
-    };
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     if (toastVisible) {
+  //       BackHandler.exitApp();
+  //     } else {
+  //       setToastVisible(true);
+  //       exitTimer = setTimeout(() => setToastVisible(false), 3000);
+  //     }
+  //     return true;
+  //   };
 
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
+  //   const backHandler = BackHandler.addEventListener(
+  //     'hardwareBackPress',
+  //     backAction,
+  //   );
 
-    return () => {
-      backHandler.remove();
-      if (exitTimer) clearTimeout(exitTimer);
-    };
-  }, [toastVisible]);
+  //   return () => {
+  //     // backHandler.remove();
+  //     // if (exitTimer) clearTimeout(exitTimer);
+  //   };
+  // }, [toastVisible]);
 
   let exitTimer = null;
   useEffect(() => {

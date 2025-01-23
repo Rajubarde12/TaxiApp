@@ -1,4 +1,5 @@
 import {
+  Alert,
   ImageBackground,
   Pressable,
   ScrollView,
@@ -30,8 +31,13 @@ import {MAIN_URL} from '../../../constants';
 
 const OtpScreen = ({navigation, route}) => {
   const {otp, user} = useSelector(state => state.login);
+  const {user: user2} = useSelector(state => state.user);
+
   const [loading, setLoading] = useState(false);
   const phone = route?.params?.phone;
+  const isDelete = route?.params?.isDelete;
+  console.log(isDelete);
+
   const countryCode = route?.params?.countryCode;
 
   const verifyOtp = async otp => {
@@ -111,6 +117,52 @@ const OtpScreen = ({navigation, route}) => {
       });
   };
 
+  const deleteVeify = async otp => {
+    // Alert.alert('this');
+
+    const token = await AsyncStorage.getItem(DATABASE.token);
+
+    try {
+      setLoading(true);
+      let data = JSON.stringify({
+        otp: otp,
+      });
+
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `https://taxi-5.onrender.com/api/app/user/verify-otp-delete`,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        data: data,
+      };
+
+      const response = await axios.request(config);
+
+      await AsyncStorage.clear();
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'AuthStack', params: {screen: 'LoginScreen'}}],
+      });
+
+      setLoading(false);
+      Toast.show(response.data.message);
+    } catch (error) {
+      setLoading(false);
+      Toast.show('Something went wrong');
+      console.log(error.toJSON());
+
+      await AsyncStorage.clear();
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'AuthStack', params: {screen: 'LoginScreen'}}],
+      });
+    }
+  };
+  console.log(user);
+
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       <Loader loading={loading} />
@@ -132,7 +184,7 @@ const OtpScreen = ({navigation, route}) => {
             alignItems: 'center',
           }}>
           <CustomText
-            mTop={moderateScale(15)}
+            mTop={moderateScale(isDelete ? 200 : 15)}
             size={fontSize.TwentyFive}
             fontFamily={fonts.medium}>
             Verify Code
@@ -144,7 +196,7 @@ const OtpScreen = ({navigation, route}) => {
               size={fontSize.Fourteen}
               style={{textAlign: 'center'}}
               fontFamily={fonts.medium}>
-              Please enter the code we just sent to email
+              Please enter the code we just sent to your phone
             </CustomText>
             <CustomText
               //   mTop={moderateScale(15)}
@@ -152,45 +204,50 @@ const OtpScreen = ({navigation, route}) => {
               size={fontSize.Fourteen}
               style={{textAlign: 'center'}}
               fontFamily={fonts.medium}>
-              example@email.com
+              {phone ?? user2?.mobileNumber}
             </CustomText>
           </View>
           <OTPInput
             onOtpComplete={otp => {
-              if (otp.length == 4) {
+              if (otp.length == 4 && !isDelete) {
                 verifyOtp(otp);
               }
               setOtp(otp);
             }}
           />
-          <View
-            style={{
-              paddingBottom: moderateScale(20),
-              paddingTop: moderateScale(50),
-              alignItems: 'center',
-            }}>
-            <CustomText color={colors.grey}>Didn’t receive OTP?</CustomText>
-            <Pressable
-              onPress={() => {
-                resendOtp();
+          {!isDelete ? (
+            <View
+              style={{
+                paddingBottom: moderateScale(20),
+                paddingTop: moderateScale(50),
+                alignItems: 'center',
               }}>
-              <CustomText
-                style={{textDecorationLine: 'underline'}}
-                mTop={moderateScale(5)}
-                //   size={fontSize.Eighteen}
-                fontFamily={fonts.semi_bold}
-                color={colors.grey}>
-                Resend Code
-              </CustomText>
-            </Pressable>
-          </View>
+              <CustomText color={colors.grey}>Didn’t receive OTP?</CustomText>
+              <Pressable
+                onPress={() => {
+                  resendOtp();
+                }}>
+                <CustomText
+                  style={{textDecorationLine: 'underline'}}
+                  mTop={moderateScale(5)}
+                  //   size={fontSize.Eighteen}
+                  fontFamily={fonts.semi_bold}
+                  color={colors.grey}>
+                  Resend Code
+                </CustomText>
+              </Pressable>
+            </View>
+          ) : null}
           <View style={{marginTop: moderateScale(30), width: '100%'}}>
             <Button
               onPress={() => {
-                verifyOtp(opt);
-                // navigation.navigate('CompleteProfileScreen');
+                if (isDelete) {
+                  deleteVeify(opt);
+                } else {
+                  verifyOtp(opt);
+                }
               }}
-              title={'Verify'}
+              title={isDelete ? 'Delete Account' : 'Verify'}
               width1={'100%'}
             />
           </View>
