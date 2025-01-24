@@ -1,5 +1,5 @@
 import {FlatList, Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import {moderateScale} from '../../../../utils/Scalling';
+import {moderateScale} from 'react-native-size-matters';
 import {colors} from '../../../../constants/colors';
 import CustomText from '../../../../components/CustomText';
 import {fontSize} from '../../../../constants/fontSize';
@@ -109,11 +109,11 @@ const Completed = () => {
           return (
             <View
               style={{
-                marginTop: moderateScale(index == 0 ? 20 : 5),
+                marginTop: moderateScale(index == 0 ? 20 : -15),
                 // height: '30%',
                 paddingHorizontal: moderateScale(20),
-                paddingTop: moderateScale(20),
-                borderRadius: moderateScale(20),
+                paddingTop: moderateScale(15),
+                borderRadius: moderateScale(10),
                 borderWidth: 2,
                 borderColor: colors.inputBorder,
                 paddingBottom: 10,
@@ -127,8 +127,8 @@ const Completed = () => {
                 }}>
                 <View
                   style={{
-                    height: moderateScale(80),
-                    width: moderateScale(80),
+                    height: moderateScale(60),
+                    width: moderateScale(60),
                     // borderWidth: 1,
                     borderRadius: moderateScale(40),
                     backgroundColor: colors.yellow,
@@ -165,7 +165,7 @@ const Completed = () => {
               <View
                 style={{
                   flexDirection: 'row',
-                  paddingTop: moderateScale(30),
+                  paddingTop: moderateScale(25),
                   alignItems: 'center',
                   justifyContent: 'space-between',
                 }}>
@@ -191,7 +191,7 @@ const Completed = () => {
               <View
                 style={{
                   flexDirection: 'row',
-                  paddingTop: moderateScale(30),
+                  paddingTop: moderateScale(25),
                   alignItems: 'center',
                   justifyContent: 'space-between',
                 }}>
@@ -227,7 +227,7 @@ const Completed = () => {
               <View
                 style={{
                   flexDirection: 'row',
-                  paddingTop: moderateScale(20),
+                  paddingTop: moderateScale(15),
                   alignItems: 'center',
                   justifyContent: 'space-between',
                 }}>
@@ -276,16 +276,12 @@ const styles = StyleSheet.create({
     // paddingBottom: '5%',
   },
   autoPlaceContainer: {
-    height: moderateScale(70),
+    height: moderateScale(60),
     width: '100%',
     alignSelf: 'center',
-    // marginTop: -10,
-    // backgroundColor: 'white',
     borderRadius: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    // paddingHorizontal: 10,
-    // borderWidth: 2,
     borderColor: colors.inputBorder,
   },
 });

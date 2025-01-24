@@ -1,55 +1,40 @@
-import {Text, View} from 'react-native';
+import React from 'react';
+import {Text, View, Dimensions, StyleSheet} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Header from '../../../components/Header';
 import Active from './Active';
 import Completed from './Completed';
 import Cancelled from './Cancled';
-import {moderateScale} from '../../../utils/Scalling';
+// import {moderateScale} from '../../../utils/Scalling';
+import {moderateScale} from 'react-native-size-matters';
 import {colors} from '../../../constants/colors';
 import CustomText from '../../../components/CustomText';
 import fonts from '../../../constants/fonts';
+
+const {width} = Dimensions.get('window');
+
 const BookingScreen = () => {
   const Tab = createMaterialTopTabNavigator();
+
   return (
-    <View style={{flex: 1, backgroundColor: colors.white}}>
-      <Header title={'Boooking'} />
-      <View style={{paddingHorizontal: moderateScale(25), flex: 1}}>
+    <View style={styles.container}>
+      <Header title={'Booking'} />
+      <View style={styles.tabContainer}>
         <Tab.Navigator
           screenOptions={({route}) => ({
-            tabBarStyle: {
-              backgroundColor: 'transparent',
-              width: '100%',
-              overflow: 'hidden',
-            },
-            tabBarLabelStyle: {
-              fontWeight: 'bold',
-              lineHeight: 20,
-            },
-            tabBarIndicatorStyle: {
-              backgroundColor: colors.yellow,
-            },
-            tabBarItemStyle: {
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderBottomWidth: 2,
-              borderBottomColor: colors.yellow,
-            },
+            tabBarStyle: styles.tabBarStyle,
+            tabBarLabelStyle: styles.tabBarLabelStyle,
+            tabBarIndicatorStyle: styles.tabBarIndicatorStyle,
             tabBarLabel: ({focused}) => (
               <CustomText
-                style={{
-                  color: focused ? colors.yellow : colors.grey,
-                  // borderBottomWidth: focused ? 2 : 0,
-                  borderBottomColor: focused ? colors.black : 'red',
-                  paddingBottom: 8,
-                }}
+                style={[
+                  styles.tabBarLabel,
+                  {color: focused ? colors.yellow : colors.grey},
+                ]}
                 fontFamily={fonts.bold}>
                 {route.name}
               </CustomText>
             ),
-            tabBarItemStyle: {
-              borderBottomColor:
-                route.name === 'Active' ? colors.black : colors.inputBorder,
-            },
           })}>
           <Tab.Screen name="Active" component={Active} />
           <Tab.Screen name="Completed" component={Completed} />
@@ -59,4 +44,32 @@ const BookingScreen = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
+  tabContainer: {
+    flex: 1,
+    paddingHorizontal: moderateScale(10), // Adjust padding dynamically
+  },
+  tabBarStyle: {
+    backgroundColor: 'transparent',
+  },
+  tabBarLabelStyle: {
+    fontWeight: 'bold',
+    fontSize: moderateScale(6), // Scaled font size
+    lineHeight: moderateScale(16),
+  },
+  tabBarIndicatorStyle: {
+    backgroundColor: colors.yellow,
+    height: moderateScale(2), // Scaled indicator height
+  },
+  tabBarLabel: {
+    textAlign: 'center',
+    paddingBottom: moderateScale(5), // Scaled padding
+  },
+});
+
 export default BookingScreen;

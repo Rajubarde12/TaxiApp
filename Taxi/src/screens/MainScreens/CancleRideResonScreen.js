@@ -54,12 +54,15 @@ const CancleResonRideScreen = ({navigation, route}) => {
   const {searchInfo} = useSelector(state => state.rider);
 
   const {bookingDetails, driveAccpetedData} = useSelector(state => state.rider);
-  const bookingId =
-    route?.params?.bookingId ?? driveAccpetedData?.bookingId
-      ? driveAccpetedData?.bookingId
-      : searchInfo?.bookingId;
+  const bookingId = route?.params?.bookingId
+    ? route?.params?.bookingId
+    : driveAccpetedData?.bookingId
+    ? driveAccpetedData?.bookingId
+    : searchInfo?.bookingId;
 
   const crNumber = route?.params?.crNumber ?? bookingDetails?.crnNumber;
+  console.log('this is crn number', bookingId);
+
   const [loading, setLoading] = useState(false);
 
   const [selectedreason, setSelectedReson] = useState({

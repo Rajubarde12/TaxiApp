@@ -98,7 +98,7 @@ const Active = ({navigation}) => {
       <Loader loading={loading} />
       <View>
         <FlatList
-          data={activeList.slice(0, 1)}
+          data={activeList}
           contentContainerStyle={{paddingBottom: moderateScale(-10)}}
           renderItem={({item, index}) => {
             const date = item?.start_ride_time
@@ -341,9 +341,11 @@ const Active = ({navigation}) => {
                   }}>
                   <TouchableOpacity
                     onPress={() => {
+                      console.log(activeList[0]?.['_id']);
+
                       navigation.navigate('CancleResonRideScreen', {
-                        bookingId: activeList[0]?.['_id'],
-                        crNumber: activeList[0]?.['crnNumber'],
+                        bookingId: item['_id'],
+                        crNumber: item['crnNumber'],
                       });
                     }}
                     style={{
