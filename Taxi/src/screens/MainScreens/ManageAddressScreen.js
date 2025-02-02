@@ -1,9 +1,9 @@
-import {FlatList, Pressable, TouchableOpacity, View} from 'react-native';
+import {Alert, FlatList, Image, Pressable, TouchableOpacity, View} from 'react-native';
 import {colors} from '../../constants/colors';
 import Header from '../../components/Header';
 import {height, width} from '../../constants/Dimentions';
 import {moderateScale} from 'react-native-size-matters';
-import {Location2, LocationAddress} from '../../constants/svgIcons';
+import {DeleteIcon, EditIcon, Location2, LocationAddress} from '../../constants/svgIcons';
 import CustomText from '../../components/CustomText';
 import {fontSize} from '../../constants/fontSize';
 import fonts from '../../constants/fonts';
@@ -11,12 +11,52 @@ import {LocalTile} from 'react-native-maps';
 import {useDispatch, useSelector} from 'react-redux';
 import {setSelectedAddressFromList} from '../../redux/commonSlice';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ManageAddressScreen = ({route}) => {
   const navigation = useNavigation();
   const screen = route?.params?.screen;
   const {savedAddress} = useSelector(state => state.user);
   const dispatch = useDispatch();
+
+    const confirmDelete = (item) => {
+      Alert.alert(
+        "Confirm Deletion",
+        "Are you sure you want to delete this address?",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Delete", onPress: () => handleDelete(item) }
+        ]
+      );
+    };
+  
+    const handleDelete = async() => {
+      try {
+        const token = await AsyncStorage.getItem(DATABASE.token);
+  
+        let config = {
+          method: 'get',
+          maxBodyLength: Infinity,
+          url: `${MAIN_URL}/user/get-all-address`,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+  
+        axios
+          .request(config)
+          .then(response => {
+            if (response.data.status == 200) {
+          
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white, paddingBottom: 20}}>
@@ -30,11 +70,17 @@ const ManageAddressScreen = ({route}) => {
             paddingHorizontal: moderateScale(20),
           }}
           renderItem={({item, index}) => {
+            console.log(item);
+            
             return (
               <Pressable
                 onPress={() => {
                   dispatch(setSelectedAddressFromList(item));
                   if (screen == 'DestinationScreen') {
+                    navigation.navigate('DestinationScreen', {
+                      address: item?.address,
+                    });
+                  }else{
                     navigation.navigate('DestinationScreen', {
                       address: item?.address,
                     });
@@ -50,7 +96,25 @@ const ManageAddressScreen = ({route}) => {
                   borderBottomWidth: 1,
                   borderBottomColor: colors.inputBorder,
                   flexDirection: 'row',
+                
                 }}>
+                  <View style={{position:'absolute',right:10,top:'35%',flexDirection:'row',width
+                    :'15%',
+                    justifyContent:'space-between',
+                    alignItems:'center',
+                    zIndex:10
+                  }}>
+                    <TouchableOpacity onPress={()=>{
+                      confirmDelete(item)
+                    }}>
+                    <Image style={{height:15,width:15}} source={DeleteIcon}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>{
+                      navigation.navigate('AddAddressScreen',{isEdit:true,item});
+                    }}>
+                    <Image style={{height:15,width:15}} source={EditIcon}/>
+                    </TouchableOpacity>
+                  </View>
                 <LocationAddress Height={23} width={23} />
                 <View style={{marginLeft: moderateScale(15)}}>
                   <CustomText

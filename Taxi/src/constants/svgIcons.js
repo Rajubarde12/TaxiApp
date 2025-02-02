@@ -1,3 +1,4 @@
+
 import Splash from '../assets/svg/splash.svg';
 import Splash1 from '../assets/svg/splash1.svg';
 import Intro2 from '../assets/svg/Intro2.svg';
@@ -22,6 +23,7 @@ import ProfileTab from '../assets/svg/ProfileTab.svg';
 import WalletTab from '../assets/svg/WalletTab.svg';
 import ChatTab from '../assets/svg/ChatTab.svg';
 import Location2 from '../assets/svg/Location2.svg';
+import Location3 from '../assets/svg/Location3.svg';
 import Office from '../assets/svg/Office.svg';
 import LiveLocation from '../assets/svg/LiveLocation.svg';
 import RadioBalck from '../assets/svg/RadioBalck.svg';
@@ -76,6 +78,12 @@ import BookingTabActive from '../assets/svg/BookingTabActive.svg';
 import WalletTabActive from '../assets/svg/WalletTabActive.svg';
 import ChatTabActive from '../assets/svg/ChatTabActive.svg';
 import Danger from '../assets/svg/Danger.svg';
+const EditIcon=require('../assets/png/EditIcon.png')
+const DeleteIcon=require('../assets/png/DeleteIcon.png')
+const ParentHouse=require('../assets/png/family.png')
+const FriendsHouse=require('../assets/png/FriendsHouse.png')
+const HomeAdress=require('../assets/png/home.png')
+const OfficeAddress=require('../assets/png/Office.png')
 export {
   UserPlush,
   Danger,
@@ -140,6 +148,7 @@ export {
   ProfileTab,
   ChatTab,
   Location2,
+  Location3,
   Office,
   LiveLocation,
   RadioBalck,
@@ -155,4 +164,10 @@ export {
   UserBook,
   Promo,
   SearchingRideIcon,
+  EditIcon,
+  DeleteIcon,
+  ParentHouse,
+  FriendsHouse,
+  HomeAdress,
+  OfficeAddress
 };

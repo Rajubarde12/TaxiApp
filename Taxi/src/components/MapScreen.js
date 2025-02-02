@@ -40,14 +40,18 @@ export default ({
   region,
   handlePlaceSelect,
   getGeo,
+  getGeo1,
   isData,
+  screen
 }) => {
   const navigation = useNavigation();
 
   const dispatch = useDispatch();
-  const {destinationRegoin, userAddress, currentRegoin} = useSelector(
+  const {destinationRegoin, userAddress, currentRegoin,} = useSelector(
     state => state.common,
   );
+  console.log('',screen);
+  
 
   return (
     <View style={styles.container}>
@@ -78,13 +82,17 @@ export default ({
         />
       )}
       <MapView
-        region={currentRegoin}
+        region={screen=="DestinationScreen"?destinationRegoin: currentRegoin}
+        onPress={event => {
+          const { latitude, longitude } = event.nativeEvent.coordinate;
+          getGeo1(latitude,longitude)
+        }}
         // provider={PROVIDER_GOOGLE}
         style={styles.map}
         showsUserLocation={false}>
         {region && (
           <Marker
-            coordinate={currentRegoin}
+            coordinate={screen=="DestinationScreen"?destinationRegoin: currentRegoin}
             title="Your Location"
             description="This is where you are currently located.">
             <LocationMap />

@@ -8,7 +8,7 @@ import {fontSize} from '../../../constants/fontSize';
 import {width} from '../../../constants/Dimentions';
 import Header from '../../../components/Header';
 import Button from '../../../components/Button';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import Input from '../../../components/AuthInput';
 import {GOOGLE_API_KEY} from '../../../constants/ApiKeys';
@@ -23,7 +23,17 @@ import Loader from '../../../components/Loader';
 const AddAddressScreen = ({route, navigation}) => {
   const {currentRegoin} = useSelector(state => state.common);
   const [completAdress, setCompleteAdress] = useState('');
+  const screen = route?.params?.screen;
+  const items = route?.params?.item;
+  const isEdit = route?.params?.isEdit;
   const [floor, setFloor] = useState('');
+
+  useEffect(() => {
+    setFloor(items?.floor);
+    setLandMark(items?.landmark ?? '');
+    setCompleteAdress(items?.address ?? ''),
+      setSelectedAdress({title: items?.addressType ?? ''});
+  }, [items]);
   const [landmark, setLandMark] = useState('');
   const [selectedAdress, setSelectedAdress] = useState({
     title: 'Home',
@@ -33,7 +43,6 @@ const AddAddressScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
   const fetchPlaces = async () => {
     const token = await AsyncStorage.getItem(DATABASE.token);
-    console.log(token);
 
     const apiKey = GOOGLE_API_KEY;
     const address = `${completAdress}, ${floor}, ${landmark}`;
@@ -46,20 +55,10 @@ const AddAddressScreen = ({route, navigation}) => {
         )}&key=${apiKey}`,
       );
       const json = await response.json();
-      console.log(json);
 
       if (json.status === 'OK') {
         const location = json?.results[0]?.geometry?.location;
         const adrees = json?.results[0]?.formatted_address;
-        let dat1a = JSON.stringify({
-          type: 'Pickup',
-          address: '1234 Elm Street, Springfield',
-          latitude: 37.7749,
-          longitude: -122.4194,
-          addressType: 'Residential',
-          floor: '3rd Floor',
-          landmark: 'Near Central Park',
-        });
 
         const data = {
           type: 'Pickup',
@@ -73,7 +72,9 @@ const AddAddressScreen = ({route, navigation}) => {
         let config = {
           method: 'post',
           maxBodyLength: Infinity,
-          url: `${MAIN_URL}/user/add-address`,
+          url: isEdit
+            ? `${MAIN_URL}/user/edit-address/${items['_id']}`
+            : `${MAIN_URL}/user/add-address`,
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
@@ -83,10 +84,16 @@ const AddAddressScreen = ({route, navigation}) => {
 
         const response = await axios.request(config);
         if (response.data.status == 200) {
-          navigation.goBack();
+          if (screen == 'DestinationScreen') {
+            navigation.navigate('DestinationScreen', {
+              address: address,
+            });
+          } else {
+            navigation.goBack();
+          }
           setLoading(false);
           dispatch(getSavedAddress());
-          Toast.show('adress added');
+          Toast.show(isEdit ? 'Adress Update' : 'adress added');
         }
       } else {
         Toast.show('Unable to fetch location. Please check the address.');
@@ -113,7 +120,7 @@ const AddAddressScreen = ({route, navigation}) => {
         onRegoin={region => {
           console.log(region);
         }}>
-        <Header map={true} title={'Pick-Up'} />
+        <Header map={true} title={isEdit ? 'Edit Addresss' : 'Add Address'} />
 
         <View
           style={{

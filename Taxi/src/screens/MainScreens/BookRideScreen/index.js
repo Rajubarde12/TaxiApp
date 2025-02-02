@@ -145,6 +145,11 @@ const BookRideScreen = ({route, navigation}) => {
     }
   };
 
+
+  const nedata=data.map(item=>{
+    
+  })
+
   useEffect(() => {
     setSelected(data[0]);
   }, []);
@@ -211,7 +216,14 @@ const BookRideScreen = ({route, navigation}) => {
                 </CustomText>
 
                 <View style={{width: '10%', alignItems: 'center'}}>
-                  <Saved1 height={20} width={20} />
+                  <Pressable
+                    onPress={() => {
+                      navigation.navigate('ManageAddressScreen', {
+                        screen: 'DestinationScreen',
+                      });
+                    }}>
+                    <Saved1 />
+                  </Pressable>
                 </View>
                 <View style={{paddingHorizontal: 5}}>
                   <CustomText
@@ -221,7 +233,14 @@ const BookRideScreen = ({route, navigation}) => {
                     |
                   </CustomText>
                 </View>
-                <Plush />
+                <Pressable
+                  onPress={() => {
+                    navigation.navigate('AddAddressScreen', {
+                      screen: 'DestinationScreen',
+                    });
+                  }}>
+                  <Plush />
+                </Pressable>
               </Pressable>
             </View>
             <View

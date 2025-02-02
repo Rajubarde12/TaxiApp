@@ -10,7 +10,7 @@ module.exports = {
     ios: {},
     android: {},
   },
-  // assets: ['./Taxi/src/assets/fonts/'], // stays the same
-  assets: ['./Prpeprty/assets/fonts'],
+  assets: ['./Taxi/src/assets/fonts/'], // stays the same
+  // assets: ['./Prpeprty/assets/fonts'],
 };
 // require('./')

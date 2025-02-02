@@ -9,6 +9,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   ScrollView,
+  Pressable,
 } from 'react-native';
 import {colors} from '../../../constants/colors';
 import Header from '../../../components/Header';
@@ -144,7 +145,14 @@ const DestinationScreen = ({navigation, route}) => {
               placeholderTextColor="#888"
               style={styles.input}
             />
-            <Saved1 />
+            <Pressable
+              onPress={() => {
+                navigation.navigate('ManageAddressScreen', {
+                  screen: 'DestinationScreen',
+                });
+              }}>
+              <Saved1 />
+            </Pressable>
             <View style={{paddingHorizontal: 5}}>
               <CustomText
                 color={'lightgrey'}
@@ -153,7 +161,14 @@ const DestinationScreen = ({navigation, route}) => {
                 |
               </CustomText>
             </View>
-            <Plush />
+            <Pressable
+              onPress={() => {
+                navigation.navigate('PickupScreen', {
+                  screen: 'DestinationScreen',
+                });
+              }}>
+              <Plush />
+            </Pressable>
           </View>
         </View>
         <TouchableOpacity

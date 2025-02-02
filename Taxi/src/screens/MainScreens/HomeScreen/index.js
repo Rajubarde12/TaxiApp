@@ -6,7 +6,15 @@ import {moderateScale} from '../../../utils/Scalling';
 import CustomText from '../../../components/CustomText';
 import fonts from '../../../constants/fonts';
 import {fontSize} from '../../../constants/fontSize';
-import {Location2, Office} from '../../../constants/svgIcons';
+import {
+  FriendsHouse,
+  HomeAdress,
+  Location2,
+  Location3,
+  Office,
+  OfficeAddress,
+  ParentHouse,
+} from '../../../constants/svgIcons';
 import {width} from '../../../constants/Dimentions';
 import {useEffect, useState} from 'react';
 import {
@@ -15,11 +23,12 @@ import {
 } from '../../../utils/modals/getUserLocation';
 import {useDispatch, useSelector} from 'react-redux';
 import {setuserAddress, setUserCurrentRegoin} from '../../../redux/commonSlice';
+import {Image} from 'react-native';
+import { distance } from '../../../utils/modals/calculateFunction';
 const HomeScreen = ({navigation}) => {
   const dispatch = useDispatch();
-  const {token} = useSelector(state => state.user);
-  console.log(token);
-
+  const {savedAddress} = useSelector(state => state.user);
+  const newAdress = [...data, ...savedAddress];
   const [region, setRegion] = useState({
     latitude: 0.0,
     longitude: 0.0,
@@ -29,13 +38,13 @@ const HomeScreen = ({navigation}) => {
   useEffect(() => {
     getUserLocation();
   }, []);
-  const getUserLocation = async () => {
+  const getUserLocation = async (latitude1,longitude1) => {
     const {latitude, longitude} = await getGeo();
     setRegion(prev => ({...prev, latitude, longitude}));
     dispatch(
       setUserCurrentRegoin({
-        latitude,
-        longitude,
+        latitude:latitude1??latitude,
+        longitude:longitude1??latitude,
         longitudeDelta: 0.1,
         latitudeDelta: 0.1,
       }),
@@ -43,6 +52,7 @@ const HomeScreen = ({navigation}) => {
     const address = await getCoordsFromAddressName(latitude, longitude);
     dispatch(setuserAddress(address));
   };
+  const [selected, setSelected] = useState(0);
 
   return (
     <View
@@ -51,7 +61,10 @@ const HomeScreen = ({navigation}) => {
         backgroundColor: colors.white,
         paddingBottom: moderateScale(130),
       }}>
-      <MapScreen region={region} iscall={true} isEnalble={false}>
+      <MapScreen getGeo1={(latitude,longitude)=>{
+        getUserLocation(latitude,longitude)
+      }
+      } region={region} iscall={true} isEnalble={false}>
         <View style={{height: '70%'}} />
         <View
           style={{
@@ -98,16 +111,29 @@ const HomeScreen = ({navigation}) => {
             </Pressable>
           </View>
           <FlatList
-            data={data}
-            keyExtractor={item => item.id}
+            data={newAdress}
+            keyExtractor={(_, index) => index.toString()}
             horizontal={true}
             renderItem={({item, index}) => {
               let Icon = item?.icon;
+              const distancer=distance(
+                region?.latitude,
+                region?.longitude,
+                item?.latitude,
+                item?.longitude,
+                'K',
+              )
+            
               return (
                 <Pressable
                   onPress={() => {
+                    setSelected(index);
                     if (index === 0) {
                       navigation.navigate('DestinationScreen');
+                    } else {
+                      navigation.navigate('DestinationScreen', {
+                        address: item?.address,
+                      });
                     }
                   }}
                   style={{
@@ -120,18 +146,37 @@ const HomeScreen = ({navigation}) => {
                     borderColor: colors.inputBorder,
                     alignItems: 'center',
                     justifyContent: 'center',
-                    backgroundColor: index == 0 ? colors.yellow : colors.white,
+                    backgroundColor:
+                      index == selected ? colors.yellow : colors.white,
                   }}>
-                  <Icon />
+                  {index == 0 ? (
+                    <Icon />
+                  ) : (
+                    <Image
+                      style={{
+                        height: moderateScale(80),
+                        width: moderateScale(80),
+                      }}
+                      source={
+                        item?.addressType == 'Parent’s House'
+                          ? ParentHouse
+                          : item?.addressType == 'Friend’s House'
+                          ? FriendsHouse
+                          : item?.addressType == 'Home'
+                          ? HomeAdress
+                          : OfficeAddress
+                      }
+                    />
+                  )}
                   <CustomText fontFamily={fonts.semi_bold} mTop={4}>
-                    {item.title}
+                    {index == 0 ? item?.title : item?.addressType}
                   </CustomText>
                   <CustomText
                     size={fontSize.Twelve}
                     color={colors.grey}
                     fontFamily={fonts.semi_bold}
                     mTop={-4}>
-                    {item.desc}
+                    {index==0?item?.desc :`${parseFloat(distancer).toFixed(0) } KM away`}
                   </CustomText>
                 </Pressable>
               );
@@ -146,14 +191,8 @@ export default HomeScreen;
 const data = [
   {
     id: '1',
-    icon: Location2,
+    icon: Location3,
     title: 'Destination',
     desc: 'Enter Destination',
-  },
-  {
-    id: '2',
-    icon: Office,
-    title: 'Office',
-    desc: '35 KM Away',
   },
 ];

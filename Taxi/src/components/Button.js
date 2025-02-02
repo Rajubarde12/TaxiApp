@@ -5,18 +5,18 @@ import {colors} from '../constants/colors';
 import {width} from '../constants/Dimentions';
 import fonts from '../constants/fonts';
 
-const Button = ({title, onPress, width1, backgroundColor}) => {
+const Button = ({title, onPress, width1, backgroundColor,style}) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={{
+      style={[{
         height: moderateScale(65),
         backgroundColor: backgroundColor ?? colors.yellow,
         width: width1 ?? width * 0.8,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 30,
-      }}>
+      },style]}>
       <CustomText fontFamily={fonts.semi_bold}>{title}</CustomText>
     </TouchableOpacity>
   );
